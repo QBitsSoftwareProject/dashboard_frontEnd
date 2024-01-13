@@ -1,11 +1,11 @@
 import React from "react";
-// import styles from "../upperNavBar/style.css"
-import "../../../pages/bootstrap.css"; 
+import styles from "../upperNavBar/style.css"
+import Button from "@mui/material/Button";
 
 export default function upperNavbar() {
   return (
-    <div className={`bg-danger`}>
-      <h1>upperNavbar</h1>
+    <div>
+      
     </div>
   );
 }
