@@ -34,7 +34,7 @@ export default function UpperNavbar() {
             <NotificationsNoneIcon color="action" />
           </Badge>
         </div>
-        <Badge color="error" overlap="circular" badgeContent=" " variant="dot">
+        <Badge color="success" overlap="circular" badgeContent=" " variant="dot">
           <div className="profileImg">
             <Image />
           </div>

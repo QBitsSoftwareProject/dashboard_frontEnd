@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../sideNavbar.module.css";
-import SideBarButton from "../sideBarButton/sideBarButton";
+import btn_styles from "../sideBarButton.module.css";
 
-export default function SideNavbar() {
+export default function SideNavbar({ onPageChange }) {
   const imgDetails = {
     img1: {
       name: "View Analytics",
@@ -65,19 +65,137 @@ export default function SideNavbar() {
       loc: require("../../../assets/images/sideBar/appointments(s).png"),
     },
   };
-  const imgDetailsArray = Object.values(imgDetails);
+
+  const selectedBtn = `${btn_styles.btnContainer} ${btn_styles.btnSelected}`;
+  const not_selectedBtn = `${btn_styles.btnContainer} ${btn_styles.btnNotSelected}`;
+  const [pageContent, setpageContent] = useState("View-Analytics");
 
   return (
     <div className={styles.container}>
-      <div style={{ textAlign: "center",marginTop:"30px" }}>
+      <div style={{ textAlign: "center", marginTop: "30px" }}>
         <span style={{ fontSize: "20px" }}>Admin Dashboard</span>
         <br />
         <span>Welcome back</span>
       </div>
       <div className={styles.secBtns}>
-        {imgDetailsArray.map((detail, index) => {
-          return <SideBarButton imgDetails={detail} />;
-        })}
+        <div
+          className={
+            pageContent === "View-Analytics" ? selectedBtn : not_selectedBtn
+          }
+          onClick={() => {
+            setpageContent("View-Analytics");
+            onPageChange("View-Analytics");
+          }}
+        >
+          <img
+            src={
+              pageContent === "View-Analytics"
+                ? imgDetails.img1_1.loc
+                : imgDetails.img1.loc
+            }
+            style={{ width: 20, height: "auto", margin: 10 }}
+          />
+          <span>View Analytics</span>
+        </div>
+        <div
+          className={
+            pageContent === "Manage-Resources" ? selectedBtn : not_selectedBtn
+          }
+          onClick={() => {
+            setpageContent("Manage-Resources");
+            onPageChange("Manage-Resources");
+          }}
+        >
+          <img
+            src={
+              pageContent === "Manage-Resources"
+                ? imgDetails.img2_2.loc
+                : imgDetails.img2.loc
+            }
+            style={{ width: 20, height: "auto", margin: 10 }}
+          />
+          <span>Manage Resources</span>
+        </div>
+        <div
+          className={
+            pageContent === "Task-Challenges" ? selectedBtn : not_selectedBtn
+          }
+          onClick={() => {
+            setpageContent("Task-Challenges");
+            onPageChange("Task-Challenges");
+          }}
+        >
+          <img
+            src={
+              pageContent === "Task-Challenges"
+                ? imgDetails.img3_3.loc
+                : imgDetails.img3.loc
+            }
+            style={{ width: 20, height: "auto", margin: 10 }}
+          />
+          <span>Task and Challenges</span>
+        </div>
+        <div
+          className={
+            pageContent === "Community-Management"
+              ? selectedBtn
+              : not_selectedBtn
+          }
+          onClick={() => {
+            setpageContent("Community-Management");
+            onPageChange("Community-Management");
+          }}
+        >
+          <img
+            src={
+              pageContent === "Community-Management"
+                ? imgDetails.img4_4.loc
+                : imgDetails.img4.loc
+            }
+            style={{ width: 20, height: "auto", margin: 10 }}
+          />
+          <span>Community Management</span>
+        </div>
+        <div
+          className={
+            pageContent === "User-control-access"
+              ? selectedBtn
+              : not_selectedBtn
+          }
+          onClick={() => {
+            setpageContent("User-control-access");
+            onPageChange("User-control-access");
+          }}
+        >
+          <img
+            src={
+              pageContent === "User-control-access"
+                ? imgDetails.img5_5.loc
+                : imgDetails.img5.loc
+            }
+            style={{ width: 20, height: "auto", margin: 10 }}
+          />
+          <span>User control access</span>
+        </div>
+        <div
+          className={
+            pageContent === "Appointments" ? selectedBtn : not_selectedBtn
+          }
+          onClick={() => {
+            setpageContent("Appointments");
+            onPageChange("Appointments");
+          }}
+        >
+          <img
+            src={
+              pageContent === "Appointments"
+                ? imgDetails.img6_6.loc
+                : imgDetails.img6.loc
+            }
+            style={{ width: 20, height: "auto", margin: 10 }}
+          />
+          <span>Appointments</span>
+        </div>
       </div>
     </div>
   );
