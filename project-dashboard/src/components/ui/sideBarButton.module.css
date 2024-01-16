@@ -9,10 +9,31 @@
   margin-right: auto;
 }
 
+.btnContainer:hover{
+  cursor: pointer;
+  color:#2F79E9;
+}
+
 .btnSelected {
   background-color: rgb(118, 190, 238, 25%);
 }
 
+.btnSelected span {
+  color:#2F79E9;
+  font-weight: bold;
+}
+
 .btnNotSelected {
   background-color: rgb(118, 190, 238, 0%);
+}
+
+.btnNotSelected:hover {
+  background-color: rgba(226, 239, 248, 0.7);
+  transition-duration: 100ms;
+  border-left: #2F79E9 solid;
+}
+
+.btnNotSelected span {
+   color:#818FAA;
+  font-weight:lighter;
 }

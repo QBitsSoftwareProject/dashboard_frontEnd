@@ -34,9 +34,11 @@ export default function UpperNavbar() {
             <NotificationsNoneIcon color="action" />
           </Badge>
         </div>
-        <div className="profileImg">
-          <Image />
-        </div>
+        <Badge color="error" overlap="circular" badgeContent=" " variant="dot">
+          <div className="profileImg">
+            <Image />
+          </div>
+        </Badge>
         <div className="name">
           <span style={{ fontWeight: "bold" }}>Dinul Perera</span>
           <br />

@@ -7,12 +7,17 @@ import { Grid } from "@mui/material";
 export default function Main() {
   return (
     <div className={styles.container}>
-      <Grid container padding={1}>
+      <Grid container>
         <Grid item xs={3} className={styles.sideNavbarStyles}>
           <SideNavbar />
         </Grid>
-        <Grid item xs={9} className={styles.upperNavBarStyles}>
-          <UpperNavBar />
+        <Grid item xs={9}>
+          <div className={styles.upperNavBarStyles}>
+            <UpperNavBar />
+          </div>
+          <div class={styles.content}>
+
+          </div>
         </Grid>
       </Grid>
     </div>
