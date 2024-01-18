@@ -4,6 +4,15 @@ import UpperNavBar from "../components/ui/upperNavbar/upperNavbar.jsx";
 import SideNavbar from "../components/ui/sideNavBar/sideNavbar.jsx";
 import { Grid } from "@mui/material";
 
+// sections
+import ResourceManagement from "./resource-management/resource-management.jsx";
+import ViewAnalytics from "./analytics/view-analytics.jsx";
+import Appointments from "./appointments/appointments.jsx";
+import CommunityManagement from "./community-management/community-management.jsx";
+import ControlAccess from "./control-access/control-access.jsx";
+import TaskChallenges from "./task-challenges/task-challenges.jsx";
+// sections
+
 export default function Main() {
   const [pageContent, setPageContent] = useState("View-Analytics");
 
@@ -23,19 +32,11 @@ export default function Main() {
           </div>
           <div class={styles.content}>
             {pageContent === "View-Analytics" && <p>View Analytics content</p>}
-            {pageContent === "Manage-Resources" && (
-              <p>Manage Resources content</p>
-            )}
-            {pageContent === "Task-Challenges" && (
-              <p>Task and Challenges content</p>
-            )}
-            {pageContent === "Community-Management" && (
-              <p>Community Management content</p>
-            )}
-            {pageContent === "User-control-access" && (
-              <p>User control access content</p>
-            )}
-            {pageContent === "Appointments" && <p>Appointments content</p>}
+            {pageContent === "Manage-Resources" && <ResourceManagement />}
+            {pageContent === "Task-Challenges" && <TaskChallenges />}
+            {pageContent === "Community-Management" && <CommunityManagement />}
+            {pageContent === "User-control-access" && <ControlAccess />}
+            {pageContent === "Appointments" && <Appointments />}
           </div>
         </Grid>
       </Grid>
