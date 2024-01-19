@@ -31,7 +31,7 @@ export default function Main() {
             <UpperNavBar />
           </div>
           <div class={styles.content}>
-            {pageContent === "View-Analytics" && <p>View Analytics content</p>}
+            {pageContent === "View-Analytics" && <ViewAnalytics/>}
             {pageContent === "Manage-Resources" && <ResourceManagement />}
             {pageContent === "Task-Challenges" && <TaskChallenges />}
             {pageContent === "Community-Management" && <CommunityManagement />}

@@ -80,7 +80,9 @@ export default function SideNavbar({ onPageChange }) {
       <div className={styles.secBtns}>
         <div
           className={
-            pageContent === "View-Analytics" ? selectedBtn : not_selectedBtn
+            pageContent === "View-Analytics" || onPageChange == "View-Analytics"
+              ? selectedBtn
+              : not_selectedBtn
           }
           onClick={() => {
             setpageContent("View-Analytics");
@@ -99,7 +101,10 @@ export default function SideNavbar({ onPageChange }) {
         </div>
         <div
           className={
-            pageContent === "Manage-Resources" ? selectedBtn : not_selectedBtn
+            pageContent === "Manage-Resources" ||
+            onPageChange == "Manage-Resources"
+              ? selectedBtn
+              : not_selectedBtn
           }
           onClick={() => {
             setpageContent("Manage-Resources");
@@ -118,7 +123,10 @@ export default function SideNavbar({ onPageChange }) {
         </div>
         <div
           className={
-            pageContent === "Task-Challenges" ? selectedBtn : not_selectedBtn
+            pageContent === "Task-Challenges" ||
+            onPageChange == "Task-Challenges"
+              ? selectedBtn
+              : not_selectedBtn
           }
           onClick={() => {
             setpageContent("Task-Challenges");
@@ -137,7 +145,8 @@ export default function SideNavbar({ onPageChange }) {
         </div>
         <div
           className={
-            pageContent === "Community-Management"
+            pageContent === "Community-Management" ||
+            onPageChange == "Community-Management"
               ? selectedBtn
               : not_selectedBtn
           }
@@ -158,7 +167,8 @@ export default function SideNavbar({ onPageChange }) {
         </div>
         <div
           className={
-            pageContent === "User-control-access"
+            pageContent === "User-control-access" ||
+            onPageChange == "User-control-access"
               ? selectedBtn
               : not_selectedBtn
           }
@@ -179,7 +189,9 @@ export default function SideNavbar({ onPageChange }) {
         </div>
         <div
           className={
-            pageContent === "Appointments" ? selectedBtn : not_selectedBtn
+            pageContent === "Appointments" || onPageChange == "Appointments"
+              ? selectedBtn
+              : not_selectedBtn
           }
           onClick={() => {
             setpageContent("Appointments");

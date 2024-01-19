@@ -1,0 +1,21 @@
+.dash_btn1 {
+  background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(60deg, #2193e0, #10cfad) border-box;
+  color: #151516;
+  padding: 15px 40px;
+  border: 5px solid transparent;
+  border-radius: 14px;
+  display: inline-block;
+  font-size: 13.5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.5s ease;
+}
+
+.dash_btn1:hover {
+  transform: scale(1.02);
+  background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(60deg, #10cfad, #2193e0) border-box;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
