@@ -13,6 +13,9 @@ import {
 import DropFileInput from "../../components/ui/dropFileInput/DropFileInput";
 
 function resourceManagement() {
+  const onFileChange=(files)=>{
+    console.log(files);
+  }
   return (
     <div>
       <div
@@ -77,7 +80,7 @@ function resourceManagement() {
           </FormControl>
         </Grid>
         <Grid item xs={12} padding={5}>
-          <DropFileInput />
+          <DropFileInput  onFileChange={(files)=>onFileChange(files)} />
         </Grid>
       </Grid>
       <div
