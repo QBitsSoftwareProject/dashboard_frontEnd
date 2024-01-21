@@ -1,0 +1,58 @@
+.dashbtn {
+  color: #151516;
+  padding: 15px 40px;
+  border: 3.5px solid transparent;
+  border-radius: 14px;
+  display: inline-block;
+  font-size: 13.5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.5s ease;
+}
+
+.dash_btn1 {
+  background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(60deg, #2193e0, #10cfad) border-box;
+}
+
+.dash_btn1:hover {
+  transform: scale(1.02);
+  background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(60deg, #10cfad, #2193e0) border-box;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
+.dash_btn2 {
+  background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(60deg, #e02121, #cf8e10) border-box;
+}
+
+.dash_btn2:hover {
+  transform: scale(1.02);
+  background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(60deg, #cf8e10, #e02121) border-box;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+}
+
+.dash_btn3 {
+  background-color: #4990fb;
+  color: white;
+  font-weight: bold;
+  width: 150px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.5s ease;
+  z-index: 100;
+  position: relative;
+}
+
+.dash_btn3:hover {
+  transform: scale(1.02);
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+    font-weight: bolder;
+}

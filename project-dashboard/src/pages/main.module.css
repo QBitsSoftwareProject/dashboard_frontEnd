@@ -1,0 +1,16 @@
+
+.upperNavBarStyles {
+  background-color: #f6f7fa;
+  justify-content: end;
+  height: fit-content;
+}
+
+.sideNavbarStyles {
+  background-color: #f6f7fa;
+  height:100vh;
+}
+
+.content{
+  width:100%;
+  height:auto;
+}
