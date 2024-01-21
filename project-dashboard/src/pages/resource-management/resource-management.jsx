@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "../resource-management/resource-management.module.css";
 import Dash_btn1 from "../../components/ui/dash_btn/dash_btn1";
+import Dash_btn2 from "../../components/ui/dash_btn/dash_btn2";
 import {
   FormControl,
   Grid,
@@ -9,6 +10,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import DropFileInput from "../../components/ui/dropFileInput/DropFileInput";
 
 function resourceManagement() {
   return (
@@ -21,7 +23,7 @@ function resourceManagement() {
       >
         <Dash_btn1 btn_text="VIEW RESOURCES" inlineStyle={styles.btnPosition} />
       </div>
-      <Grid container rowSpacing={3}>
+      <Grid container rowSpacing={3} style={{ overflowY: "scroll",height:"65vh" }}>
         <Grid
           item
           xs={2}
@@ -74,7 +76,22 @@ function resourceManagement() {
             </Select>
           </FormControl>
         </Grid>
+        <Grid item xs={12} padding={5}>
+          <DropFileInput />
+        </Grid>
       </Grid>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "end",
+        }}
+      >
+        <Dash_btn1
+          btn_text="UPLOAD RESOURCE"
+          inlineStyle={styles.btnPosition}
+        />
+        <Dash_btn2 btn_text="CANCEL UPLOAD" inlineStyle={styles.btnPosition} />
+      </div>
     </div>
   );
 }
