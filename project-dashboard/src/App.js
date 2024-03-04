@@ -1,5 +1,6 @@
 import './App.css';
 import Main from './pages/main';
+import Login from './pages/login';
 import { createTheme } from '@mui/material';
 
 const theme = createTheme({
@@ -22,7 +23,8 @@ const theme = createTheme({
 function App() {
   return (
     <div className="App">
-      <Main/>
+      {/* <Main/> */}
+      <Login/>
     </div>
   );
 }
