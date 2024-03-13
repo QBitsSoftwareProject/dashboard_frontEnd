@@ -32,11 +32,11 @@ function TaskChallenges() {
   };
 
   const openCheckTask = () => {
-    document.getElementById("newTask").style.width = "100%";
+    document.getElementById("checkTask").style.width = "100%";
   };
 
   const closeCheckTask = () => {
-    document.getElementById("newTask").style.width = "0%";
+    document.getElementById("checkTask").style.width = "0%";
   };
 
   const actions = (
@@ -296,30 +296,48 @@ function TaskChallenges() {
             className={styles.newTaskForm}
             style={{ justifyContent: "flex-start" }}
           >
-            <h5>CREATE NEW TASK</h5>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <TextField
-                id="standard-basic"
-                label="Task name"
-                variant="standard"
-                style={{ width: "100%" }}
-              />
-              <TextField
-                id="standard-basic"
-                label="Task description"
-                variant="standard"
-                style={{ width: "100%" }}
-              />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                paddingTop: 20,
-              }}
-            >
-              <Dash_btn1 btn_text="CREATE NEW TASK" />
-            </div>
+            <Grid container>
+              <Grid
+                item
+                xs={12}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <h5 style={{width:"130px"}}>Task name :</h5>
+                  <span>TASK 001</span>
+                </div>
+                <br />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "flex-start",
+                    gap: 10,
+                  }}
+                >
+                  <h5 style={{width:"550px"}}>Task description :</h5>
+                  <span>
+                    "Find a quiet, comfortable spot. Close your eyes and take
+                    deep breaths. Focus on your breath, letting go of any
+                    thoughts. Stay present in the moment. Start with just a few
+                    minutes and gradually increase the duration as you feel more
+                    comfortable. Meditation can help calm the mind and reduce
+                    stress, promoting mental well-being."
+                  </span>
+                </div>
+              </Grid>
+              <Grid item xs={12}></Grid>
+            </Grid>
           </div>
         </div>
       </div>
