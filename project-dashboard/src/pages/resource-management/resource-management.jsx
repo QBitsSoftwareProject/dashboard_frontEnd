@@ -13,9 +13,9 @@ import {
 import DropFileInput from "../../components/ui/dropFileInput/DropFileInput";
 
 function resourceManagement() {
-  const onFileChange=(files)=>{
+  const onFileChange = (files) => {
     console.log(files);
-  }
+  };
   return (
     <div>
       <div
@@ -26,7 +26,11 @@ function resourceManagement() {
       >
         <Dash_btn1 btn_text="VIEW RESOURCES" inlineStyle={styles.btnPosition} />
       </div>
-      <Grid container rowSpacing={3} style={{ overflowY: "scroll",height:"65vh" }}>
+      <Grid
+        container
+        rowSpacing={3}
+        style={{ overflowY: "scroll", height: "65vh" }}
+      >
         <Grid
           item
           xs={2}
@@ -80,7 +84,7 @@ function resourceManagement() {
           </FormControl>
         </Grid>
         <Grid item xs={12} padding={5}>
-          <DropFileInput  onFileChange={(files)=>onFileChange(files)} />
+          <DropFileInput onFileChange={(files) => onFileChange(files)} />
         </Grid>
       </Grid>
       <div

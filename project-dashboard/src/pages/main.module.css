@@ -1,3 +1,29 @@
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+  cursor: pointer;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  /* box-shadow: inset 0 0 2px grey;  */
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #c5c6c6;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #afafaf;
+}
+
+.container{
+  height: 80vh;
+}
 
 .upperNavBarStyles {
   background-color: #f6f7fa;
@@ -7,10 +33,10 @@
 
 .sideNavbarStyles {
   background-color: #f6f7fa;
-  height:100vh;
+  height: 100vh;
 }
 
-.content{
-  width:100%;
-  height:auto;
+.content {
+  width: 100%;
+  height: auto;
 }

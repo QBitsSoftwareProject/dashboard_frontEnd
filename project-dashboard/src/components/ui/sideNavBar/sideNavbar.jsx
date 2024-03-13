@@ -80,7 +80,7 @@ export default function SideNavbar({ onPageChange }) {
       <div className={styles.secBtns}>
         <div
           className={
-            pageContent === "View-Analytics" || onPageChange == "View-Analytics"
+            pageContent === "View-Analytics" || onPageChange === "View-Analytics"
               ? selectedBtn
               : not_selectedBtn
           }
@@ -99,32 +99,11 @@ export default function SideNavbar({ onPageChange }) {
           />
           <span>View Analytics</span>
         </div>
-        <div
-          className={
-            pageContent === "Manage-Resources" ||
-            onPageChange == "Manage-Resources"
-              ? selectedBtn
-              : not_selectedBtn
-          }
-          onClick={() => {
-            setpageContent("Manage-Resources");
-            onPageChange("Manage-Resources");
-          }}
-        >
-          <img
-            src={
-              pageContent === "Manage-Resources"
-                ? imgDetails.img2_2.loc
-                : imgDetails.img2.loc
-            }
-            style={{ width: 20, height: "auto", margin: 10 }}
-          />
-          <span>Manage Resources</span>
-        </div>
+
         <div
           className={
             pageContent === "Task-Challenges" ||
-            onPageChange == "Task-Challenges"
+            onPageChange === "Task-Challenges"
               ? selectedBtn
               : not_selectedBtn
           }
@@ -145,8 +124,30 @@ export default function SideNavbar({ onPageChange }) {
         </div>
         <div
           className={
+            pageContent === "Manage-Resources" ||
+            onPageChange === "Manage-Resources"
+              ? selectedBtn
+              : not_selectedBtn
+          }
+          onClick={() => {
+            setpageContent("Manage-Resources");
+            onPageChange("Manage-Resources");
+          }}
+        >
+          <img
+            src={
+              pageContent === "Manage-Resources"
+                ? imgDetails.img2_2.loc
+                : imgDetails.img2.loc
+            }
+            style={{ width: 20, height: "auto", margin: 10 }}
+          />
+          <span>Manage Resources</span>
+        </div>
+        <div
+          className={
             pageContent === "Community-Management" ||
-            onPageChange == "Community-Management"
+            onPageChange === "Community-Management"
               ? selectedBtn
               : not_selectedBtn
           }
@@ -168,7 +169,7 @@ export default function SideNavbar({ onPageChange }) {
         <div
           className={
             pageContent === "User-control-access" ||
-            onPageChange == "User-control-access"
+            onPageChange === "User-control-access"
               ? selectedBtn
               : not_selectedBtn
           }
