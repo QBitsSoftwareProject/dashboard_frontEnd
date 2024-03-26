@@ -68,6 +68,7 @@ function TaskChallenges() {
   const checkBox = <Checkbox defaultChecked color="success" />;
 
   const rows = [
+    createData("Task 001", "02/02/2024", "02/03/2024", actions),
     createData("Task 002", "02/02/2024", "02/03/2024", actions),
     createData("Task 003", "03/03/2024", "03/04/2024", actions),
     createData("Task 004", "04/04/2024", "04/05/2024", actions),
