@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../resource-management/resource-management.module.css";
 import Dash_btn1 from "../../components/ui/dash_btn/dash_btn1";
 import Dash_btn2 from "../../components/ui/dash_btn/dash_btn2";
@@ -12,10 +12,11 @@ import {
 } from "@mui/material";
 import DropFileInput from "../../components/ui/dropFileInput/DropFileInput";
 
-function resourceManagement() {
-  const onFileChange = (files) => {
-    console.log(files);
-  };
+const ResourceManagement = () => {
+
+  const [isCancel, setIsCancel] = useState(false);
+  console.log(isCancel)
+
   return (
     <div>
       <div
@@ -62,6 +63,27 @@ function resourceManagement() {
           }}
         >
           <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
+            Resource tags :
+          </span>
+        </Grid>
+        <Grid item xs={10} style={{ paddingRight: "20px" }}>
+          <TextField
+            id="outlined-basic"
+            label="Enter resource tags"
+            variant="outlined"
+            style={{ width: "100%" }}
+          />
+        </Grid>
+        <Grid
+          item
+          xs={2}
+          style={{
+            display: "flex",
+            justifyContent: "start",
+            alignItems: "center",
+          }}
+        >
+          <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
             Resource category :
           </span>
         </Grid>
@@ -84,7 +106,7 @@ function resourceManagement() {
           </FormControl>
         </Grid>
         <Grid item xs={12} padding={5}>
-          <DropFileInput onFileChange={(files) => onFileChange(files)} />
+          <DropFileInput isCancelled={isCancel} />
         </Grid>
       </Grid>
       <div
@@ -97,10 +119,10 @@ function resourceManagement() {
           btn_text="UPLOAD RESOURCE"
           inlineStyle={styles.btnPosition}
         />
-        <Dash_btn2 btn_text="CANCEL UPLOAD" inlineStyle={styles.btnPosition} />
+        <Dash_btn2 btn_text="CANCEL UPLOAD" inlineStyle={styles.btnPosition} onClickEvent={setIsCancel} />
       </div>
     </div>
   );
-}
+};
 
-export default resourceManagement;
+export default ResourceManagement;

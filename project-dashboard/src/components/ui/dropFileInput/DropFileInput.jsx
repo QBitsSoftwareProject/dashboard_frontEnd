@@ -7,89 +7,119 @@ import uploadImg from "../../../assets/images/dragAndDrop/uploadImg.png";
 import Dash_btn3 from "../dash_btn/dash_btn3";
 
 const DropFileInput = (props) => {
-  const wrapperRef = useRef(null);
+  const [isSetResource, SetIsResource] = useState(props.isCancelled);
+  const [isImg, setIsImg] = useState();
+  const [isVideo, setIsVideo] = useState();
 
-  const [fileList, setFileList] = useState([]);
+  const preview = document.getElementById("preview");
+  // console.log(isSetResource);
+  // const file = document.getElementById("fileInput").files[0];
+  // const reader = new FileReader();
 
-  const onDragEnter = () => wrapperRef.current.classList.add("dragover");
+  // reader.addEventListener(
+  //   "load",
+  //   function () {
+  //     if (file.type.startsWith("image")) {
+  //       preview.innerHTML = `<img src="${reader.result}" class="preview">`;
+  //     } else if (file.type.startsWith("video")) {
+  //       preview.innerHTML = `<video controls class="preview"><source src="${reader.result}" type="${file.type}"></video>`;
+  //     }
+  //   },
+  //   false
+  // );
 
-  const onDragLeave = () => wrapperRef.current.classList.remove("dragover");
+  // if (file) {
+  //   reader.readAsDataURL(file);
+  // }
 
-  const onDrop = () => wrapperRef.current.classList.remove("dragover");
+  // const wrapperRef = useRef(null);
+
+  // const [fileList, setFileList] = useState([]);
+
+  // const onDragEnter = () => wrapperRef.current.classList.add("dragover");
+
+  // const onDragLeave = () => wrapperRef.current.classList.remove("dragover");
+
+  // const onDrop = () => wrapperRef.current.classList.remove("dragover");
 
   const onFileDrop = (e) => {
     const newFile = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const preview = document.getElementById("preview");
+      if (newFile.type.startsWith("image")) {
+        // preview.innerHTML = `<img src="${reader.result}" class="${dropFileInputStyles.image_preview}">`;
+        setIsImg(reader.result);
+      } else if (newFile.type.startsWith("video")) {
+        // preview.innerHTML = `<video controls class="${dropFileInputStyles.video_preview}"><source src="${reader.result}" type="${newFile.type}"></video>`;
+        setIsVideo(reader.result);
+      }
+      SetIsResource(true)
+    };
+
     if (newFile) {
-      const updatedList = [...fileList, newFile];
-      setFileList(updatedList);
-      props.onFileChange(updatedList);
+      reader.readAsDataURL(newFile);
     }
   };
 
-  const fileRemove = (file) => {
-    const updatedList = [...fileList];
-    updatedList.splice(fileList.indexOf(file), 1);
-    setFileList(updatedList);
-    props.onFileChange(updatedList);
+  const onDrop = (e) => {
+    onFileDrop(e);
   };
+
+  const cancelUpload = () => {};
 
   return (
     <>
       <div
         className={dropFileInputStyles.container}
-        ref={wrapperRef}
-        onDragEnter={onDragEnter}
-        onDragLeave={onDragLeave}
+        // ref={wrapperRef}
+        // onDragEnter={onDragEnter}
+        // onDragLeave={onDragLeave}
         onDrop={onDrop}
+        id="preview"
       >
-        <div className={dropFileInputStyles.dragRegion}>
-          <img src={uploadImg} style={{ width: "150px" }} />
-          <input type="file" value="" onChange={onFileDrop} />
-        </div>
-        <h5
-          style={{ color: "#2F79E9", fontWeight: "bolder", fontSize: "15px" }}
-        >
-          Drag and drop to upload
-        </h5>
-        <Dash_btn3 btn_text="UPLOAD" />
-        <h5
-          style={{ color: "#2F79E9", fontWeight: "bolder", fontSize: "15px" }}
-        >
-          ( Upto 100 MB )
-        </h5>
-      </div>
-      {fileList.length > 0 ? (
-        <div className={dropFileInputStyles.drop_file_preview}>
-          <p className={dropFileInputStyles.drop_file_preview__title}>
-            Ready to upload
-          </p>
-          {fileList.map((item, index) => (
-            <div
-              key={index}
-              className={dropFileInputStyles.drop_file_preview__item}
-            >
-              <img
-                src={
-                  ImageConfig[item.type.split("/")[1]] || ImageConfig["default"]
-                }
-                alt=""
+        {!isSetResource && (
+          <div>
+            <div className={dropFileInputStyles.dragRegion}>
+              <img src={uploadImg} style={{ width: "150px" }} />
+              <input
+                type="file"
+                value=""
+                id="fileInput"
+                onChange={onFileDrop}
               />
-              <div
-                className={dropFileInputStyles.drop_file_preview__item__info}
-              >
-                <p>{item.name}</p>
-                <p>{item.size}</p>
-              </div>
-              <span
-                className={dropFileInputStyles.drop_file_preview__item__del}
-                onClick={() => fileRemove(item)}
-              >
-                x
-              </span>
             </div>
-          ))}
-        </div>
-      ) : null}
+            <h5
+              style={{
+                color: "#2F79E9",
+                fontWeight: "bolder",
+                fontSize: "15px",
+              }}
+            >
+              Drag and drop to upload
+            </h5>
+            <Dash_btn3 btn_text="UPLOAD" />
+            <h5
+              style={{
+                color: "#2F79E9",
+                fontWeight: "bolder",
+                fontSize: "15px",
+              }}
+            >
+              ( Upto 100 MB )
+            </h5>
+          </div>
+        )}
+
+        {isSetResource && isImg && (
+          <img src={isImg} class={dropFileInputStyles.image_preview}></img>
+        )}
+
+        {isSetResource && isVideo && (
+          <video controls class={dropFileInputStyles.video_preview} src={isVideo}></video>
+        )}
+      </div>
     </>
   );
 };

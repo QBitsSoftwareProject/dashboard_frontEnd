@@ -95,3 +95,13 @@
 .drop_file_preview__item:hover .drop_file_preview__item__del {
   opacity: 1;
 }
+
+.image_preview {
+  width: 250px;
+  border-radius: 20px;
+}
+
+.video_preview {
+  width: 500px;
+  border-radius: 20px;
+}
