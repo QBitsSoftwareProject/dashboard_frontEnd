@@ -9,7 +9,7 @@ const videoSchema = new schema({
   },
   duration: {
     type: String,
-    required: true,
+    // required: true,
   },
   tags: {
     type: Array,

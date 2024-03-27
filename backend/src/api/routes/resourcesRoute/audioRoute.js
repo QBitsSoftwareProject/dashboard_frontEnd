@@ -19,10 +19,10 @@ const {
 
 const router = express.Router();
 
-router.post("/", createAudio);  //create new audio
-router.get("/", getAllAudios); //fetch all audios
+router.post("/", createAudio);  // create new audio
+router.get("/", getAllAudios); // fetch all audios
 router.get("/:id", getAnAudio); // fetch an audio 
 router.delete("/:id", deleteAudio); // delete audio file
-router.put("/:id", updateAudio);// update audio file
+router.put("/:id", updateAudio); // update audio file
 
 module.exports = router;

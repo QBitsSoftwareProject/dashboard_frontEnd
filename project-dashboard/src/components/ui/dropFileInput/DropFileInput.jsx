@@ -1,8 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import dropFileInputStyles from "../dropFileInput.module.css";
 
-import { ImageConfig } from "../../../config/imageConfig";
 import uploadImg from "../../../assets/images/dragAndDrop/uploadImg.png";
 import Dash_btn3 from "../dash_btn/dash_btn3";
 
@@ -11,43 +10,12 @@ const DropFileInput = (props) => {
   const [isImg, setIsImg] = useState();
   const [isVideo, setIsVideo] = useState();
 
-  const preview = document.getElementById("preview");
-  // console.log(isSetResource);
-  // const file = document.getElementById("fileInput").files[0];
-  // const reader = new FileReader();
-
-  // reader.addEventListener(
-  //   "load",
-  //   function () {
-  //     if (file.type.startsWith("image")) {
-  //       preview.innerHTML = `<img src="${reader.result}" class="preview">`;
-  //     } else if (file.type.startsWith("video")) {
-  //       preview.innerHTML = `<video controls class="preview"><source src="${reader.result}" type="${file.type}"></video>`;
-  //     }
-  //   },
-  //   false
-  // );
-
-  // if (file) {
-  //   reader.readAsDataURL(file);
-  // }
-
-  // const wrapperRef = useRef(null);
-
-  // const [fileList, setFileList] = useState([]);
-
-  // const onDragEnter = () => wrapperRef.current.classList.add("dragover");
-
-  // const onDragLeave = () => wrapperRef.current.classList.remove("dragover");
-
-  // const onDrop = () => wrapperRef.current.classList.remove("dragover");
-
   const onFileDrop = (e) => {
     const newFile = e.target.files[0];
     const reader = new FileReader();
+    props.onFileChange(newFile);
 
     reader.onload = () => {
-      const preview = document.getElementById("preview");
       if (newFile.type.startsWith("image")) {
         // preview.innerHTML = `<img src="${reader.result}" class="${dropFileInputStyles.image_preview}">`;
         setIsImg(reader.result);
@@ -55,7 +23,7 @@ const DropFileInput = (props) => {
         // preview.innerHTML = `<video controls class="${dropFileInputStyles.video_preview}"><source src="${reader.result}" type="${newFile.type}"></video>`;
         setIsVideo(reader.result);
       }
-      SetIsResource(true)
+      SetIsResource(true);
     };
 
     if (newFile) {
@@ -67,15 +35,12 @@ const DropFileInput = (props) => {
     onFileDrop(e);
   };
 
-  const cancelUpload = () => {};
+  // const cancelUpload = () => {};
 
   return (
     <>
       <div
         className={dropFileInputStyles.container}
-        // ref={wrapperRef}
-        // onDragEnter={onDragEnter}
-        // onDragLeave={onDragLeave}
         onDrop={onDrop}
         id="preview"
       >
@@ -117,7 +82,11 @@ const DropFileInput = (props) => {
         )}
 
         {isSetResource && isVideo && (
-          <video controls class={dropFileInputStyles.video_preview} src={isVideo}></video>
+          <video
+            controls
+            class={dropFileInputStyles.video_preview}
+            src={isVideo}
+          ></video>
         )}
       </div>
     </>
