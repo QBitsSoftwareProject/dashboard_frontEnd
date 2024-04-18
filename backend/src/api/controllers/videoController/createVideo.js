@@ -5,6 +5,7 @@ exports.createVideo = async (req, res) => {
   try {
     
     const { title, duration, tags, ifWatch, watchCount,downloadURL } = req.body;
+    
     const newVideo = new video({
       title,
       duration,
