@@ -1,9 +1,19 @@
 import React from "react";
 import styles from "../pages/login.module.css";
-import { Checkbox, Grid, TextField } from "@mui/material";
+import { Alert, Checkbox, Grid, TextField } from "@mui/material";
+import { useState } from "react";
 
-export default function login() {
+export default function Login() {
+
+  const [adminEmail, setAdminEmail] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
+
+  const logIn = () => {
+    alert("admin email is " + adminEmail + " and admin password is " + adminPassword);
+  };
+
   return (
+
     <div className={styles.loginContainer}>
       <div className={styles.blobContainer}>
         <svg viewBox="0 0 150 80" xmlns="http://www.w3.org/2000/svg">
@@ -22,28 +32,43 @@ export default function login() {
           <Grid item xs={9}>
             <div className={styles.detailBox2}>
               <h2>Login to the Admin Dashboard</h2>
-              <TextField id="outlined-basic" label="email" variant="outlined" />
+              <TextField
+                id="adminEmail"
+                label="email"
+                variant="outlined"
+                onChange={(event) => {
+                  setAdminEmail(event.target.value);
+                }}
+              />
               <br />
               <TextField
-                id="outlined-basic"
+                id="adminPassword"
                 label="password"
                 variant="outlined"
                 type="password"
+                onChange={(event) => {
+                  setAdminPassword(event.target.value);
+                }}
               />
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <h5 style={{ color: "#085BA7" }}>
                   <Checkbox defaultChecked />
                   Remember me
                 </h5>
-                <h5 style={{ color: "#0082A8" ,cursor:"pointer"}}>Forgot Password?</h5>
+                <h5 style={{ color: "#0082A8", cursor: "pointer" }}>
+                  Forgot Password?
+                </h5>
               </div>
               <div className={styles.loginBtnContainer}>
-                <button className={styles.loginBtn}>Login</button>
+                <button className={styles.loginBtn} onClick={logIn}>
+                  Login
+                </button>
               </div>
             </div>
           </Grid>
         </Grid>
       </div>
     </div>
+    
   );
 }
