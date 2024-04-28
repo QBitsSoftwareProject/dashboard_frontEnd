@@ -27,16 +27,22 @@ import axios from "axios";
 const ResourceManagement = () => {
   const [isCancel, setIsCancel] = useState(false);
 
+  //resource features
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState("");
   const [category, setCategory] = useState("");
   const [file, setFile] = useState(null);
 
-  //video features
   const [duration, setDuration] = useState("3.15"); // State to store video duration
+  const [downloadURL, setdownloadURL] = useState("url1");
+
+  //video features
   const [ifWatch, setIfWatch] = useState(false);
   const [watchCount, setWatchCount] = useState(0);
-  const [downloadURL, setdownloadURL] = useState("url1");
+
+  //audio features
+  const [ifListen, setIfListen] = useState(false);
+  const [listenCount, setistenCount] = useState(0);
 
   console.log(isCancel);
 
@@ -102,6 +108,90 @@ const ResourceManagement = () => {
             downloadURL,
           };
 
+          const videoRef = ref(storage, `videos/${file.name + v4()}`);
+
+          //video upload
+          uploadBytes(videoRef, file)
+            .then(async () => {
+              console.log(videoResource);
+              const Swal = require("sweetalert2");
+              await axios
+                .post(
+                  "http://localhost:3000/api/v1/resources/video",
+                  videoResource
+                )
+                .then((response) => {
+                  // alert("Video resource uploaded successfully: " + response.data);
+                  Swal.fire({
+                    position: "top-center",
+                    icon: "success",
+                    title: "Video upload successful , Check Resources",
+                    showConfirmButton: false,
+                    timer: 1800,
+                  });
+                  // console.log("Video resource uploaded successfully:", response.data);
+                })
+                .catch((error) => {
+                  // Handle error
+                  Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Error uploading video resource",
+                  });
+                  // console.error("Error uploading resource:", error);
+                });
+              setTimeout(resetForm, 2000);
+            })
+            .catch(() => {});
+        }
+      } else if (file.type.startsWith("audio")) {
+        if (category === "audio") {
+          const audioResource = {
+            title,
+            duration,
+            tags,
+            ifListen,
+            listenCount,
+            downloadURL,
+          };
+
+          const audioRef = ref(storage, `audios/${file.name + v4()}`);
+
+          //audio upload
+          uploadBytes(audioRef, file)
+            .then(async () => {
+              const Swal = require("sweetalert2");
+              await axios
+                .post("/api/v1/resources/audio", audioResource)
+                .then((response) => {
+                  // Handle success
+                  Swal.fire({
+                    position: "top-center",
+                    icon: "success",
+                    title: "Audio upload successful , Check Resources",
+                    showConfirmButton: false,
+                    timer: 1800,
+                  });
+                  resetForm();
+                })
+                .catch((error) => {
+                  // Handle error
+                  Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Error uploading audio resource",
+                  });
+                });
+              setTimeout(resetForm, 2000);
+            })
+            .catch(() => {});
+        }
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please select a file to upload",
+        });
           const videoRef = ref(storage, `videos/${file.name + v4()}`);
 
           //video upload

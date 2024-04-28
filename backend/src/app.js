@@ -17,6 +17,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 //routes
+
 app.use("/api/v1/resources/video", videoRouter); //video-routes
 app.use("/api/v1/resources/audio", audioRouter); //audio-routes
 app.use("/api/v1/resources/article", articleRouter); //article-routes
