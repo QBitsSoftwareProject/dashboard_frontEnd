@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { redirect } from "react-router-dom";
 
-import Swal from "sweetalert2/dist/sweetalert2";
+// import Swal from "sweetalert2/dist/sweetalert2";
 
 import axios from "axios";
 
@@ -17,18 +17,20 @@ export default function Login() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const logIn = async () => {
-    await axios
-      .post("http://localhost:3000/api/v1/admin/login", {
-        email: adminEmail,
-        password: adminPassword,
-      })
-      .then((response) => {
-        setIsLoggedIn(true);
-        alert(`Admin found , detaills:${JSON.stringify(response.data)}`);
-      })
-      .catch((err) => {
-        alert("admin not found");
-      });
+    if ((adminEmail !== "") | (adminPassword !== "")) {
+      await axios
+        .post("http://localhost:3000/api/v1/admin/login", {
+          email: adminEmail,
+          password: adminPassword,
+        })
+        .then((response) => {
+          setIsLoggedIn(true);
+          alert(`Admin found , detaills:${JSON.stringify(response.data)}`);
+        })
+        .catch((err) => {
+          alert("admin not found");
+        });
+    }
   };
 
   if (isLoggedIn) {
@@ -61,6 +63,12 @@ export default function Login() {
                 onChange={(event) => {
                   setAdminEmail(event.target.value);
                 }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    logIn();
+                  }
+                }}
+                required
               />
               <br />
               <TextField
@@ -71,6 +79,12 @@ export default function Login() {
                 onChange={(event) => {
                   setAdminPassword(event.target.value);
                 }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    logIn();
+                  }
+                }}
+                required
               />
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <h5 style={{ color: "#085BA7" }}>
@@ -81,7 +95,13 @@ export default function Login() {
                   Forgot Password?
                 </h5>
               </div>
-              <div className={styles.loginBtnContainer}>
+              <div
+                className={styles.loginBtnContainer}
+                style={{
+                  display:
+                    adminEmail !== "" && adminPassword !== "" ? "block" : "none",
+                }}
+              >
                 <button className={styles.loginBtn} onClick={logIn}>
                   Login
                 </button>
