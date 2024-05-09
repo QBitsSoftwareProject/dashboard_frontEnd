@@ -1,15 +1,21 @@
 const admin = require("../../models/admin/admin");
 
 //get all admins
-exports.getAllAdmins = async (req, res) => {
+exports.getAdmin = async (req, res) => {
+    const { email, password } = req.body;
     try {
-        const allAdmins = await admin.find();
+        const Admin = await admin.findOne({ email });
 
-        if (!allAdmins) {
-            return res.status(404).json({ msg: "admins not found" });
+        if (!Admin) {
+            return res.status(404).json({ msg: "invalid email or password" });
+        } else {
+            if (password != Admin.password) {
+                return res.status(404).json({ msg: "invalid email or password" });
+            } else {
+                return res.status(201).json(Admin);
+            }
         }
 
-        return res.status(201).json(allAdmins);
     } catch (err) {
         return res.status(500).json({ errorMsg: "failed to fetch admins", error: err });
     }

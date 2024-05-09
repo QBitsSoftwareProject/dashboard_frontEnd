@@ -1,13 +1,13 @@
 const express = require("express");
 
 const {
-    getAllAdmins,
+    getAdmin,
     // getAdmin,
 } = require("../../controllers/adminController/getAdmin");
 
 const router = express.Router();
 
-router.get("/", getAllAdmins); // get all videos
+router.post("/", getAdmin); // get all videos
 
 // router.get("/:id", getAdmin); // get a video
 

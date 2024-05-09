@@ -3,17 +3,39 @@ import styles from "../pages/login.module.css";
 import { Alert, Checkbox, Grid, TextField } from "@mui/material";
 import { useState } from "react";
 
-export default function Login() {
+import { redirect } from "react-router-dom";
 
+import Swal from "sweetalert2/dist/sweetalert2";
+
+import axios from "axios";
+
+import Main from "./main";
+
+export default function Login() {
   const [adminEmail, setAdminEmail] = useState("");
   const [adminPassword, setAdminPassword] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const logIn = () => {
-    alert("admin email is " + adminEmail + " and admin password is " + adminPassword);
+  const logIn = async () => {
+    await axios
+      .post("http://localhost:3000/api/v1/admin/login", {
+        email: adminEmail,
+        password: adminPassword,
+      })
+      .then((response) => {
+        setIsLoggedIn(true);
+        alert(`Admin found , detaills:${JSON.stringify(response.data)}`);
+      })
+      .catch((err) => {
+        alert("admin not found");
+      });
   };
 
-  return (
+  if (isLoggedIn) {
+    return <redirect to={Main} />;
+  }
 
+  return (
     <div className={styles.loginContainer}>
       <div className={styles.blobContainer}>
         <svg viewBox="0 0 150 80" xmlns="http://www.w3.org/2000/svg">
@@ -69,6 +91,5 @@ export default function Login() {
         </Grid>
       </div>
     </div>
-    
   );
 }
