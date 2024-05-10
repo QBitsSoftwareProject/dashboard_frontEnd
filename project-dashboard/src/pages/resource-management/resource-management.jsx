@@ -10,6 +10,8 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+
+import cancelIcon from "../../assets/images/dragAndDrop/cancel.png";
 import DropFileInput from "../../components/ui/dropFileInput/DropFileInput";
 
 import { storage } from "firebase";
@@ -27,7 +29,9 @@ const ResourceManagement = () => {
 
   //resource features
   const [title, setTitle] = useState("");
-  const [tags, setTags] = useState("");
+  const [tag, setTag] = useState();
+  const [tags, setTags] = useState([]);
+
   const [category, setCategory] = useState("");
   const [file, setFile] = useState(null);
 
@@ -48,8 +52,8 @@ const ResourceManagement = () => {
     setTitle(event.target.value);
   };
 
-  const handleTagsChange = (event) => {
-    setTags(event.target.value);
+  const handleTagChange = (event) => {
+    setTag(event.target.value);
   };
 
   const handleCategoryChange = (event) => {
@@ -107,39 +111,27 @@ const ResourceManagement = () => {
 
           const videoRef = ref(storage, `videos/${file.name + v4()}`);
 
+          alert("video uploading started....");
+
           //video upload
           uploadBytes(videoRef, file)
             .then(async () => {
               console.log(videoResource);
-              const Swal = require("sweetalert2");
               await axios
-                .post(
-                  "http://localhost:3000/api/v1/resources/video",
-                  videoResource
-                )
-                .then((response) => {
-                  // alert("Video resource uploaded successfully: " + response.data);
-                  Swal.fire({
-                    position: "top-center",
-                    icon: "success",
-                    title: "Video upload successful , Check Resources",
-                    showConfirmButton: false,
-                    timer: 1800,
-                  });
-                  // console.log("Video resource uploaded successfully:", response.data);
+                .post("/api/v1/resources/video", videoResource)
+                .then(() => {
+                  alert(
+                    "Video resource uploaded successfully ,  Check Resources: "
+                  );
                 })
                 .catch((error) => {
-                  // Handle error
-                  Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Error uploading video resource",
-                  });
-                  // console.error("Error uploading resource:", error);
+                  alert("Video resource uploadeing failed: " + error);
                 });
               setTimeout(resetForm, 2000);
             })
-            .catch(() => {});
+            .catch(() => {
+              alert("error uploading video to firebase");
+            });
         }
       } else if (file.type.startsWith("audio")) {
         if (category === "audio") {
@@ -157,39 +149,24 @@ const ResourceManagement = () => {
           //audio upload
           uploadBytes(audioRef, file)
             .then(async () => {
-              const Swal = require("sweetalert2");
               await axios
                 .post("/api/v1/resources/audio", audioResource)
                 .then((response) => {
-                  // Handle success
-                  Swal.fire({
-                    position: "top-center",
-                    icon: "success",
-                    title: "Audio upload successful , Check Resources",
-                    showConfirmButton: false,
-                    timer: 1800,
-                  });
+                  alert(
+                    "Audio upload successful , Check Resources" + response.data
+                  );
                   resetForm();
                 })
                 .catch((error) => {
-                  // Handle error
-                  Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: "Error uploading audio resource",
-                  });
+                  alert("Audio upload failed: " + error);
                 });
               setTimeout(resetForm, 2000);
             })
             .catch(() => {});
         }
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Please select a file to upload",
-        });
       }
+    } else {
+      alert("Please select a file to upload");
     }
   };
 
@@ -244,13 +221,44 @@ const ResourceManagement = () => {
           </span>
         </Grid>
         <Grid item xs={10} style={{ paddingRight: "20px" }}>
-          <TextField
-            id="rTags"
-            label="Enter resource tags"
-            variant="outlined"
-            style={{ width: "100%" }}
-            onChange={handleTagsChange}
-          />
+          <div className={styles.tagsContainer}>
+            <div className={styles.tagDisplay}>
+              {tags.map((tag, index) => {
+                return (
+                  <div className={styles.tag} key={index}>
+                    {tag}
+                    <img
+                      src={cancelIcon}
+                      style={{ width: "15px", cursor: "pointer" }}
+                      onClick={() => {
+                        const updatedTags = tags.filter((item) => item !== tag);
+                        setTags(updatedTags);
+                      }}
+                    />
+                  </div>
+                );
+              })}
+              <div className={styles.tagInput}>
+                <input
+                  id="tgIn"
+                  className={styles.tgIn}
+                  placeholder="Enter resource tags"
+                  onChange={handleTagChange}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      if (
+                        !tags.includes(tag.toLowerCase()) &&
+                        tag.trim().length !== 0
+                      ) {
+                        setTags([...tags, tag.toLowerCase()]);
+                      }
+                      document.getElementById("tgIn").value = "";
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         </Grid>
         <Grid
           item
