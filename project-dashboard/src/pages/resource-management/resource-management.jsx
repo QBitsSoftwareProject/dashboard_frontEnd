@@ -14,9 +14,9 @@ import {
 import cancelIcon from "../../assets/images/dragAndDrop/cancel.png";
 import DropFileInput from "../../components/ui/dropFileInput/DropFileInput";
 
-import { storage } from "firebase";
+import { storage } from "../../config/firebase";
 
-import { ref,uploadBytes } from "firebase/storage";
+import { ref, uploadBytes } from "firebase/storage";
 
 import Swal from "sweetalert2/dist/sweetalert2";
 
