@@ -12,7 +12,10 @@ import {
 } from "@mui/material";
 
 import cancelIcon from "../../assets/images/dragAndDrop/cancel.png";
+
 import DropFileInput from "../../components/ui/dropFileInput/DropFileInput";
+
+import CreateArticle from "../../components/ui/createArticle/CreateArticle";
 
 import { storage } from "../../config/firebase";
 
@@ -26,6 +29,7 @@ import axios from "axios";
 
 const ResourceManagement = () => {
   const [isCancel, setIsCancel] = useState(false);
+  const [isArticle, setIsArticle] = useState(false);
 
   //resource features
   const [title, setTitle] = useState("");
@@ -46,7 +50,7 @@ const ResourceManagement = () => {
   const [ifListen, setIfListen] = useState(false);
   const [listenCount, setistenCount] = useState(0);
 
-  console.log(isCancel);
+  // console.log(isCancel);
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
@@ -58,6 +62,11 @@ const ResourceManagement = () => {
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
+    if (event.target.value === "pdf") {
+      setIsArticle(true);
+    } else {
+      setIsArticle(false);
+    }
   };
 
   const handleFileChange = (file) => {
@@ -129,8 +138,8 @@ const ResourceManagement = () => {
                 });
               setTimeout(resetForm, 2000);
             })
-            .catch(() => {
-              alert("error uploading video to firebase");
+            .catch((err) => {
+              alert("error uploading video to firebase, error: " + err.message);
             });
         }
       } else if (file.type.startsWith("audio")) {
@@ -247,7 +256,7 @@ const ResourceManagement = () => {
                   onKeyDown={(event) => {
                     if (event.key === "Enter") {
                       if (
-                        !tags.includes(tag.toLowerCase()) &&
+                        !tags.includes(tag.trim().toLowerCase()) &&
                         tag.trim().length !== 0
                       ) {
                         setTags([...tags, tag.toLowerCase()]);
@@ -294,10 +303,14 @@ const ResourceManagement = () => {
           </FormControl>
         </Grid>
         <Grid item xs={12} padding={5}>
-          <DropFileInput
-            isCancelled={isCancel}
-            onFileChange={handleFileChange}
-          />
+          {!isArticle ? (
+            <DropFileInput
+              isCancelled={isCancel}
+              onFileChange={handleFileChange}
+            />
+          ) : (
+            <CreateArticle />
+          )}
         </Grid>
       </Grid>
       <div
