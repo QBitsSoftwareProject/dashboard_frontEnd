@@ -30,6 +30,8 @@ import axios from "axios";
 const ResourceManagement = () => {
   const [isCancel, setIsCancel] = useState(false);
   const [isArticle, setIsArticle] = useState(false);
+  const [isAudio, setIsAudio] = useState(false);
+  const [isVideo, setIsVideo] = useState(false);
 
   //resource features
   const [title, setTitle] = useState("");
@@ -38,6 +40,7 @@ const ResourceManagement = () => {
 
   const [category, setCategory] = useState("");
   const [file, setFile] = useState(null);
+  const [fileType, setFileType] = useState("");
 
   const [duration, setDuration] = useState("3.15"); // State to store video duration
   const [downloadURL, setdownloadURL] = useState("url1");
@@ -62,10 +65,19 @@ const ResourceManagement = () => {
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
+    setIsArticle(false);
+    setIsAudio(false);
+    setIsVideo(false);
+    setFileType("");
     if (event.target.value === "pdf") {
       setIsArticle(true);
-    } else {
-      setIsArticle(false);
+      setFileType("article");
+    } else if (event.target.value === "video") {
+      setIsVideo(true);
+      setFileType("video");
+    } else if (event.target.value === "audio") {
+      setIsAudio(true);
+      setFileType("audio");
     }
   };
 
@@ -307,6 +319,7 @@ const ResourceManagement = () => {
             <DropFileInput
               isCancelled={isCancel}
               onFileChange={handleFileChange}
+              type={fileType}
             />
           ) : (
             <CreateArticle />

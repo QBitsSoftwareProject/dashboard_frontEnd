@@ -48,12 +48,39 @@ const DropFileInput = (props) => {
           <div>
             <div className={dropFileInputStyles.dragRegion}>
               <img src={uploadImg} style={{ width: "150px" }} />
-              <input
-                type="file"
-                value=""
-                id="fileInput"
-                onChange={onFileDrop}
-              />
+              {props.type === "article" ? (
+                <input
+                  type="file"
+                  value=""
+                  accept="application/pdf"
+                  id="fileInput"
+                  onChange={onFileDrop}
+                />
+              ) : props.type === "video" ? (
+                <input
+                  type="file"
+                  value=""
+                  accept="video/*"
+                  id="fileInput"
+                  onChange={onFileDrop}
+                />
+              ) : props.type === "audio" ? (
+                <input
+                  type="file"
+                  value=""
+                  accept="audio/*"
+                  id="fileInput"
+                  onChange={onFileDrop}
+                />
+              ) : (
+                <input
+                  type="file"
+                  value=""
+                  accept="image/*"
+                  id="fileInput"
+                  onChange={onFileDrop}
+                />
+              )}
             </div>
             <h5
               style={{
