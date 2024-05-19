@@ -12,7 +12,7 @@ import add from "../../../assets/images/article/add.png";
 import cross from "../../../assets/images/article/cross.png";
 import image from "../../../assets/images/article/image.png";
 
-import image2 from "../../../assets/images/article/defaultImgs/img1.jpg";
+// import image2 from "../../../assets/images/article/defaultImgs/img1.jpg";
 import DropFileInput from "../dropFileInput/DropFileInput";
 import Dash_btn3 from "../dash_btn/dash_btn3";
 
@@ -35,9 +35,7 @@ export default function CreateArticle() {
   const [file, setFile] = useState(null);
   //modal
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
-    setOpen(true);
-  };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -151,7 +149,7 @@ export default function CreateArticle() {
                                 }}
                               />
                             ) : null}
-                            <img src={image} onClick={handleOpen} />
+                            <img src={image} onClick={setOpen(true)} />
                             <img src={add} onClick={addParagraph} />
                           </div>
                         </div>
@@ -160,56 +158,71 @@ export default function CreateArticle() {
                           <img
                             id="paraImage"
                             className={styles.paraImage}
-                            src={image2}
+                            src={para.image.url}
                           />
-                          <h5>This is an image of a forest</h5>
+                          <h5 style={{ marginTop: "0px" }}>
+                            {para.image.about}
+                          </h5>
                         </div>
-                      </div>
-                      <div>
-                        <Modal
-                          open={open}
-                          onClose={handleClose}
-                          aria-labelledby="parent-modal-title"
-                          aria-describedby="parent-modal-description"
-                        >
-                          <Box sx={{ ...style, width: 600 }}>
-                            <h2
-                              id="parent-modal-title"
-                              style={{ textAlign: "center", color: "#2f79e9" }}
-                            >
-                              Describe your paragraph with an image
-                            </h2>
-                            <DropFileInput onFileChange={handleFileChange} />
-                            <div
-                              style={{
-                                display: "flex",
-                                height: "fit-content",
-                                alignItems: "center",
-                                gap:20,
-                                marginTop:"20px"
-                              }}
-                            >
-                              <TextField
-                                style={{ flex: 4, height: "100%" }}
-                                fullWidth
-                                id="outlined-basic"
-                                label="Say something about the image..."
-                                variant="outlined"
-                              />
-                              <Button
-                                variant="contained"
-                                style={{ flex: 1, height: "50px",fontWeight:"bold" }} 
-                              >
-                                SET IMAGE
-                              </Button>
-                            </div>
-                          </Box>
-                        </Modal>
                       </div>
                     </>
                   );
                 })}
               </div>
+              {/* modal */}
+              <div>
+                <Modal
+                  open={open}
+                  onClose={handleClose}
+                  aria-labelledby="parent-modal-title"
+                  aria-describedby="parent-modal-description"
+                >
+                  <Box sx={{ ...style, width: 600 }}>
+                    <h2
+                      id="parent-modal-title"
+                      style={{ textAlign: "center", color: "#2f79e9" }}
+                    >
+                      Describe your paragraph with an image
+                    </h2>
+                    <DropFileInput onFileChange={handleFileChange} />
+                    <div
+                      style={{
+                        display: "flex",
+                        height: "fit-content",
+                        alignItems: "center",
+                        gap: 20,
+                        marginTop: "20px",
+                      }}
+                    >
+                      <TextField
+                        style={{ flex: 4, height: "100%" }}
+                        fullWidth
+                        id="outlined-basic"
+                        label="Say something about the image..."
+                        variant="outlined"
+                        onChange={(e) => {
+                          para.image.about = e.target.value;
+                        }}
+                      />
+                      <Button
+                        variant="contained"
+                        style={{
+                          flex: 1,
+                          height: "50px",
+                          fontWeight: "bold",
+                        }}
+                        onClick={() => {
+                          para.image.url = URL.createObjectURL(file);
+                          handleClose();
+                        }}
+                      >
+                        SET IMAGE
+                      </Button>
+                    </div>
+                  </Box>
+                </Modal>
+              </div>
+              {/* modal */}
             </div>
           ) : null}
         </div>
