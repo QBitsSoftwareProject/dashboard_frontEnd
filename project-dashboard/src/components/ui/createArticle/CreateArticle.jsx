@@ -35,6 +35,7 @@ export default function CreateArticle() {
   const [file, setFile] = useState(null);
   //modal
   const [open, setOpen] = React.useState(false);
+  const [paraToModel, setParaToModel] = useState();
 
   const handleClose = () => {
     setOpen(false);
@@ -48,9 +49,8 @@ export default function CreateArticle() {
 
   const [paragraphs, setParagraphs] = useState([
     {
-      name: "paragraph 1",
-      paragraph:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      name: "",
+      paragraph: "",
       image: {
         about: "",
         url: "",
@@ -64,7 +64,10 @@ export default function CreateArticle() {
       {
         name: "paragraph " + (paragraphs.length + 1),
         paragraph: "",
-        image: "",
+        image: {
+          about: "",
+          url: "",
+        },
       },
     ]);
   }
@@ -127,7 +130,7 @@ export default function CreateArticle() {
                       <div className={styles.paraWithImage}>
                         {/* paragraph */}
                         <div className={styles.articlePara}>
-                          <span>{para.name} :</span>
+                          <span>Paragraph {index + 1} :</span>
                           <textarea
                             id="myTextarea"
                             className={styles.input_like}
@@ -138,7 +141,7 @@ export default function CreateArticle() {
                             {para.paragraph}
                           </textarea>
                           <div className={styles.paraOptions}>
-                            {index !== 0 ? (
+                            {index !== 0 || paragraphs.length > 1 ? (
                               <img
                                 src={cross}
                                 onClick={() => {
@@ -149,7 +152,13 @@ export default function CreateArticle() {
                                 }}
                               />
                             ) : null}
-                            <img src={image} onClick={setOpen(true)} />
+                            <img
+                              src={image}
+                              onClick={() => {
+                                setParaToModel(para);
+                                setOpen(true);
+                              }}
+                            />
                             <img src={add} onClick={addParagraph} />
                           </div>
                         </div>
@@ -201,7 +210,7 @@ export default function CreateArticle() {
                         label="Say something about the image..."
                         variant="outlined"
                         onChange={(e) => {
-                          para.image.about = e.target.value;
+                          paraToModel.image.about = e.target.value;
                         }}
                       />
                       <Button
@@ -212,7 +221,7 @@ export default function CreateArticle() {
                           fontWeight: "bold",
                         }}
                         onClick={() => {
-                          para.image.url = URL.createObjectURL(file);
+                          paraToModel.image.url = URL.createObjectURL(file);
                           handleClose();
                         }}
                       >
