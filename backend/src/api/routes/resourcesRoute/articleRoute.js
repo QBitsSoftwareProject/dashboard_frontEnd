@@ -1,9 +1,9 @@
 const express = require("express");
 
-const { getAllArticles,getAnArticle } = require("../../controllers/articleRouter/getAllArticles");
-const { createArticle } = require("../../controllers/articleRouter/createArticle");
-const { updateArticle } = require("../../controllers/articleRouter/updateArticle");
-const { deleteArticle } = require("../../controllers/articleRouter/deleteArticle");
+const { getAllArticles,getAnArticle } = require("../../controllers/articleController/getAllArticles");
+const { createArticle } = require("../../controllers/articleController/createArticle");
+const { updateArticle } = require("../../controllers/articleController/updateArticle");
+const { deleteArticle } = require("../../controllers/articleController/deleteArticle");
 
 const router = express.Router();
 

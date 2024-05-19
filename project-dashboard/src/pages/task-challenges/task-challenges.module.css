@@ -27,11 +27,11 @@
   position: absolute;
   top: 2px;
   left: 2px;
-  background: #27ae60;
-  background: linear-gradient(to bottom, #27ae60 0%, #145b32 100%);
+  background: #4a90bf;
+  background: linear-gradient(to bottom, #0997f6 0%, #188ad6 100%);
   opacity: 0;
   border-radius: 50px;
-  box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0, 255, 119, 0.5);
+  box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(74, 144, 191, 0.5);
 }
 .roundedOne label:hover::after {
   opacity: 0.3;
@@ -121,9 +121,9 @@
   background-color: white;
   margin-left: auto;
   margin-right: auto;
-  padding:20px;
+  padding: 20px;
   text-align: start;
   display: flex;
-  flex-direction:column;
-  gap:20;
+  flex-direction: column;
+  gap: 20;
 }

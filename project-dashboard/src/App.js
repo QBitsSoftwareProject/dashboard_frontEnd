@@ -23,7 +23,7 @@ const theme = createTheme({
 function App() {
   return (
     <div className="App">
-      <Main/>
+      <Main />
       {/* <Login/> */}
     </div>
   );

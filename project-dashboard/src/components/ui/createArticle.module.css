@@ -1,0 +1,173 @@
+.createArticleSection {
+  background-color: transparent;
+  width: 60%;
+  height: 30vh;
+  margin-left: auto;
+  margin-right: auto;
+  border-style: dashed;
+  border-width: 2px;
+  border-color: #2f79e9;
+  border-radius: 20px;
+  text-align: center;
+  padding-top: 40px;
+  padding-bottom: 65px;
+  position: relative;
+}
+
+.createArticleBtn {
+  background-color: #4990fb;
+  color: white;
+  font-weight: bold;
+  width: 150px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.5s ease;
+  z-index: 100;
+  position: relative;
+}
+
+.createArticleBtn:hover {
+  transform: scale(1.02);
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  font-weight: bolder;
+}
+
+/* overlay animation */
+
+/* The Overlay (background) */
+.overlay {
+  /* Height & width depends on how you want to reveal the overlay (see JS below) */
+  height: 100%;
+  width: 0;
+  position: fixed; /* Stay in place */
+  z-index: 200; /* Sit on top */
+  left: 0;
+  top: 0;
+  background-color: rgb(255, 255, 255); /* Black fallback color */
+  /* background-color: rgba(0, 0, 0, 0.9); */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+}
+
+/* Position the content inside the overlay */
+.overlay_content {
+  position: relative;
+  top: 25%; /* 25% from the top */
+  width: 100%; /* 100% width */
+  text-align: center; /* Centered text/links */
+  margin-top: 30px; /* 30px top margin to avoid conflict with the close button on smaller screens */
+}
+
+/* The navigation links inside the overlay */
+.overlay a {
+  padding: 8px;
+  text-decoration: none;
+  font-size: 36px;
+  color: #579ec8;
+  display: block; /* Display block instead of inline */
+  transition: 0.3s; /* Transition effects on hover (color) */
+}
+
+/* When you mouse over the navigation links, change their color */
+.overlay a:hover,
+.overlay a:focus {
+  color: #006eff;
+}
+
+/* Position the close button (top right corner) */
+.overlay .closebtn {
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 60px;
+}
+
+/* When the height of the screen is less than 450 pixels, change the font-size of the links and position the close button again, so they don't overlap */
+@media screen and (max-height: 450px) {
+  .overlay a {
+    font-size: 20px;
+  }
+  .overlay .closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+  }
+}
+
+.articleContent1 {
+  margin-top: -130px;
+  display: flex;
+  padding-left: 5%;
+  align-items: center;
+}
+
+.articleContent2 {
+  display: flex;
+  margin-top: 13px;
+  justify-content: space-between;
+  flex-direction: column;
+  padding-left: 5%;
+  height: 68vh;
+  overflow-y:scroll;
+  gap:20px;
+}
+
+.articlePara{
+  width:100%;
+  display: flex;
+  height: fit-content;
+}
+
+.articleInput1 {
+  height: 40px;
+  width: 500px;
+  outline: none;
+  /* border:solid #4990fb 1px; */
+  /* border-radius: 5px; */
+  color: #4990fb;
+  border: none;
+  margin-left: 10px;
+  font-size: 16px;
+  font-weight: lighter;
+  padding-left: 10px;
+}
+
+.input_like {
+  border: solid #4990fb 1px;
+  border-radius: 4px;
+  padding-left: 10px;
+  padding-top: 10px;
+  font-size: 14px;
+  height: 300px;
+  width: 85%;
+  box-sizing: border-box;
+  resize: none;
+  margin-left: 12px;
+  outline: none;
+  font-weight: lighter;
+}
+
+.paraOptions {
+  display: flex;
+  flex-direction: column;
+  gap:10px;
+  justify-content: flex-end;
+  padding-left:10px;
+}
+
+.paraOptions img{
+  width:35px;
+}
+
+.paraWithImage{
+
+}
+
+.paraImage{
+  width:250px;
+  border-radius: 20px;
+  margin-top:20px;
+}

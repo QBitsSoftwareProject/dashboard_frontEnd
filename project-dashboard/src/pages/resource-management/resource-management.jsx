@@ -10,38 +10,75 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+
+import cancelIcon from "../../assets/images/dragAndDrop/cancel.png";
+
 import DropFileInput from "../../components/ui/dropFileInput/DropFileInput";
 
-import Swal from "sweetalert2/dist/sweetalert2.js";
+import CreateArticle from "../../components/ui/createArticle/CreateArticle";
+
+import { storage } from "../../config/firebase";
+
+import { ref, uploadBytes } from "firebase/storage";
+
+import Swal from "sweetalert2/dist/sweetalert2";
+
+import { v4 } from "uuid";
 
 import axios from "axios";
 
 const ResourceManagement = () => {
   const [isCancel, setIsCancel] = useState(false);
+  const [isArticle, setIsArticle] = useState(false);
+  const [isAudio, setIsAudio] = useState(false);
+  const [isVideo, setIsVideo] = useState(false);
 
+  //resource features
   const [title, setTitle] = useState("");
-  const [tags, setTags] = useState("");
+  const [tag, setTag] = useState();
+  const [tags, setTags] = useState([]);
+
   const [category, setCategory] = useState("");
   const [file, setFile] = useState(null);
+  const [fileType, setFileType] = useState("");
 
-  //video features
   const [duration, setDuration] = useState("3.15"); // State to store video duration
-  const [ifWatch, setIfWatch] = useState(false);
-  const [watchCount, setWatchCount] = useState(0);
   const [downloadURL, setdownloadURL] = useState("url1");
 
-  console.log(isCancel);
+  //video features
+  const [ifWatch, setIfWatch] = useState(false);
+  const [watchCount, setWatchCount] = useState(0);
+
+  //audio features
+  const [ifListen, setIfListen] = useState(false);
+  const [listenCount, setistenCount] = useState(0);
+
+  // console.log(isCancel);
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
   };
 
-  const handleTagsChange = (event) => {
-    setTags(event.target.value);
+  const handleTagChange = (event) => {
+    setTag(event.target.value);
   };
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
+    setIsArticle(false);
+    setIsAudio(false);
+    setIsVideo(false);
+    setFileType("");
+    if (event.target.value === "pdf") {
+      setIsArticle(true);
+      setFileType("article");
+    } else if (event.target.value === "video") {
+      setIsVideo(true);
+      setFileType("video");
+    } else if (event.target.value === "audio") {
+      setIsAudio(true);
+      setFileType("audio");
+    }
   };
 
   const handleFileChange = (file) => {
@@ -81,74 +118,76 @@ const ResourceManagement = () => {
     };
 
     // { title, duration, tags, ifWatch, watchCount,downloadURL }
+    if (file != null) {
+      if (file.type.startsWith("video")) {
+        if (category === "video") {
+          const videoResource = {
+            title,
+            duration,
+            tags,
+            ifWatch,
+            watchCount,
+            downloadURL,
+          };
 
-    if (file.type.startsWith("video")) {
-      if (category == "video") {
-        const videoResource = {
-          title,
-          duration,
-          tags,
-          ifWatch,
-          watchCount,
-          downloadURL,
-        };
+          const videoRef = ref(storage, `videos/${file.name + v4()}`);
 
-        console.log(videoResource);
-        const Swal = require("sweetalert2");
-        await axios
-          .post("http://localhost:3000/api/v1/resources/video", videoResource)
-          .then((response) => {
-            // Handle success
-            // alert("Video resource uploaded successfully: " + response.data);
+          alert("video uploading started....");
 
-            // or via CommonJS
-
-            Swal.fire({
-              position: "top-center",
-              icon: "success",
-              title: "Video upload successful , Check Resources",
-              showConfirmButton: false,
-              timer: 1800,
+          //video upload
+          uploadBytes(videoRef, file)
+            .then(async () => {
+              console.log(videoResource);
+              await axios
+                .post("/api/v1/resources/video", videoResource)
+                .then(() => {
+                  alert(
+                    "Video resource uploaded successfully ,  Check Resources: "
+                  );
+                })
+                .catch((error) => {
+                  alert("Video resource uploadeing failed: " + error);
+                });
+              setTimeout(resetForm, 2000);
+            })
+            .catch((err) => {
+              alert("error uploading video to firebase, error: " + err.message);
             });
-            // console.log("Video resource uploaded successfully:", response.data);
-          })
-          .catch((error) => {
-            // Handle error
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Error uploading video resource",
-            });
-            // console.error("Error uploading resource:", error);
-          });
-        setTimeout(resetForm, 2000);
+        }
+      } else if (file.type.startsWith("audio")) {
+        if (category === "audio") {
+          const audioResource = {
+            title,
+            duration,
+            tags,
+            ifListen,
+            listenCount,
+            downloadURL,
+          };
+
+          const audioRef = ref(storage, `audios/${file.name + v4()}`);
+
+          //audio upload
+          uploadBytes(audioRef, file)
+            .then(async () => {
+              await axios
+                .post("/api/v1/resources/audio", audioResource)
+                .then((response) => {
+                  alert(
+                    "Audio upload successful , Check Resources" + response.data
+                  );
+                  resetForm();
+                })
+                .catch((error) => {
+                  alert("Audio upload failed: " + error);
+                });
+              setTimeout(resetForm, 2000);
+            })
+            .catch(() => {});
+        }
       }
-    } else if (file.type.startsWith("audio")) {
-      if (category == "audio") {
-        const Swal = require("sweetalert2");
-        axios
-          .post("/api/v1/resources/audio", resourceInfo)
-          .then((response) => {
-            // Handle success
-            Swal.fire({
-              position: "top-center",
-              icon: "success",
-              title: "Audio upload successful , Check Resources",
-              showConfirmButton: false,
-              timer: 1800,
-            });
-            resetForm();
-            resetForm();
-          })
-          .catch((error) => {
-            // Handle error
-            Swal.fire({
-              icon: "error",
-              title: "Oops...",
-              text: "Error uploading video resource",
-            });
-          });
-      }
+    } else {
+      alert("Please select a file to upload");
     }
   };
 
@@ -203,13 +242,44 @@ const ResourceManagement = () => {
           </span>
         </Grid>
         <Grid item xs={10} style={{ paddingRight: "20px" }}>
-          <TextField
-            id="rTags"
-            label="Enter resource tags"
-            variant="outlined"
-            style={{ width: "100%" }}
-            onChange={handleTagsChange}
-          />
+          <div className={styles.tagsContainer}>
+            <div className={styles.tagDisplay}>
+              {tags.map((tag, index) => {
+                return (
+                  <div className={styles.tag} key={index}>
+                    {tag}
+                    <img
+                      src={cancelIcon}
+                      style={{ width: "15px", cursor: "pointer" }}
+                      onClick={() => {
+                        const updatedTags = tags.filter((item) => item !== tag);
+                        setTags(updatedTags);
+                      }}
+                    />
+                  </div>
+                );
+              })}
+              <div className={styles.tagInput}>
+                <input
+                  id="tgIn"
+                  className={styles.tgIn}
+                  placeholder="Enter resource tags"
+                  onChange={handleTagChange}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      if (
+                        !tags.includes(tag.trim().toLowerCase()) &&
+                        tag.trim().length !== 0
+                      ) {
+                        setTags([...tags, tag.toLowerCase()]);
+                      }
+                      document.getElementById("tgIn").value = "";
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         </Grid>
         <Grid
           item
@@ -245,10 +315,15 @@ const ResourceManagement = () => {
           </FormControl>
         </Grid>
         <Grid item xs={12} padding={5}>
-          <DropFileInput
-            isCancelled={isCancel}
-            onFileChange={handleFileChange}
-          />
+          {!isArticle ? (
+            <DropFileInput
+              isCancelled={isCancel}
+              onFileChange={handleFileChange}
+              type={fileType}
+            />
+          ) : (
+            <CreateArticle />
+          )}
         </Grid>
       </Grid>
       <div
