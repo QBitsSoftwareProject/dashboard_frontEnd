@@ -10,12 +10,8 @@ import ViewAnalytics from "./analytics/view-analytics.jsx";
 import Appointments from "./appointments/appointments.jsx";
 import CommunityManagement from "./community-management/community-management.jsx";
 import ControlAccess from "./control-access/control-access.jsx";
-import TaskChallenges from "./task-challenges/task-challenges.jsx";
+import TaskGoals from "./task-Goals/task-Goals.jsx";
 // sections
-
-// notifications
-
-// notifications
 
 export default function Main() {
   const [pageContent, setPageContent] = useState("View-Analytics");
@@ -35,15 +31,17 @@ export default function Main() {
             <UpperNavBar />
           </div>
           <div class={styles.content}>
-            {pageContent === "View-Analytics" && <ViewAnalytics/>}
+            {pageContent === "View-Analytics" && <ViewAnalytics />}
             {pageContent === "Manage-Resources" && <ResourceManagement />}
-            {pageContent === "Task-Challenges" && <TaskChallenges />}
+            {pageContent === "Task-Goals" && <TaskGoals />}
             {pageContent === "Community-Management" && <CommunityManagement />}
             {pageContent === "User-control-access" && <ControlAccess />}
             {pageContent === "Appointments" && <Appointments />}
           </div>
         </Grid>
       </Grid>
+
     </div>
   );
 }
+

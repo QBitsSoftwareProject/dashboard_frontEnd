@@ -15,14 +15,14 @@ export default function SideNavbar({ onPageChange }) {
       loc: require("../../../assets/images/sideBar/view-analytics(s).png"),
     },
     img2: {
-      name: "Task and Challenges",
+      name: "Task and Goals",
       status: "ns",
-      loc: require("../../../assets/images/sideBar/task and challenges(ns).png"),
+      loc: require("../../../assets/images/sideBar/task and Goals(ns).png"),
     },
     img2_2: {
-      name: "Task and Challenges",
+      name: "Task and Goals",
       status: "s",
-      loc: require("../../../assets/images/sideBar/task and challenges(s).png"),
+      loc: require("../../../assets/images/sideBar/task and Goals(s).png"),
     },
     img3: {
       name: "Manage Resources",
@@ -80,7 +80,8 @@ export default function SideNavbar({ onPageChange }) {
       <div className={styles.secBtns}>
         <div
           className={
-            pageContent === "View-Analytics" || onPageChange === "View-Analytics"
+            pageContent === "View-Analytics" ||
+            onPageChange === "View-Analytics"
               ? selectedBtn
               : not_selectedBtn
           }
@@ -102,25 +103,24 @@ export default function SideNavbar({ onPageChange }) {
 
         <div
           className={
-            pageContent === "Task-Challenges" ||
-            onPageChange === "Task-Challenges"
+            pageContent === "Task-Goals" || onPageChange === "Task-Goals"
               ? selectedBtn
               : not_selectedBtn
           }
           onClick={() => {
-            setpageContent("Task-Challenges");
-            onPageChange("Task-Challenges");
+            setpageContent("Task-Goals");
+            onPageChange("Task-Goals");
           }}
         >
           <img
             src={
-              pageContent === "Task-Challenges"
+              pageContent === "Task-Goals"
                 ? imgDetails.img3_3.loc
                 : imgDetails.img3.loc
             }
             style={{ width: 20, height: "auto", margin: 10 }}
           />
-          <span>Task and Challenges</span>
+          <span>Task and Goals</span>
         </div>
         <div
           className={

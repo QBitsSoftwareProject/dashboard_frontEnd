@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "../task-challenges/task-challenges.module.css";
+import styles from "./task-Goals.module.css";
 import { Checkbox, Grid, TextField, Tooltip } from "@mui/material";
 
 // dashboard buttons
@@ -22,7 +22,8 @@ function createData(name, setDate, lastUpdate, actions) {
   return { name, setDate, lastUpdate, actions };
 }
 
-function TaskChallenges() {
+function TaskGoals() {
+
   const openNewTask = () => {
     document.getElementById("newTask").style.width = "100%";
   };
@@ -65,6 +66,17 @@ function TaskChallenges() {
     </div>
   );
 
+  const [tasks, setTasks] = useState([
+    {
+      name: "Task 001",
+      description:
+        "Eu aliqua laboris pariatur qui non consequat in officia et qui. Ullamco excepteur ipsum laboris cupidatat consectetur sit amet dolore sit aliquip. Qui voluptate sit ut culpa amet culpa anim. Laborum consectetur commodo non ipsum tempor ea qui nostrud est. Ea proident labore aliquip ad ad dolor eu ad ea nostrud amet labore dolore quis. Dolore mollit cillum enim est. Occaecat minim minim veniam incididunt occaecat deserunt irure commodo eu labore excepteur est enim.",
+      setDate: "02/02/2024",
+      lastUpdate: "02/03/2024",
+      actions,
+    },
+  ]);
+
   const checkBox = <Checkbox defaultChecked color="success" />;
 
   const rows = [
@@ -83,10 +95,10 @@ function TaskChallenges() {
     createData("Task 013", "01/01/2024", "01/02/2024", actions),
   ];
 
-  const [isChallengesChecked, setIsChallengesChecked] = useState(false); // Initially checked
+  const [isGoalsChecked, setIsGoalsChecked] = useState(false);
 
-  const handleChallengesCheckboxChange = () => {
-    setIsChallengesChecked(!isChallengesChecked); // Toggle checkbox state
+  const handleGoalsCheckboxChange = () => {
+    setIsGoalsChecked(!isGoalsChecked); // Toggle checkbox state
     setIsTasksChecked(!isTasksChecked); // Toggle checkbox state
   };
 
@@ -94,7 +106,7 @@ function TaskChallenges() {
 
   const handleTasksCheckboxChange = () => {
     setIsTasksChecked(!isTasksChecked); // Toggle checkbox state
-    setIsChallengesChecked(!isChallengesChecked); // Toggle checkbox state
+    setIsGoalsChecked(!isGoalsChecked); // Toggle checkbox state
   };
 
   return (
@@ -120,15 +132,15 @@ function TaskChallenges() {
               <div className={styles.roundedOne}>
                 <input
                   type="checkbox"
-                  id="Challenges"
+                  id="Goals"
                   name="check"
-                  checked={isChallengesChecked}
-                  onChange={handleChallengesCheckboxChange}
+                  checked={isGoalsChecked}
+                  onChange={handleGoalsCheckboxChange}
                 />
-                <label for="Challenges"></label>
+                <label for="Goals"></label>
               </div>
             </section>
-            <h6>CHALLENGES</h6>
+            <h6>Goals</h6>
           </div>
           <div
             style={{
@@ -167,7 +179,7 @@ function TaskChallenges() {
           }}
         >
           <Dash_btn1 btn_text="CREATE NEW TASK" callFunction={openNewTask} />
-          <Dash_btn1 btn_text="CREATE NEW CHALLENGE" />
+          <Dash_btn1 btn_text="CREATE NEW GOAL" />
           <Dash_btn1 btn_text="DELETE SELECTED" />
         </Grid>
       </Grid>
@@ -213,7 +225,7 @@ function TaskChallenges() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
+                {tasks.map((row) => (
                   <TableRow
                     key={row.name}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -314,7 +326,7 @@ function TaskChallenges() {
                     gap: 10,
                   }}
                 >
-                  <h5 style={{width:"130px"}}>Task name :</h5>
+                  <h5 style={{ width: "130px" }}>Task name :</h5>
                   <span>TASK 001</span>
                 </div>
                 <br />
@@ -326,7 +338,7 @@ function TaskChallenges() {
                     gap: 10,
                   }}
                 >
-                  <h5 style={{width:"550px"}}>Task description :</h5>
+                  <h5 style={{ width: "550px" }}>Task description :</h5>
                   <span>
                     "Find a quiet, comfortable spot. Close your eyes and take
                     deep breaths. Focus on your breath, letting go of any
@@ -347,4 +359,4 @@ function TaskChallenges() {
   );
 }
 
-export default TaskChallenges;
+export default TaskGoals;
