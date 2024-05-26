@@ -72,6 +72,13 @@ export default function CreateArticle() {
     ]);
   }
 
+  const updateParagraph = (index, newValue) => {
+    const updatedParagraphs = paragraphs.map((para, i) =>
+      i === index ? { ...para, paragraph: newValue } : para
+    );
+    setParagraphs(updatedParagraphs);
+  };
+
   /* Open */
   const openNav = () => {
     document.getElementById("myNav").style.width = "100%";
@@ -126,55 +133,50 @@ export default function CreateArticle() {
               <div className={styles.articleContent2}>
                 {paragraphs.map((para, index) => {
                   return (
-                    <>
-                      <div className={styles.paraWithImage}>
-                        {/* paragraph */}
-                        <div className={styles.articlePara}>
-                          <span>Paragraph {index + 1} :</span>
-                          <textarea
-                            id="myTextarea"
-                            className={styles.input_like}
-                            onChange={(event) => {
-                              para.paragraph = event.target.value;
-                            }}
-                          >
-                            {para.paragraph}
-                          </textarea>
-                          <div className={styles.paraOptions}>
-                            {index !== 0 || paragraphs.length > 1 ? (
-                              <img
-                                src={cross}
-                                onClick={() => {
-                                  const updatedParagraphs = paragraphs.filter(
-                                    (paragraph) => paragraph !== para
-                                  );
-                                  setParagraphs(updatedParagraphs);
-                                }}
-                              />
-                            ) : null}
+                    <div key={index} className={styles.paraWithImage}>
+                      {/* paragraph */}
+                      <div className={styles.articlePara}>
+                        <span>Paragraph {index + 1} :</span>
+                        <textarea
+                          id="myTextarea"
+                          className={styles.input_like}
+                          value={para.paragraph}
+                          onChange={(event) =>
+                            updateParagraph(index, event.target.value)
+                          }
+                        />
+                        <div className={styles.paraOptions}>
+                          {index !== 0 || paragraphs.length > 1 ? (
                             <img
-                              src={image}
+                              src={cross}
                               onClick={() => {
-                                setParaToModel(para);
-                                setOpen(true);
+                                const updatedParagraphs = paragraphs.filter(
+                                  (paragraph, i) => i !== index
+                                );
+                                setParagraphs(updatedParagraphs);
                               }}
                             />
-                            <img src={add} onClick={addParagraph} />
-                          </div>
-                        </div>
-                        {/* image */}
-                        <div>
+                          ) : null}
                           <img
-                            id="paraImage"
-                            className={styles.paraImage}
-                            src={para.image.url}
+                            src={image}
+                            onClick={() => {
+                              setParaToModel(para);
+                              setOpen(true);
+                            }}
                           />
-                          <h5 style={{ marginTop: "0px" }}>
-                            {para.image.about}
-                          </h5>
+                          <img src={add} onClick={addParagraph} />
                         </div>
                       </div>
-                    </>
+                      {/* image */}
+                      <div>
+                        <img
+                          id="paraImage"
+                          className={styles.paraImage}
+                          src={para.image.url}
+                        />
+                        <h5 style={{ marginTop: "0px" }}>{para.image.about}</h5>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
@@ -211,6 +213,12 @@ export default function CreateArticle() {
                         variant="outlined"
                         onChange={(e) => {
                           paraToModel.image.about = e.target.value;
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            paraToModel.image.url = URL.createObjectURL(file);
+                            handleClose();
+                          }
                         }}
                       />
                       <Button
