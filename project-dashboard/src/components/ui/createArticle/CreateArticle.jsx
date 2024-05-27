@@ -31,7 +31,7 @@ const style = {
   pb: 3,
 };
 
-export default function CreateArticle() {
+export default function CreateArticle({ onArticleSubmit }) {
   const [file, setFile] = useState(null);
   //modal
   const [open, setOpen] = React.useState(false);
@@ -47,9 +47,11 @@ export default function CreateArticle() {
 
   const [showContent, setShowContent] = useState(true);
 
+  const [articleTitle, setArticleTitle] = useState("");
+
   const [paragraphs, setParagraphs] = useState([
     {
-      name: "",
+      name: "paragraph 1",
       paragraph: "",
       image: {
         about: "",
@@ -57,6 +59,8 @@ export default function CreateArticle() {
       },
     },
   ]);
+
+  const [article, setArticle] = useState({});
 
   function addParagraph() {
     setParagraphs([
@@ -71,6 +75,17 @@ export default function CreateArticle() {
       },
     ]);
   }
+
+  const submitArticle = () => {
+    setArticle({ articleTitle, paragraphs });
+    if (onArticleSubmit) {
+      onArticleSubmit(article);
+    }
+  };
+
+  const emptyArticle = () => {
+    closeNav();
+  };
 
   const updateParagraph = (index, newValue) => {
     const updatedParagraphs = paragraphs.map((para, i) =>
@@ -96,89 +111,141 @@ export default function CreateArticle() {
       <div className={styles.createArticleSection}>
         <div>
           <img src={createArticle} />
-          <h5
-            style={{
-              color: "#2F79E9",
-              fontWeight: "bolder",
-              fontSize: "15px",
-            }}
-          >
-            Create Custom Article
-          </h5>
 
-          <button className={styles.createArticleBtn} onClick={openNav}>
-            CREATE
-          </button>
+          {article == null ? (
+            <>
+              <h5
+                style={{
+                  color: "#2F79E9",
+                  fontWeight: "bolder",
+                  fontSize: "15px",
+                }}
+              >
+                Create Custom Article
+              </h5>
+              <button className={styles.createArticleBtn} onClick={openNav}>
+                CREATE
+              </button>
+            </>
+          ) : (
+            <>
+              <h5
+                style={{
+                  color: "#2F79E9",
+                  fontWeight: "bolder",
+                  fontSize: "15px",
+                }}
+              >
+                Edit Your Article
+              </h5>
+              <button className={styles.createArticleBtn} onClick={openNav}>
+                UPDATE
+              </button>
+            </>
+          )}
         </div>
 
         <div id="myNav" className={styles.overlay}>
-          <a
+          {/* <a
             href="javascript:void(0)"
             className={styles.closebtn}
             onClick={closeNav}
           >
             &times;
-          </a>
-
+          </a> */}
           {showContent ? (
             <div className={styles.overlay_content}>
               <div className={styles.articleContent1}>
                 <span>Article Title :</span>
                 <input
+                  id="articleTitle"
                   className={styles.articleInput1}
                   placeholder="Enter Article Title"
+                  onChange={(event) => {
+                    setArticleTitle(event.target.value);
+                  }}
                 />
                 <br />
               </div>
               <div className={styles.articleContent2}>
                 {paragraphs.map((para, index) => {
                   return (
-                    <div key={index} className={styles.paraWithImage}>
-                      {/* paragraph */}
-                      <div className={styles.articlePara}>
-                        <span>Paragraph {index + 1} :</span>
-                        <textarea
-                          id="myTextarea"
-                          className={styles.input_like}
-                          value={para.paragraph}
-                          onChange={(event) =>
-                            updateParagraph(index, event.target.value)
-                          }
-                        />
-                        <div className={styles.paraOptions}>
-                          {index !== 0 || paragraphs.length > 1 ? (
+                    <>
+                      <div key={index} className={styles.paraWithImage}>
+                        {/* paragraph */}
+                        <div className={styles.articlePara}>
+                          <span>Paragraph {index + 1} :</span>
+                          <textarea
+                            id="myTextarea"
+                            className={styles.input_like}
+                            value={para.paragraph}
+                            onChange={(event) =>
+                              updateParagraph(index, event.target.value)
+                            }
+                          />
+                          <div className={styles.paraOptions}>
+                            {index !== 0 || paragraphs.length > 1 ? (
+                              <img
+                                src={cross}
+                                onClick={() => {
+                                  const updatedParagraphs = paragraphs.filter(
+                                    (paragraph, i) => i !== index
+                                  );
+                                  setParagraphs(updatedParagraphs);
+                                }}
+                              />
+                            ) : null}
                             <img
-                              src={cross}
+                              src={image}
                               onClick={() => {
-                                const updatedParagraphs = paragraphs.filter(
-                                  (paragraph, i) => i !== index
-                                );
-                                setParagraphs(updatedParagraphs);
+                                setParaToModel(para);
+                                setOpen(true);
                               }}
                             />
-                          ) : null}
+                            <img src={add} onClick={addParagraph} />
+                          </div>
+                        </div>
+                        {/* image */}
+                        <div>
                           <img
-                            src={image}
-                            onClick={() => {
-                              setParaToModel(para);
-                              setOpen(true);
-                            }}
+                            id="paraImage"
+                            className={styles.paraImage}
+                            src={para.image.url}
                           />
-                          <img src={add} onClick={addParagraph} />
+                          <h5 style={{ marginTop: "0px" }}>
+                            {para.image.about}
+                          </h5>
                         </div>
                       </div>
-                      {/* image */}
-                      <div>
-                        <img
-                          id="paraImage"
-                          className={styles.paraImage}
-                          src={para.image.url}
-                        />
-                        <h5 style={{ marginTop: "0px" }}>{para.image.about}</h5>
-                      </div>
-                    </div>
+                    </>
                   );
                 })}
+              </div>
+              <div className={styles.createArticleBtnSection}>
+                <Button
+                  variant="contained"
+                  style={{
+                    flex: 1,
+                    height: "50px",
+                    fontWeight: "bold",
+                  }}
+                  onClick={submitArticle}
+                >
+                  CREATE ARTICLE
+                </Button>
+                <Button
+                  variant="outlined"
+                  style={{
+                    flex: 1,
+                    height: "50px",
+                    fontWeight: "bold",
+                    marginLeft: 20,
+                  }}
+                  color="warning"
+                  onClick={emptyArticle}
+                >
+                  CLOSE ARTICLE
+                </Button>
               </div>
               {/* modal */}
               <div>

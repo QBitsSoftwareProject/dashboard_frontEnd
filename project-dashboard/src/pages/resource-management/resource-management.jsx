@@ -41,6 +41,7 @@ const ResourceManagement = () => {
   const [category, setCategory] = useState("");
   const [file, setFile] = useState(null);
   const [fileType, setFileType] = useState("");
+  const [article, setArticle] = useState({});
 
   const [duration, setDuration] = useState("3.15"); // State to store video duration
   const [downloadURL, setdownloadURL] = useState("url1");
@@ -109,6 +110,13 @@ const ResourceManagement = () => {
     window.location.reload();
   };
 
+  //
+  const addArticleToResource = (articleData) => {
+    console.log("Article Data:", articleData);
+    setArticle(articleData);
+  };
+  //
+
   const uploadResource = async () => {
     const resourceInfo = {
       title,
@@ -118,76 +126,98 @@ const ResourceManagement = () => {
     };
 
     // { title, duration, tags, ifWatch, watchCount,downloadURL }
-    if (file != null) {
-      if (file.type.startsWith("video")) {
-        if (category === "video") {
-          const videoResource = {
-            title,
-            duration,
-            tags,
-            ifWatch,
-            watchCount,
-            downloadURL,
+    if (file != null || isArticle) {
+      if (isArticle) {
+        if (article != null) {
+          const uploadArticle = async () => {
+            await axios
+              .post("/api/v1/resources/article", article)
+              .then(() => {
+                alert("Article uploaded successfully ,  Check Resources: ");
+              })
+              .catch((error) => {
+                alert("failed to upload article, error:" + error);
+              });
           };
 
-          const videoRef = ref(storage, `videos/${file.name + v4()}`);
-
-          alert("video uploading started....");
-
-          //video upload
-          uploadBytes(videoRef, file)
-            .then(async () => {
-              console.log(videoResource);
-              await axios
-                .post("/api/v1/resources/video", videoResource)
-                .then(() => {
-                  alert(
-                    "Video resource uploaded successfully ,  Check Resources: "
-                  );
-                })
-                .catch((error) => {
-                  alert("Video resource uploadeing failed: " + error);
-                });
-              setTimeout(resetForm, 2000);
-            })
-            .catch((err) => {
-              alert("error uploading video to firebase, error: " + err.message);
-            });
+          uploadArticle();
+        } else {
+          alert("Please Create Your Custom Article");
         }
-      } else if (file.type.startsWith("audio")) {
-        if (category === "audio") {
-          const audioResource = {
-            title,
-            duration,
-            tags,
-            ifListen,
-            listenCount,
-            downloadURL,
-          };
+      } else {
+        if (file.type.startsWith("video")) {
+          if (category === "video") {
+            const videoResource = {
+              title,
+              duration,
+              tags,
+              ifWatch,
+              watchCount,
+              downloadURL,
+            };
 
-          const audioRef = ref(storage, `audios/${file.name + v4()}`);
+            const videoRef = ref(storage, `videos/${file.name + v4()}`);
 
-          //audio upload
-          uploadBytes(audioRef, file)
-            .then(async () => {
-              await axios
-                .post("/api/v1/resources/audio", audioResource)
-                .then((response) => {
-                  alert(
-                    "Audio upload successful , Check Resources" + response.data
-                  );
-                  resetForm();
-                })
-                .catch((error) => {
-                  alert("Audio upload failed: " + error);
-                });
-              setTimeout(resetForm, 2000);
-            })
-            .catch(() => {});
+            alert("video uploading started....");
+
+            //video upload
+            uploadBytes(videoRef, file)
+              .then(async () => {
+                console.log(videoResource);
+                await axios
+                  .post("/api/v1/resources/video", videoResource)
+                  .then(() => {
+                    alert(
+                      "Video resource uploaded successfully ,  Check Resources: "
+                    );
+                  })
+                  .catch((error) => {
+                    alert("Video resource uploadeing failed: " + error);
+                  });
+                setTimeout(resetForm, 2000);
+              })
+              .catch((err) => {
+                alert(
+                  "error uploading video to firebase, error: " + err.message
+                );
+              });
+          }
+        } else if (file.type.startsWith("audio")) {
+          if (category === "audio") {
+            const audioResource = {
+              title,
+              duration,
+              tags,
+              ifListen,
+              listenCount,
+              downloadURL,
+            };
+
+            const audioRef = ref(storage, `audios/${file.name + v4()}`);
+
+            //audio upload
+            uploadBytes(audioRef, file)
+              .then(async () => {
+                await axios
+                  .post("/api/v1/resources/audio", audioResource)
+                  .then((response) => {
+                    alert(
+                      "Audio upload successful , Check Resources" +
+                        response.data
+                    );
+                    resetForm();
+                  })
+                  .catch((error) => {
+                    alert("Audio upload failed: " + error);
+                  });
+                setTimeout(resetForm, 2000);
+              })
+              .catch(() => {});
+          }
+        } else {
+          alert("Please select a file to upload");
         }
       }
-    } else {
-      alert("Please select a file to upload");
     }
   };
 
@@ -322,7 +352,7 @@ const ResourceManagement = () => {
               type={fileType}
             />
           ) : (
-            <CreateArticle />
+            <CreateArticle onArticleSubmit={addArticleToResource} />
           )}
         </Grid>
       </Grid>
@@ -335,7 +365,10 @@ const ResourceManagement = () => {
         <div
           style={{
             display:
-              title !== "" && tags !== "" && category !== null && file !== null
+              title !== "" &&
+              tags !== "" &&
+              category !== null &&
+              (file !== null || article != null)
                 ? "block"
                 : "none",
           }}
