@@ -22,7 +22,7 @@ app.use("/api/v1/resources/article", articleRouter); // Article routes
 app.use("/api/v1/tasks/task", taskRouter); // Task routes
 
 // Connect to the database
-connect();
+connect("mongodb://localhost:27017/defaultUsers', {}");
 
 // Start the server
 const PORT2 = PORT || 3000;

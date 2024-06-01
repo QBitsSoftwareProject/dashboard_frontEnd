@@ -23,7 +23,6 @@ function createData(name, setDate, lastUpdate, actions) {
 }
 
 function TaskGoals() {
-
   const openNewTask = () => {
     document.getElementById("newTask").style.width = "100%";
   };
@@ -66,11 +65,27 @@ function TaskGoals() {
     </div>
   );
 
+  const [taskName, setTaskName] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
+
+  const [goalName, setGoalName] = useState("");
+  const [goalDescription, setGoalDescription] = useState("");
+
   const [tasks, setTasks] = useState([
     {
       name: "Task 001",
       description:
         "Eu aliqua laboris pariatur qui non consequat in officia et qui. Ullamco excepteur ipsum laboris cupidatat consectetur sit amet dolore sit aliquip. Qui voluptate sit ut culpa amet culpa anim. Laborum consectetur commodo non ipsum tempor ea qui nostrud est. Ea proident labore aliquip ad ad dolor eu ad ea nostrud amet labore dolore quis. Dolore mollit cillum enim est. Occaecat minim minim veniam incididunt occaecat deserunt irure commodo eu labore excepteur est enim.",
+      setDate: "02/02/2024",
+      lastUpdate: "02/03/2024",
+      actions,
+    },
+  ]);
+
+  const [goals, setGoals] = useState([
+    {
+      name: "Goal 001",
+      description: "",
       setDate: "02/02/2024",
       lastUpdate: "02/03/2024",
       actions,
@@ -178,8 +193,11 @@ function TaskGoals() {
             paddingRight: 10,
           }}
         >
-          <Dash_btn1 btn_text="CREATE NEW TASK" callFunction={openNewTask} />
-          <Dash_btn1 btn_text="CREATE NEW GOAL" />
+          {isTasksChecked ? (
+            <Dash_btn1 btn_text="CREATE NEW TASK" callFunction={openNewTask} />
+          ) : (
+            <Dash_btn1 btn_text="CREATE NEW GOAL" />
+          )}
           <Dash_btn1 btn_text="DELETE SELECTED" />
         </Grid>
       </Grid>
@@ -195,56 +213,104 @@ function TaskGoals() {
         }}
       >
         <Grid item xs={2} style={{ textAlign: "center" }}>
-          <h5 style={{ color: "#A0A0A0" }}>ALLOCATED TASKS</h5>
+          <h5 style={{ color: "#A0A0A0" }}>
+            {isTasksChecked ? "ALLOCATED TASKS" : "ALLOCATED GOALS"}
+          </h5>
         </Grid>
         <Grid item xs={10}>
           <hr />
         </Grid>
       </Grid>
       {/* topic */}
-      {/* task table */}
-      <div style={{ width: "100%", height: "70vh", overflowY: "scroll" }}>
-        <Grid item xs={12}>
-          <TableContainer>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center" style={{ fontWeight: "bold" }}>
-                    {" "}
-                    Name{" "}
-                  </TableCell>
-                  <TableCell align="center" style={{ fontWeight: "bold" }}>
-                    Set Date
-                  </TableCell>
-                  <TableCell align="center" style={{ fontWeight: "bold" }}>
-                    Last update
-                  </TableCell>
-                  <TableCell align="center" style={{ fontWeight: "bold" }}>
-                    Actions
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {tasks.map((row) => (
-                  <TableRow
-                    key={row.name}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row" align="left">
-                      <Checkbox defaultChecked={false} />
-                      {row.name}
+      {isTasksChecked ? (
+        // task table
+        <div style={{ width: "100%", height: "70vh", overflowY: "scroll" }}>
+          <Grid item xs={12}>
+            <TableContainer>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>
+                      {" "}
+                      Name{" "}
                     </TableCell>
-                    <TableCell align="center">{row.setDate}</TableCell>
-                    <TableCell align="center">{row.lastUpdate}</TableCell>
-                    <TableCell align="center">{row.actions}</TableCell>
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>
+                      Set Date
+                    </TableCell>
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>
+                      Last update
+                    </TableCell>
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>
+                      Actions
+                    </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Grid>
-      </div>
-      {/* task table */}
+                </TableHead>
+                <TableBody>
+                  {tasks.map((row) => (
+                    <TableRow
+                      key={row.name}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row" align="left">
+                        <Checkbox defaultChecked={false} />
+                        {row.name}
+                      </TableCell>
+                      <TableCell align="center">{row.setDate}</TableCell>
+                      <TableCell align="center">{row.lastUpdate}</TableCell>
+                      <TableCell align="center">{row.actions}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+        </div>
+      ) : (
+        // task table
+        // goals table
+        <div style={{ width: "100%", height: "70vh", overflowY: "scroll" }}>
+          <Grid item xs={12}>
+            <TableContainer>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>
+                      {" "}
+                      Name{" "}
+                    </TableCell>
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>
+                      Set Date
+                    </TableCell>
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>
+                      Last update
+                    </TableCell>
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>
+                      Actions
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {goals.map((row) => (
+                    <TableRow
+                      key={row.name}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row" align="left">
+                        <Checkbox defaultChecked={false} />
+                        {row.name}
+                      </TableCell>
+                      <TableCell align="center">{row.setDate}</TableCell>
+                      <TableCell align="center">{row.lastUpdate}</TableCell>
+                      <TableCell align="center">{row.actions}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Grid>
+        </div>
+        // goals table
+      )}
 
       {/* creating new task */}
       <div id="newTask" class={styles.overlay}>
@@ -263,20 +329,41 @@ function TaskGoals() {
             className={styles.newTaskForm}
             style={{ justifyContent: "flex-start" }}
           >
-            <h5>CREATE NEW TASK</h5>
+            <h5
+            // style={{
+            //   backgroundColor: "rgb(172, 197, 214,0.4)",
+            //   width: "fit-content",
+            //   paddingLeft: "10px",
+            //   paddingRight: "10px",
+            //   paddingTop: "8px",
+            //   paddingBottom: "8px",
+            //   borderRadius: "25px",
+            //   color:"rgb(0,0,0,0.8)"
+            // }}
+            >
+              CREATE NEW TASK
+            </h5>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <TextField
                 id="standard-basic"
                 label="Task name"
                 variant="standard"
                 style={{ width: "100%" }}
+                onChange={(event) => {
+                  setTaskName(event.target.value);
+                }}
               />
               <TextField
                 id="standard-basic"
                 label="Task description"
                 variant="standard"
                 style={{ width: "100%" }}
+                onChange={(event) => {
+                  setTaskDescription(event.target.value);
+                }}
               />
+              <h5>Task Description:</h5>
+              <textarea id="myTextarea" className={styles.input_like} />
             </div>
             <div
               style={{

@@ -115,8 +115,9 @@
 }
 
 .newTaskForm {
+  margin-top:-7%;
   width: 50%;
-  height: 350px;
+  height: auto;
   border-radius: 10px;
   background-color: white;
   margin-left: auto;
@@ -126,4 +127,20 @@
   display: flex;
   flex-direction: column;
   gap: 20;
+}
+
+.input_like {
+  border: solid #4990fb 1px;
+  border-radius: 4px;
+  padding-left: 10px;
+  padding-top: 10px;
+  font-size: 14px;
+  height: 300px;
+  width: auto;
+  box-sizing: border-box;
+  resize: none;
+  margin-left: 12px;
+  margin-top:-20px;
+  outline: none;
+  font-weight: lighter;
 }

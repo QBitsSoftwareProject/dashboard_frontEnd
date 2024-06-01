@@ -77,10 +77,13 @@ export default function CreateArticle({ onArticleSubmit }) {
   }
 
   const submitArticle = () => {
-    setArticle({ articleTitle, paragraphs });
+    console.log(article);
+    const newArticle = { title: articleTitle, paragraphs };
+    setArticle(newArticle);
     if (onArticleSubmit) {
-      onArticleSubmit(article);
+      onArticleSubmit(newArticle);
     }
+    closeNav(); // Close the overlay after submitting the article
   };
 
   const emptyArticle = () => {
@@ -112,7 +115,7 @@ export default function CreateArticle({ onArticleSubmit }) {
         <div>
           <img src={createArticle} />
 
-          {article == null ? (
+          {Object.keys(article).length === 0 ? (
             <>
               <h5
                 style={{
