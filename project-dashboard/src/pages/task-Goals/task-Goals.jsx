@@ -313,18 +313,18 @@ function TaskGoals() {
       )}
 
       {/* creating new task */}
-      <div id="newTask" class={styles.overlay}>
+      <div id="newTask" className={styles.overlay}>
         {/* <!-- Button to close the overlay navigation --> */}
         <a
           href="javascript:void(0)"
-          class={styles.closebtn}
+          className={styles.closebtn}
           onClick={closeNewTask}
         >
           &times;
         </a>
 
         {/* <!-- Overlay content --> */}
-        <div class={styles.overlay_content}>
+        <div className={styles.overlay_content}>
           <div
             className={styles.newTaskForm}
             style={{ justifyContent: "flex-start" }}
@@ -380,18 +380,18 @@ function TaskGoals() {
       {/* creating new task */}
 
       {/* check task */}
-      <div id="checkTask" class={styles.overlay}>
+      <div id="checkTask" className={styles.overlay}>
         {/* <!-- Button to close the overlay navigation --> */}
         <a
           href="javascript:void(0)"
-          class={styles.closebtn}
+          className={styles.closebtn}
           onClick={closeCheckTask}
         >
           &times;
         </a>
 
         {/* <!-- Overlay content --> */}
-        <div class={styles.overlay_content}>
+        <div className={styles.overlay_content}>
           <div
             className={styles.newTaskForm}
             style={{ justifyContent: "flex-start" }}

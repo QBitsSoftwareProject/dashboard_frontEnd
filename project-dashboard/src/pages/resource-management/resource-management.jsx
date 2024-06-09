@@ -3,6 +3,7 @@ import styles from "../resource-management/resource-management.module.css";
 import Dash_btn1 from "../../components/ui/dash_btn/dash_btn1";
 import Dash_btn2 from "../../components/ui/dash_btn/dash_btn2";
 import {
+  Alert,
   FormControl,
   Grid,
   InputLabel,
@@ -14,10 +15,15 @@ import cancelIcon from "../../assets/images/dragAndDrop/cancel.png";
 import DropFileInput from "../../components/ui/dropFileInput/DropFileInput";
 import CreateArticle from "../../components/ui/createArticle/CreateArticle";
 import { storage } from "../../config/firebase";
-import { ref, uploadBytes } from "firebase/storage";
-import Swal from "sweetalert2/dist/sweetalert2";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
 import axios from "axios";
+import Box from "@mui/material/Box";
+
+//loading animation
+import LinearProgress from "@mui/material/LinearProgress";
+import Snackbar from "@mui/material/Snackbar";
+//loading animation
 
 const ResourceManagement = () => {
   const [isCancel, setIsCancel] = useState(false);
@@ -25,26 +31,27 @@ const ResourceManagement = () => {
   const [isAudio, setIsAudio] = useState(false);
   const [isVideo, setIsVideo] = useState(false);
 
-  //resource features
+  // Resource features
   const [title, setTitle] = useState("");
-  const [tag, setTag] = useState();
+  const [tag, setTag] = useState("");
   const [tags, setTags] = useState([]);
-
   const [category, setCategory] = useState("");
   const [file, setFile] = useState(null);
   const [fileType, setFileType] = useState("");
   const [article, setArticle] = useState({});
 
-  const [duration, setDuration] = useState("3.15"); // State to store video duration
-  const [downloadURL, setdownloadURL] = useState("url1");
+  const [loading, setLoading] = useState(false); // Loading state
+  const [uploadFinished, setUploadFinished] = useState(false); //upload finish state
 
-  //video features
+  const [duration, setDuration] = useState("3.15"); // State to store video duration
+
+  // Video features
   const [ifWatch, setIfWatch] = useState(false);
   const [watchCount, setWatchCount] = useState(0);
 
-  //audio features
+  // Audio features
   const [ifListen, setIfListen] = useState(false);
-  const [listenCount, setistenCount] = useState(0);
+  const [listenCount, setListenCount] = useState(0);
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
@@ -54,12 +61,22 @@ const ResourceManagement = () => {
     setTag(event.target.value);
   };
 
+  //finish uploading
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setUploadFinished(false);
+  };
+  //finish uploading
+
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
     setIsArticle(false);
     setIsAudio(false);
     setIsVideo(false);
     setFileType("");
+
     if (event.target.value === "pdf") {
       setIsArticle(true);
       setFileType("article");
@@ -78,21 +95,56 @@ const ResourceManagement = () => {
 
   // Function to reset all state values
   const resetForm = () => {
-    window.location.reload();
+    setTitle("");
+    setTag("");
+    setTags([]);
+    setCategory("");
+    setFile(null);
+    setFileType("");
+    setArticle({});
+    setIsCancel(false);
   };
 
   // Add the article data to state
   const addArticleToResource = (articleData) => {
-    console.log("Article Data:", articleData);
     setArticle(articleData);
+  };
+
+  // Firebase upload
+  const firebaseUpload = async (fileType) => {
+    try {
+      if (file) {
+        let resourceFile;
+        if (fileType === "audio") {
+          resourceFile = ref(storage, `resource/audio/${v4()}`);
+        } else if (fileType === "video") {
+          resourceFile = ref(storage, `resource/video/${v4()}`);
+        }
+        await uploadBytes(resourceFile, file);
+        const newFileURL = await getDownloadURL(resourceFile);
+        return newFileURL; // Return the URL
+      } else {
+        console.error("File not uploaded");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error uploading profile picture:", error);
+      return null;
+    }
   };
 
   // Upload the resource to the server
   const uploadResource = async () => {
+    setLoading(true); // Start loading
+    let resourceURL = null;
     if (isArticle) {
       if (article.title && article.paragraphs.length > 0) {
         try {
-          await axios.post("/api/v1/resources/article", article);
+          console.log("Uploading article:", article);
+          await axios.post(
+            "http://localhost:3000/api/v1/resources/article",
+            article
+          );
           alert("Article uploaded successfully. Check Resources.");
           resetForm();
         } catch (error) {
@@ -103,44 +155,50 @@ const ResourceManagement = () => {
       }
     } else if (file) {
       if (file.type.startsWith("video") && category === "video") {
-        const videoResource = {
-          title,
-          duration,
-          tags,
-          ifWatch,
-          watchCount,
-          downloadURL,
-        };
-
-        const videoRef = ref(storage, `videos/${file.name + v4()}`);
-        alert("Video uploading started....");
-
-        try {
-          await uploadBytes(videoRef, file);
-          await axios.post("/api/v1/resources/video", videoResource);
-          alert("Video resource uploaded successfully. Check Resources.");
-          setTimeout(resetForm, 2000);
-        } catch (err) {
-          alert("Error uploading video: " + err.message);
+        resourceURL = await firebaseUpload("video");
+        if (resourceURL) {
+          const videoResource = {
+            title,
+            duration,
+            tags,
+            ifWatch,
+            watchCount,
+            downloadURL: resourceURL,
+          };
+          try {
+            console.log("Uploading video:", videoResource);
+            await axios.post(
+              "http://localhost:3000/api/v1/resources/video",
+              videoResource
+            );
+            setUploadFinished(true);
+            resetForm();
+          } catch (error) {
+            alert("Failed to upload Video, error: " + error);
+          }
         }
       } else if (file.type.startsWith("audio") && category === "audio") {
-        const audioResource = {
-          title,
-          duration,
-          tags,
-          ifListen,
-          listenCount,
-          downloadURL,
-        };
-
-        const audioRef = ref(storage, `audios/${file.name + v4()}`);
-        try {
-          await uploadBytes(audioRef, file);
-          await axios.post("/api/v1/resources/audio", audioResource);
-          alert("Audio upload successful. Check Resources.");
-          resetForm();
-        } catch (error) {
-          alert("Audio upload failed: " + error);
+        resourceURL = await firebaseUpload("audio");
+        if (resourceURL) {
+          const audioResource = {
+            title,
+            duration,
+            tags,
+            ifListen,
+            listenCount,
+            downloadURL: resourceURL,
+          };
+          try {
+            console.log("Uploading audio:", audioResource);
+            await axios.post(
+              "http://localhost:3000/api/v1/resources/audio",
+              audioResource
+            );
+            setUploadFinished(true);
+            resetForm();
+          } catch (error) {
+            alert("Failed to upload Audio, error: " + error);
+          }
         }
       } else {
         alert("Please select a valid file to upload.");
@@ -148,10 +206,44 @@ const ResourceManagement = () => {
     } else {
       alert("Please select a file or create an article to upload.");
     }
+    setLoading(false); // Stop loading
   };
 
   return (
     <div>
+      {loading && (
+        <Box sx={{ width: "100%" }}>
+          <LinearProgress />
+        </Box>
+      )}
+      {uploadFinished && (
+        // <Snackbar
+        //   open={uploadFinished}
+        //   autoHideDuration={5000}
+        //   onClose={()=>{
+        //     setUploadFinished(false);
+        //   }}
+        //   message="Resource uploaded successfully."
+        // />
+        <Snackbar
+          open={uploadFinished}
+          autoHideDuration={5000}
+          onClose={()=>{
+            setUploadFinished(false);
+          }}
+        >
+          <Alert
+            onClose={()=>{
+            setUploadFinished(false);
+          }}
+            severity="info"
+            variant="filled"
+            sx={{ width: "100%",color:"white" }}
+          >
+            Resource uploaded successfully
+          </Alert>
+        </Snackbar>
+      )}
       <div style={{ display: "flex", justifyContent: "end" }}>
         <Dash_btn1 btn_text="VIEW RESOURCES" inlineStyle={styles.btnPosition} />
       </div>
@@ -179,6 +271,7 @@ const ResourceManagement = () => {
             label="Enter resource name"
             variant="outlined"
             style={{ width: "100%" }}
+            value={title}
             onChange={handleTitleChange}
           />
         </Grid>
@@ -295,11 +388,10 @@ const ResourceManagement = () => {
             callFunction={uploadResource}
           />
         </div>
-
         <Dash_btn2
           btn_text="CANCEL UPLOAD"
           inlineStyle={styles.btnPosition}
-          onClickEvent={setIsCancel}
+          onClickEvent={() => setIsCancel(true)}
         />
       </div>
     </div>
