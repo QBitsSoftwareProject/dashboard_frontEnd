@@ -52,6 +52,52 @@
   transform: scale(1.2);
 }
 
+.tagsContainer {
+  background-color: rgb(216, 216, 216, 0.5);
+  width: auto;
+  height: auto;
+  border-radius: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag {
+  background-color: #4990fb;
+  border-radius: 20px;
+  height: auto;
+  width: fit-content;
+  padding-left: 13px;
+  padding-right: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tagDisplay {
+  display: flex;
+  justify-content: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tgIn {
+  border-radius: 4px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0);
+  font-size: 16px;
+  outline: none;
+  color: rgb(137, 137, 137);
+}
+
 /* The Overlay (background) */
 .overlay {
   /* Height & width depends on how you want to reveal the overlay (see JS below) */
@@ -115,7 +161,7 @@
 }
 
 .newTaskForm {
-  margin-top:-7%;
+  margin-top: -7%;
   width: 50%;
   height: auto;
   border-radius: 10px;
@@ -140,7 +186,24 @@
   box-sizing: border-box;
   resize: none;
   margin-left: 12px;
-  margin-top:-20px;
+  margin-top: -20px;
   outline: none;
   font-weight: lighter;
+}
+
+.createGoalBtn {
+  background-color: #4990fb;
+  color: white;
+  width: 180px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  cursor: pointer;
+  transition-duration: 300ms;
+}
+
+.createGoalBtn:hover {
+  background-color: #2579f6;
 }

@@ -1,6 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./task-Goals.module.css";
-import { Checkbox, Grid, TextField, Tooltip } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Checkbox,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Tooltip,
+} from "@mui/material";
+
+import Modal from "@mui/material/Modal";
 
 // dashboard buttons
 import Dash_btn1 from "../../components/ui/dash_btn/dash_btn1";
@@ -16,7 +29,19 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import {
+  createGoal,
+  deleteGoal,
+  editGoal,
+  getAllGoals,
+} from "../../services/adminServices/adminServices";
 // table components
+
+//loading animation
+import LinearProgress from "@mui/material/LinearProgress";
+import Snackbar from "@mui/material/Snackbar";
+
+import cancelIcon from "../../assets/images/dragAndDrop/cancel.png";
 
 function createData(name, setDate, lastUpdate, actions) {
   return { name, setDate, lastUpdate, actions };
@@ -35,9 +60,118 @@ function TaskGoals() {
     document.getElementById("checkTask").style.width = "100%";
   };
 
+  const openCheckGoal = () => {
+    document.getElementById("checkGoal").style.width = "100%";
+  };
+
   const closeCheckTask = () => {
     document.getElementById("checkTask").style.width = "0%";
   };
+
+  const closeCheckGoal = () => {
+    document.getElementById("checkGoal").style.width = "0%";
+  };
+
+  // create new goal
+
+  const [goalLoading, setGoalLoading] = useState(false); // Loading state for creating a new goal
+  const [finishNewGoal, setFinishNewGoal] = useState(false); // new goal finish state
+  const [failedNewGoal, setFailedNewGoal] = useState(false); // new goal failed state
+
+  const [goalTitle, setGoalTitle] = useState("");
+  const [goalSubTitle, setGoalSubTitle] = useState("");
+  const [goalDescription, setGoalDescription] = useState("");
+  const [goalCategory, setGoalCategory] = useState("");
+  const [objectives, setObjectives] = useState([]);
+  const [objective, setObjective] = useState("");
+  const [timeDuration, setTimeDuration] = useState();
+  const [timeCategory, setTimeCategory] = useState("");
+
+  const handleObjectiveChange = (event) => {
+    setObjective(event.target.value);
+  };
+
+  const handleGoalCategory = (event) => {
+    setGoalCategory(event.target.value);
+  };
+
+  const handleTimeCategory = (event) => {
+    setTimeCategory(event.target.value);
+  };
+
+  const handleTimeDuration = (event) => {
+    setTimeDuration(event.target.value);
+  };
+
+  const goalDeleter = async () => {
+    try {
+      await deleteGoal(goalToDelete._id);
+    } catch (err) {
+      console.log("failed to delete goal", err.message);
+    }
+    setActionState(!actionState);
+  };
+
+  const [editedTime, setEditedTime] = useState("");
+
+  const handleEditTimeDuration = (event) => {
+    setEditedTime(event.target.value);
+  };
+
+  const editGoalData = async () => {
+    setGoalTitle(goalToEdit.title);
+    setGoalSubTitle(goalToEdit.subTitle);
+    setGoalDescription(goalToEdit.description);
+    setObjectives(goalToEdit.objectives);
+    setEditedTime(goalToEdit.duration);
+    setGoalCategory(goalToEdit.category);
+  };
+
+  const goalEditor = async () => {
+    setGoalLoading(true);
+    const goalObjectToEdit = {
+      title: goalTitle,
+      subTitle: goalSubTitle,
+      description: goalDescription,
+      objectives: objectives,
+      completness: false,
+      duration: timeDuration + " " + timeCategory,
+      category: goalCategory,
+    };
+    try {
+      console.log("editing selected goal...", goalObjectToEdit);
+      await editGoal(goalToEdit._id, goalObjectToEdit);
+      setFinishNewGoal(true);
+    } catch (err) {
+      setFailedNewGoal(true);
+      alert("Failed to edit goal, error: " + err.message);
+    }
+  };
+
+  const createNewGoal = async () => {
+    setGoalLoading(true);
+    const newGoal = {
+      title: goalTitle,
+      subTitle: goalSubTitle,
+      description: goalDescription,
+      objectives: objectives,
+      completness: false,
+      duration: editedTime,
+      category: goalCategory,
+    };
+    try {
+      console.log("Creating new goal...", newGoal);
+      await createGoal(newGoal);
+      setFinishNewGoal(true);
+    } catch (err) {
+      setFailedNewGoal(true);
+      alert("Failed to create goal, error: " + err.message);
+    }
+    setGoalLoading(false);
+    handleGoalCreatorClose();
+  };
+
+  // create new goal
 
   const actions = (
     <div
@@ -68,8 +202,26 @@ function TaskGoals() {
   const [taskName, setTaskName] = useState("");
   const [taskDescription, setTaskDescription] = useState("");
 
-  const [goalName, setGoalName] = useState("");
-  const [goalDescription, setGoalDescription] = useState("");
+  // actions
+  const [goalToCheck, setGoalToCheck] = useState({});
+  const [goalToEdit, setGoalToEdit] = useState({});
+  const [goalToDelete, setGoalToDelete] = useState({});
+  const [actionState, setActionState] = useState(false);
+  // actions
+
+  const [openGoalCreator, setOpenGoalCreator] = React.useState(false);
+
+  //goal editor
+  const [openGoalEditor, setOpenGoalEditor] = React.useState(false);
+
+  const handleGoalCreatorClose = () => {
+    setOpenGoalCreator(false);
+  };
+
+  const handleGoalEditorClose = () => {
+    setOpenGoalEditor(false);
+  };
+  //goal editor
 
   const [tasks, setTasks] = useState([
     {
@@ -82,15 +234,34 @@ function TaskGoals() {
     },
   ]);
 
-  const [goals, setGoals] = useState([
-    {
-      name: "Goal 001",
-      description: "",
-      setDate: "02/02/2024",
-      lastUpdate: "02/03/2024",
-      actions,
-    },
-  ]);
+  const [goals, setGoals] = useState([]);
+
+  // modal styles
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "none",
+    borderRadius: "15px",
+    boxShadow: 24,
+    pt: 2,
+    px: 4,
+    pb: 3,
+  };
+  // modal styles
+
+  useEffect(() => {
+    const fetchGoals = async () => {
+      let response = await getAllGoals();
+      if (response) {
+        setGoals(response.data);
+      }
+    };
+    fetchGoals();
+  }, [finishNewGoal, actionState]);
 
   const checkBox = <Checkbox defaultChecked color="success" />;
 
@@ -126,6 +297,37 @@ function TaskGoals() {
 
   return (
     <Grid container className={styles.mainContent}>
+      {finishNewGoal && (
+        <Snackbar
+          open={finishNewGoal}
+          autoHideDuration={5000}
+          onClose={() => {
+            setFinishNewGoal(false);
+          }}
+        >
+          <Alert
+            onClose={() => {
+              setFinishNewGoal(false);
+            }}
+            severity="info"
+            variant="filled"
+            sx={{ width: "100%", color: "white" }}
+          >
+            New Goal created successfully
+          </Alert>
+        </Snackbar>
+      )}
+      {failedNewGoal && (
+        <Snackbar
+          open={failedNewGoal}
+          autoHideDuration={6000}
+          onClose={() => setFailedNewGoal(false)}
+        >
+          <Alert severity="error" onClose={() => setFailedNewGoal(false)}>
+            Failed to create new goal, Please try again
+          </Alert>
+        </Snackbar>
+      )}
       <Grid
         item
         xs={12}
@@ -196,7 +398,10 @@ function TaskGoals() {
           {isTasksChecked ? (
             <Dash_btn1 btn_text="CREATE NEW TASK" callFunction={openNewTask} />
           ) : (
-            <Dash_btn1 btn_text="CREATE NEW GOAL" />
+            <Dash_btn1
+              btn_text="CREATE NEW GOAL"
+              callFunction={setOpenGoalCreator}
+            />
           )}
           <Dash_btn1 btn_text="DELETE SELECTED" />
         </Grid>
@@ -274,15 +479,15 @@ function TaskGoals() {
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center" style={{ fontWeight: "bold" }}>
+                    <TableCell align="left" style={{ fontWeight: "bold" }}>
                       {" "}
-                      Name{" "}
+                      Goal Title{" "}
                     </TableCell>
                     <TableCell align="center" style={{ fontWeight: "bold" }}>
-                      Set Date
+                      Goal Category
                     </TableCell>
                     <TableCell align="center" style={{ fontWeight: "bold" }}>
-                      Last update
+                      Current Rating
                     </TableCell>
                     <TableCell align="center" style={{ fontWeight: "bold" }}>
                       Actions
@@ -290,18 +495,62 @@ function TaskGoals() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {goals.map((row) => (
+                  {goals.map((goalRow) => (
                     <TableRow
-                      key={row.name}
+                      key={goalRow.name}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
                       <TableCell component="th" scope="row" align="left">
                         <Checkbox defaultChecked={false} />
-                        {row.name}
+                        {goalRow.title}
                       </TableCell>
-                      <TableCell align="center">{row.setDate}</TableCell>
-                      <TableCell align="center">{row.lastUpdate}</TableCell>
-                      <TableCell align="center">{row.actions}</TableCell>
+                      <TableCell align="center">{goalRow.category}</TableCell>
+                      <TableCell align="center">
+                        {goalRow.currentRating}
+                      </TableCell>
+                      <TableCell align="center">
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            gap: 20,
+                            height: 20,
+                          }}
+                        >
+                          <Tooltip title="Check" placement="left">
+                            <img
+                              src={lookIcon}
+                              className={styles.actionIcons}
+                              onClick={() => {
+                                setGoalToCheck(goalRow);
+                                openCheckGoal();
+                              }}
+                            />
+                          </Tooltip>
+                          <Tooltip title="Edit" placement="bottom">
+                            <img
+                              src={editIcon}
+                              className={styles.actionIcons}
+                              onClick={() => {
+                                setGoalToEdit(goalRow);
+                                setOpenGoalEditor(true);
+                                editGoalData();
+                              }}
+                            />
+                          </Tooltip>
+                          <Tooltip title="Delete" placement="right">
+                            <img
+                              src={binIcon}
+                              className={styles.actionIcons}
+                              onClick={() => {
+                                setGoalToDelete(goalRow);
+                                goalDeleter();
+                              }}
+                            />
+                          </Tooltip>
+                        </div>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -329,20 +578,7 @@ function TaskGoals() {
             className={styles.newTaskForm}
             style={{ justifyContent: "flex-start" }}
           >
-            <h5
-            // style={{
-            //   backgroundColor: "rgb(172, 197, 214,0.4)",
-            //   width: "fit-content",
-            //   paddingLeft: "10px",
-            //   paddingRight: "10px",
-            //   paddingTop: "8px",
-            //   paddingBottom: "8px",
-            //   borderRadius: "25px",
-            //   color:"rgb(0,0,0,0.8)"
-            // }}
-            >
-              CREATE NEW TASK
-            </h5>
+            <h5>CREATE NEW TASK</h5>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <TextField
                 id="standard-basic"
@@ -378,6 +614,361 @@ function TaskGoals() {
         </div>
       </div>
       {/* creating new task */}
+
+      {/* create goal modal */}
+      <div>
+        <Modal
+          open={openGoalCreator}
+          onClose={handleGoalCreatorClose}
+          aria-labelledby="parent-modal-title"
+          aria-describedby="parent-modal-description"
+        >
+          <Box
+            sx={{
+              ...style,
+              width: 800,
+              paddingLeft: 5,
+              paddingRight: 5,
+              paddingTop: 3,
+              paddingBottom: 3,
+            }}
+          >
+            {goalLoading && (
+              <Box sx={{ width: "100%" }}>
+                <LinearProgress />
+              </Box>
+            )}
+            <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
+              <TextField
+                id="standard-basic"
+                label="Goal Title"
+                variant="standard"
+                style={{ width: "100%" }}
+                onChange={(event) => {
+                  setGoalTitle(event.target.value);
+                }}
+              />
+              <TextField
+                id="standard-basic"
+                label="Goal Sub-Title"
+                variant="standard"
+                style={{ width: "100%" }}
+                onChange={(event) => {
+                  setGoalSubTitle(event.target.value);
+                }}
+              />
+              <FormControl
+                style={{ width: "100%", marginTop: 15 }}
+                size="small"
+              >
+                <InputLabel id="demo-select-small-label">
+                  Select Goal Category
+                </InputLabel>
+                <Select
+                  labelId="demo-select-large-label"
+                  id="goalCategory"
+                  value={goalCategory}
+                  label="duration"
+                  style={{ height: "55px" }}
+                  onChange={handleGoalCategory}
+                >
+                  <MenuItem value={"meditation"}>meditation</MenuItem>
+                  <MenuItem value={"physicalActivity"}>
+                    physical activity
+                  </MenuItem>
+                  <MenuItem value={"socialConnection"}>
+                    social connection
+                  </MenuItem>
+                  <MenuItem value={"creativeExpression"}>
+                    creative expression
+                  </MenuItem>
+                  <MenuItem value={"personalGrowth"}>personal growth</MenuItem>
+                  <MenuItem value={"inspirationalContent"}>
+                    inspirational content
+                  </MenuItem>
+                </Select>
+              </FormControl>
+              <textarea
+                placeholder="Goal Description"
+                id="myTextarea"
+                style={{
+                  marginTop: 10,
+                  fontFamily: "inherit",
+                  width: "100%",
+                  height: "250px",
+                  border: "solid #4990fb 1px",
+                  borderRadius: "4px",
+                  paddingLeft: "10px",
+                  paddingTop: "10px",
+                  fontSize: "14px",
+                  boxSizing: "border-box",
+                  resize: "none",
+                  outline: "none",
+                }}
+                onChange={(event) => setGoalDescription(event.target.value)}
+              />
+              <span>Goal Objectives</span>
+              <Grid item xs={12}>
+                <div className={styles.tagsContainer}>
+                  <div className={styles.tagDisplay}>
+                    {objectives.map((oneObjective, index) => (
+                      <div className={styles.tag} key={index}>
+                        {oneObjective}
+                        <img
+                          src={cancelIcon}
+                          style={{ width: "15px", cursor: "pointer" }}
+                          onClick={() => {
+                            const updatedObjectives = objectives.filter(
+                              (item) => item !== oneObjective
+                            );
+                            setObjectives(updatedObjectives);
+                          }}
+                        />
+                      </div>
+                    ))}
+                    <div className={styles.tagInput}>
+                      <input
+                        id="tgIn"
+                        className={styles.tgIn}
+                        placeholder="Enter goal objectives"
+                        onChange={handleObjectiveChange}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") {
+                            if (
+                              !objectives.includes(
+                                objective.trim().toLowerCase()
+                              ) &&
+                              objective.trim().length !== 0
+                            ) {
+                              setObjectives([
+                                ...objectives,
+                                objective.toLowerCase(),
+                              ]);
+                            }
+                            document.getElementById("tgIn").value = "";
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Grid>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                  marginTop: 20,
+                }}
+              >
+                <span>Goal Duration :</span>
+                <div style={{ display: "flex", gap: 20, width: "60%" }}>
+                  <TextField
+                    type="number"
+                    style={{ width: "30%" }}
+                    inputProps={{ min: 0 }}
+                    onChange={handleTimeDuration}
+                  />
+                  <FormControl style={{ width: "60%" }} size="small">
+                    <InputLabel id="demo-select-small-label">
+                      Select Time Period
+                    </InputLabel>
+                    <Select
+                      labelId="demo-select-large-label"
+                      id="timeCategory"
+                      value={timeCategory}
+                      label="duration"
+                      style={{ height: "55px" }}
+                      onChange={handleTimeCategory}
+                    >
+                      <MenuItem value={"days"}>Days</MenuItem>
+                      <MenuItem value={"weeks"}>Weeks</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+                <div className={styles.createGoalBtn} onClick={createNewGoal}>
+                  Create Goal
+                </div>
+              </div>
+            </div>
+          </Box>
+        </Modal>
+      </div>
+      {/* create goal modal */}
+
+      {/* edit goal modal */}
+      <div>
+        <Modal
+          open={openGoalEditor}
+          onClose={handleGoalEditorClose}
+          aria-labelledby="parent-modal-title"
+          aria-describedby="parent-modal-description"
+        >
+          <Box
+            sx={{
+              ...style,
+              width: 800,
+              paddingLeft: 5,
+              paddingRight: 5,
+              paddingTop: 3,
+              paddingBottom: 3,
+            }}
+          >
+            {goalLoading && (
+              <Box sx={{ width: "100%" }}>
+                <LinearProgress />
+              </Box>
+            )}
+            <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
+              <TextField
+                id="standard-basic"
+                label="Goal Title"
+                variant="standard"
+                value={goalToEdit.title}
+                style={{ width: "100%" }}
+                onChange={(event) => {
+                  setGoalTitle(event.target.value);
+                }}
+              />
+              <TextField
+                id="standard-basic"
+                label="Goal Sub-Title"
+                variant="standard"
+                value={goalToEdit.subTitle}
+                style={{ width: "100%" }}
+                onChange={(event) => {
+                  setGoalSubTitle(event.target.value);
+                }}
+              />
+              <FormControl
+                style={{ width: "100%", marginTop: 15 }}
+                size="small"
+              >
+                <InputLabel id="demo-select-small-label">
+                  Select Goal Category
+                </InputLabel>
+                <Select
+                  labelId="demo-select-large-label"
+                  id="goalCategory"
+                  value={goalToEdit.category}
+                  label="duration"
+                  style={{ height: "55px" }}
+                  onChange={handleGoalCategory}
+                >
+                  <MenuItem value={"meditation"}>meditation</MenuItem>
+                  <MenuItem value={"physicalActivity"}>
+                    physical activity
+                  </MenuItem>
+                  <MenuItem value={"socialConnection"}>
+                    social connection
+                  </MenuItem>
+                  <MenuItem value={"creativeExpression"}>
+                    creative expression
+                  </MenuItem>
+                  <MenuItem value={"personalGrowth"}>personal growth</MenuItem>
+                  <MenuItem value={"inspirationalContent"}>
+                    inspirational content
+                  </MenuItem>
+                </Select>
+              </FormControl>
+              <textarea
+                placeholder="Goal Description"
+                id="myTextarea"
+                value={goalToEdit.description}
+                style={{
+                  marginTop: 10,
+                  fontFamily: "inherit",
+                  width: "100%",
+                  height: "250px",
+                  border: "solid #4990fb 1px",
+                  borderRadius: "4px",
+                  paddingLeft: "10px",
+                  paddingTop: "10px",
+                  fontSize: "14px",
+                  boxSizing: "border-box",
+                  resize: "none",
+                  outline: "none",
+                }}
+                onChange={(event) => setGoalDescription(event.target.value)}
+              />
+              <span>Goal Objectives</span>
+              <Grid item xs={12}>
+                <div className={styles.tagsContainer}>
+                  <div className={styles.tagDisplay}>
+                    {(goalToEdit.objectives
+                      ? goalToEdit.objectives
+                      : objectives
+                    ).map((oneObjective, index) => (
+                      <div className={styles.tag} key={index}>
+                        {oneObjective}
+                        <img
+                          src={cancelIcon}
+                          style={{ width: "15px", cursor: "pointer" }}
+                          onClick={() => {
+                            const updatedObjectives = objectives.filter(
+                              (item) => item !== oneObjective
+                            );
+                            setObjectives(updatedObjectives);
+                          }}
+                        />
+                      </div>
+                    ))}
+                    <div className={styles.tagInput}>
+                      <input
+                        id="tgIn"
+                        className={styles.tgIn}
+                        placeholder="Enter goal objectives"
+                        onChange={handleObjectiveChange}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") {
+                            if (
+                              (goalToEdit.objectives
+                                ? goalToEdit.objectives
+                                : objectives
+                              ).includes(objective.trim().toLowerCase()) &&
+                              objective.trim().length !== 0
+                            ) {
+                              setObjectives([
+                                ...goalToEdit.objectives,
+                                objective.toLowerCase(),
+                              ]);
+                            }
+                            document.getElementById("tgIn").value = "";
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </Grid>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                  marginTop: 20,
+                }}
+              >
+                <span>Goal Duration :</span>
+                <div style={{ display: "flex", gap: 20, width: "60%" }}>
+                  <TextField
+                    style={{ width: "60%" }}
+                    inputProps={{ min: 0 }}
+                    value={goalToEdit.duration}
+                    onChange={handleEditTimeDuration}
+                  />
+                </div>
+                <div className={styles.createGoalBtn} onClick={goalEditor}>
+                  Edit Goal
+                </div>
+              </div>
+            </div>
+          </Box>
+        </Modal>
+      </div>
+      {/* edit goal modal */}
 
       {/* check task */}
       <div id="checkTask" className={styles.overlay}>
@@ -442,6 +1033,129 @@ function TaskGoals() {
         </div>
       </div>
       {/* check task */}
+      {/* check goal */}
+      <div id="checkGoal" className={styles.overlay}>
+        {/* <!-- Button to close the overlay navigation --> */}
+        <a
+          href="javascript:void(0)"
+          className={styles.closebtn}
+          onClick={closeCheckGoal}
+        >
+          &times;
+        </a>
+
+        {/* <!-- Overlay content --> */}
+        <div className={styles.overlay_content}>
+          <div
+            className={styles.newTaskForm}
+            style={{ justifyContent: "flex-start" }}
+          >
+            <Grid container>
+              <Grid
+                item
+                xs={12}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <h5 style={{ width: "130px" }}>Goal name :</h5>
+                  <span>{goalToCheck.title}</span>
+                </div>
+                <br />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "flex-start",
+                    gap: 10,
+                  }}
+                >
+                  <h5 style={{ width: "220px" }}>Goal description :</h5>
+                  <span>{goalToCheck.description}</span>
+                </div>
+                <br />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <h5 style={{ width: "130px" }}>Goal category :</h5>
+                  <span>{goalToCheck.category}</span>
+                </div>
+                <br />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <h5 style={{ width: "130px" }}>Current Rating :</h5>
+                  <span>{goalToCheck.currentRating}</span>
+                </div>
+                <br />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <h5 style={{ width: "130px" }}>Duration :</h5>
+                  <span>{goalToCheck.duration}</span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  <h5 style={{ width: "130px" }}>Goal Objectives :</h5>
+                  {/* {goalToCheck.objectives} */}
+                  <span>
+                    {goalToCheck.objectives?.map((objective, index) => (
+                      <span
+                        key={index}
+                        style={{
+                          backgroundColor: "rgba(0,0,0,0.7)",
+                          color: "white",
+                          marginRight: 10,
+                          paddingTop: 5,
+                          paddingBottom: 5,
+                          paddingLeft: 10,
+                          paddingRight: 10,
+                          borderRadius: 100,
+                          fontSize: 14,
+                        }}
+                      >
+                        {objective}
+                      </span>
+                    ))}
+                  </span>
+                </div>
+              </Grid>
+              <Grid item xs={12}></Grid>
+            </Grid>
+          </div>
+        </div>
+      </div>
+      {/* check goal */}
     </Grid>
   );
 }
