@@ -7,8 +7,6 @@ import { Grid } from "@mui/material";
 // sections
 import ResourceManagement from "./resource-management/resource-management.jsx";
 import ViewAnalytics from "./analytics/view-analytics.jsx";
-import Appointments from "./appointments/appointments.jsx";
-import CommunityManagement from "./community-management/community-management.jsx";
 import ControlAccess from "./control-access/control-access.jsx";
 import TaskGoals from "./task-Goals/task-Goals.jsx";
 // sections
@@ -27,16 +25,14 @@ export default function Main() {
           <SideNavbar onPageChange={handlePageChange} />
         </Grid>
         <Grid item xs={9}>
-          <div className={styles.upperNavBarStyles}>
+          {/* <div className={styles.upperNavBarStyles}>
             <UpperNavBar />
-          </div>
+          </div> */}
           <div class={styles.content}>
             {pageContent === "View-Analytics" && <ViewAnalytics />}
             {pageContent === "Manage-Resources" && <ResourceManagement />}
             {pageContent === "Task-Goals" && <TaskGoals />}
-            {pageContent === "Community-Management" && <CommunityManagement />}
             {pageContent === "User-control-access" && <ControlAccess />}
-            {pageContent === "Appointments" && <Appointments />}
           </div>
         </Grid>
       </Grid>

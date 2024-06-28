@@ -47,3 +47,32 @@
   gap: 10px;
   flex-wrap: wrap;
 }
+
+/* manage resources */
+.articleCardContainer {
+  height: 600px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.videoCardContainer {
+  height: 600px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.audioCardContainer {
+  height: 600px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+/* manage resources */

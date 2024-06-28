@@ -5,9 +5,8 @@
   position: relative;
   margin: 20px auto;
   background: #fcfff4;
-  background: linear-gradient(to bottom, #fcfff4 0%, #dfe5d7 40%, #b3bead 100%);
+  border: 2px solid #4a90bf;
   border-radius: 50px;
-  box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(0, 0, 0, 0.5);
 }
 .roundedOne label {
   width: 20px;
@@ -16,9 +15,7 @@
   position: absolute;
   left: 4px;
   top: 4px;
-  background: linear-gradient(to bottom, #222222 0%, #45484d 100%);
   border-radius: 50px;
-  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5), 0px 1px 0px white;
 }
 .roundedOne label:after {
   content: "";
@@ -31,7 +28,6 @@
   background: linear-gradient(to bottom, #0997f6 0%, #188ad6 100%);
   opacity: 0;
   border-radius: 50px;
-  box-shadow: inset 0px 1px 1px white, 0px 1px 3px rgba(74, 144, 191, 0.5);
 }
 .roundedOne label:hover::after {
   opacity: 0.3;
@@ -206,4 +202,85 @@
 
 .createGoalBtn:hover {
   background-color: #2579f6;
+}
+
+.stepContainer {
+  background-color: rgb(226, 231, 236);
+  height: 300px;
+  border-radius: 15px;
+  margin-top: -15px;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow-y: auto;
+  width: "100%";
+}
+
+.stepLine {
+  border-left: 2px solid #4990fb;
+  z-index: 1;
+  padding-left: 30px;
+}
+
+.step {
+  background-color: rgb(73, 144, 251, 0);
+  border-radius: 15px;
+  height: 60px;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+}
+
+.stepNo {
+  background-color: rgb(255, 255, 255);
+  width: 100px;
+  height: 100%;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bolder;
+  color: #0066ff;
+}
+
+.stepText {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  color: #0066ff;
+}
+
+.stepInput {
+  border: none;
+  outline: none;
+  width: 100%;
+  background-color: rgb(73, 144, 251, 0);
+  color: rgb(0, 102, 255);
+  font-size: 18px;
+}
+
+.cancelBtnContainer {
+  width: 70px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+input::placeholder {
+  color: rgba(22, 22, 22, 0.5); /* Change to desired color */
+  opacity: 1; /* For Firefox to make it fully opaque */
+}
+
+/* For Internet Explorer 10+ */
+input:-ms-input-placeholder {
+  color: rgba(22, 22, 22, 0.5); /* Change to desired color */
+}
+
+/* For Microsoft Edge */
+input::-ms-input-placeholder {
+  color: rgba(22, 22, 22, 0.5); /* Change to desired color */
 }

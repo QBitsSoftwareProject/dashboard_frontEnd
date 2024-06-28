@@ -1,14 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../resource-management/resource-management.module.css";
 import Dash_btn1 from "../../components/ui/dash_btn/dash_btn1";
 import Dash_btn2 from "../../components/ui/dash_btn/dash_btn2";
 import {
   Alert,
+  Avatar,
   FormControl,
   Grid,
   InputLabel,
   MenuItem,
+  Modal,
   Select,
+  Tab,
+  Tabs,
   TextField,
 } from "@mui/material";
 import cancelIcon from "../../assets/images/dragAndDrop/cancel.png";
@@ -17,7 +21,6 @@ import CreateArticle from "../../components/ui/createArticle/CreateArticle";
 import { storage } from "../../config/firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { v4 } from "uuid";
-import axios from "axios";
 import Box from "@mui/material/Box";
 
 //loading animation
@@ -28,13 +31,21 @@ import {
   createAudioResource,
   createNewArticle,
   createVideoResource,
+  getAllArticles,
+  getAllAudios,
+  getAllVideos,
 } from "../../services/adminServices/adminServices";
+import AuthorCard from "../../components/ui/authorCard/authorCard";
+import VideoCard from "../../components/ui/videoCard/videoCard";
+import AudioCard from "../../components/ui/audioCard/audioCard";
 
 const ResourceManagement = () => {
   const [isCancel, setIsCancel] = useState(false);
   const [isArticle, setIsArticle] = useState(false);
   const [isAudio, setIsAudio] = useState(false);
   const [isVideo, setIsVideo] = useState(false);
+
+  const [actionState, setActionState] = useState(false);
 
   // Resource features
   const [title, setTitle] = useState("");
@@ -56,6 +67,8 @@ const ResourceManagement = () => {
   // Audio features
   const [ifListen, setIfListen] = useState(false);
   const [listenCount, setListenCount] = useState(0);
+
+  const [manageResources, setManageResources] = useState(false);
 
   const [resetFileInput, setResetFileInput] = useState(false); // State to track reset
 
@@ -219,6 +232,7 @@ const ResourceManagement = () => {
           console.log("Uploading article:", articleResource);
           await createNewArticle(articleResource);
           setUploadFinished(true);
+          setActionState(!actionState);
           resetForm();
         } catch (error) {
           setUploadFailed(true); // Set upload failed state
@@ -248,6 +262,7 @@ const ResourceManagement = () => {
             try {
               await createVideoResource(videoResource);
               setUploadFinished(true);
+              setActionState(!actionState);
               resetForm();
             } catch (error) {
               setUploadFailed(true); // Set upload failed state
@@ -269,6 +284,7 @@ const ResourceManagement = () => {
             try {
               console.log("Uploading audio:", audioResource);
               await createAudioResource(audioResource);
+              setActionState(!actionState);
               setUploadFinished(true);
               resetForm();
             } catch (error) {
@@ -286,198 +302,406 @@ const ResourceManagement = () => {
     setLoading(false); // Stop loading
   };
 
+  const handleManageResourcesClose = () => {
+    setManageResources(false);
+  };
+
+  // modal styles
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "none",
+    borderRadius: "15px",
+    boxShadow: 24,
+    pt: 2,
+    px: 4,
+    pb: 3,
+    zIndex: 0,
+  };
+
+  function CustomTabPanel(props) {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      </div>
+    );
+  }
+
+  function a11yProps(index) {
+    return {
+      id: `simple-tab-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
+    };
+  }
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  // modal styles
+
+  // fetch resources
+
+  // 1. articles
+  const [articleList, setArticleList] = useState([]);
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        let response = await getAllArticles();
+        if (response) {
+          setArticleList(response.data);
+        }
+      } catch (err) {
+        console.log("error fetching articles,error: ", err.message);
+      }
+    };
+    fetchArticles();
+  }, [actionState]);
+
+  // 2.videos
+  const [videoList, setVideoList] = useState([]);
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        let response = await getAllVideos();
+        if (response) {
+          setVideoList(response.data);
+        }
+      } catch (err) {
+        console.log("error fetching videos,error: ", err.message);
+      }
+    };
+    fetchVideos();
+  }, [actionState]);
+
+  // 3.audios
+  const [audioList, setAudioList] = useState([]);
+  useEffect(() => {
+    const fetchAudios = async () => {
+      try {
+        let response = await getAllAudios();
+        if (response) {
+          setAudioList(response.data);
+        }
+      } catch (err) {
+        console.log("error fetching audios,error: ", err.message);
+      }
+    };
+    fetchAudios();
+  }, [actionState]);
+
+  // fetch resources
+
   return (
-    <div>
-      {loading && (
-        <Box sx={{ width: "100%" }}>
-          <LinearProgress />
-        </Box>
-      )}
-      {uploadFinished && (
-        <Snackbar
-          open={uploadFinished}
-          autoHideDuration={5000}
-          onClose={() => {
-            setUploadFinished(false);
-          }}
+    <>
+      {/* manage resources modal */}
+      <div>
+        <Modal
+          open={manageResources}
+          onClose={handleManageResourcesClose}
+          aria-labelledby="parent-modal-title"
+          aria-describedby="parent-modal-description"
         >
-          <Alert
+          <Box
+            sx={{
+              ...style,
+              width: 900,
+              paddingLeft: 5,
+              paddingRight: 5,
+              paddingTop: 3,
+              paddingBottom: 3,
+              height: "700px",
+            }}
+          >
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                <Tab label="ARTICLES" {...a11yProps(0)} />
+                <Tab label="VIDEOS" {...a11yProps(1)} />
+                <Tab label="AUDIOS" {...a11yProps(2)} />
+              </Tabs>
+            </Box>
+
+            {/* article section */}
+            <CustomTabPanel value={value} index={0}>
+              <div className={styles.articleCardContainer}>
+                {articleList
+                  ? articleList.map((articleObj, index) => {
+                      return (
+                        <>
+                          <AuthorCard
+                            article={articleObj}
+                            modalClose={handleManageResourcesClose}
+                            actionState={actionState}
+                            actionStateFunction={setActionState}
+                          />
+                        </>
+                      );
+                    })
+                  : null}
+              </div>
+            </CustomTabPanel>
+            {/* article section */}
+
+            {/* video section */}
+            <CustomTabPanel value={value} index={1}>
+              <div className={styles.videoCardContainer}>
+                {videoList
+                  ? videoList.map((videoObj, index) => {
+                      return (
+                        <>
+                          <VideoCard
+                            video={videoObj}
+                            modalClose={handleManageResourcesClose}
+                            actionState={actionState}
+                            actionStateFunction={setActionState}
+                          />
+                        </>
+                      );
+                    })
+                  : null}
+              </div>
+            </CustomTabPanel>
+            {/* videoo section */}
+
+            {/* audio section */}
+            <CustomTabPanel value={value} index={2}>
+              <div className={styles.audioCardContainer}>
+                {audioList
+                  ? audioList.map((audObj, index) => {
+                      return (
+                        <>
+                          <AudioCard
+                            audio={audObj}
+                            modalClose={handleManageResourcesClose}
+                            actionState={actionState}
+                            actionStateFunction={setActionState}
+                          />
+                        </>
+                      );
+                    })
+                  : null}
+              </div>
+            </CustomTabPanel>
+            {/* audio section */}
+          </Box>
+        </Modal>
+      </div>
+      {/* manage resources modal */}
+      <div>
+        {loading && (
+          <Box sx={{ width: "100%" }}>
+            <LinearProgress />
+          </Box>
+        )}
+        {uploadFinished && (
+          <Snackbar
+            open={uploadFinished}
+            autoHideDuration={5000}
             onClose={() => {
               setUploadFinished(false);
             }}
-            severity="info"
-            variant="filled"
-            sx={{ width: "100%", color: "white" }}
           >
-            Resource uploaded successfully
-          </Alert>
-        </Snackbar>
-      )}
-      {uploadFailed && (
-        <Snackbar
-          open={uploadFailed}
-          autoHideDuration={6000}
-          onClose={() => setUploadFailed(false)}
-        >
-          <Alert severity="error" onClose={() => setUploadFailed(false)}>
-            File upload failed, Please try again
-          </Alert>
-        </Snackbar>
-      )}
-      <div style={{ display: "flex", justifyContent: "end" }}>
-        <Dash_btn1 btn_text="VIEW RESOURCES" inlineStyle={styles.btnPosition} />
-      </div>
-      <Grid
-        container
-        rowSpacing={3}
-        style={{ overflowY: "scroll", height: "65vh" }}
-      >
-        <Grid
-          item
-          xs={2}
-          style={{
-            display: "flex",
-            justifyContent: "start",
-            alignItems: "center",
-          }}
-        >
-          <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
-            Resource name :
-          </span>
-        </Grid>
-        <Grid item xs={10} style={{ paddingRight: "20px" }}>
-          <TextField
-            id="rName"
-            label="Enter resource name"
-            variant="outlined"
-            style={{ width: "100%" }}
-            value={title}
-            onChange={handleTitleChange}
+            <Alert
+              onClose={() => {
+                setUploadFinished(false);
+              }}
+              severity="info"
+              variant="filled"
+              sx={{ width: "100%", color: "white" }}
+            >
+              Resource uploaded successfully
+            </Alert>
+          </Snackbar>
+        )}
+        {uploadFailed && (
+          <Snackbar
+            open={uploadFailed}
+            autoHideDuration={6000}
+            onClose={() => setUploadFailed(false)}
+          >
+            <Alert severity="error" onClose={() => setUploadFailed(false)}>
+              File upload failed, Please try again
+            </Alert>
+          </Snackbar>
+        )}
+        <div style={{ display: "flex", justifyContent: "end" }}>
+          <Dash_btn1
+            btn_text="VIEW RESOURCES"
+            inlineStyle={styles.btnPosition}
+            callFunction={() => {
+              setManageResources(true);
+            }}
           />
-        </Grid>
+        </div>
         <Grid
-          item
-          xs={2}
-          style={{
-            display: "flex",
-            justifyContent: "start",
-            alignItems: "center",
-          }}
+          container
+          rowSpacing={3}
+          style={{ overflowY: "scroll", height: "80vh" }}
         >
-          <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
-            Resource tags :
-          </span>
-        </Grid>
-        <Grid item xs={10} style={{ paddingRight: "20px" }}>
-          <div className={styles.tagsContainer}>
-            <div className={styles.tagDisplay}>
-              {tags.map((tag, index) => (
-                <div className={styles.tag} key={index}>
-                  {tag}
-                  <img
-                    src={cancelIcon}
-                    style={{ width: "15px", cursor: "pointer" }}
-                    onClick={() => {
-                      const updatedTags = tags.filter((item) => item !== tag);
-                      setTags(updatedTags);
+          <Grid
+            item
+            xs={2}
+            style={{
+              display: "flex",
+              justifyContent: "start",
+              alignItems: "center",
+            }}
+          >
+            <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
+              Resource name :
+            </span>
+          </Grid>
+          <Grid item xs={10} style={{ paddingRight: "20px" }}>
+            <TextField
+              id="rName"
+              label="Enter resource name"
+              variant="outlined"
+              style={{ width: "100%" }}
+              value={title}
+              onChange={handleTitleChange}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={2}
+            style={{
+              display: "flex",
+              justifyContent: "start",
+              alignItems: "center",
+            }}
+          >
+            <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
+              Resource tags :
+            </span>
+          </Grid>
+          <Grid item xs={10} style={{ paddingRight: "20px" }}>
+            <div className={styles.tagsContainer}>
+              <div className={styles.tagDisplay}>
+                {tags.map((tag, index) => (
+                  <div className={styles.tag} key={index}>
+                    {tag}
+                    <img
+                      src={cancelIcon}
+                      style={{ width: "15px", cursor: "pointer" }}
+                      onClick={() => {
+                        const updatedTags = tags.filter((item) => item !== tag);
+                        setTags(updatedTags);
+                      }}
+                    />
+                  </div>
+                ))}
+                <div className={styles.tagInput}>
+                  <input
+                    id="tgIn"
+                    className={styles.tgIn}
+                    placeholder="Enter resource tags"
+                    onChange={handleTagChange}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        if (
+                          !tags.includes(tag.trim().toLowerCase()) &&
+                          tag.trim().length !== 0
+                        ) {
+                          setTags([...tags, tag.toLowerCase()]);
+                        }
+                        document.getElementById("tgIn").value = "";
+                      }
                     }}
                   />
                 </div>
-              ))}
-              <div className={styles.tagInput}>
-                <input
-                  id="tgIn"
-                  className={styles.tgIn}
-                  placeholder="Enter resource tags"
-                  onChange={handleTagChange}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                      if (
-                        !tags.includes(tag.trim().toLowerCase()) &&
-                        tag.trim().length !== 0
-                      ) {
-                        setTags([...tags, tag.toLowerCase()]);
-                      }
-                      document.getElementById("tgIn").value = "";
-                    }
-                  }}
-                />
               </div>
             </div>
-          </div>
+          </Grid>
+          <Grid
+            item
+            xs={2}
+            style={{
+              display: "flex",
+              justifyContent: "start",
+              alignItems: "center",
+            }}
+          >
+            <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
+              Resource category :
+            </span>
+          </Grid>
+          <Grid item xs={10}>
+            <FormControl style={{ width: "50%" }} size="small">
+              <InputLabel id="demo-select-small-label">
+                Select resource category
+              </InputLabel>
+              <Select
+                labelId="demo-select-large-label"
+                id="rCategory"
+                value={category}
+                label="category"
+                style={{ height: "55px" }}
+                onChange={handleCategoryChange}
+              >
+                <MenuItem value={"video"}>Video</MenuItem>
+                <MenuItem value={"audio"}>Audio</MenuItem>
+                <MenuItem value={"pdf"}>Article(Create article)</MenuItem>
+                <MenuItem value={"story"}>Story(pdf)</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} padding={5}>
+            {!isArticle ? (
+              <DropFileInput
+                isCancelled={isCancel}
+                onFileChange={handleFileChange}
+                type={fileType}
+                ifProfileImg={false}
+                reset={resetFileInput}
+              />
+            ) : (
+              <CreateArticle onArticleSubmit={addArticleToResource} />
+            )}
+          </Grid>
         </Grid>
-        <Grid
-          item
-          xs={2}
-          style={{
-            display: "flex",
-            justifyContent: "start",
-            alignItems: "center",
-          }}
-        >
-          <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
-            Resource category :
-          </span>
-        </Grid>
-        <Grid item xs={10}>
-          <FormControl style={{ width: "50%" }} size="small">
-            <InputLabel id="demo-select-small-label">
-              Select resource category
-            </InputLabel>
-            <Select
-              labelId="demo-select-large-label"
-              id="rCategory"
-              value={category}
-              label="category"
-              style={{ height: "55px" }}
-              onChange={handleCategoryChange}
-            >
-              <MenuItem value={"video"}>Video</MenuItem>
-              <MenuItem value={"audio"}>Audio</MenuItem>
-              <MenuItem value={"pdf"}>Article(Create article)</MenuItem>
-              <MenuItem value={"story"}>Story(pdf)</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12} padding={5}>
-          {!isArticle ? (
-            <DropFileInput
-              isCancelled={isCancel}
-              onFileChange={handleFileChange}
-              type={fileType}
-              ifProfileImg={false}
-              reset={resetFileInput}
+        <div style={{ display: "flex", justifyContent: "end" }}>
+          <div
+            style={{
+              display:
+                title !== "" &&
+                tags.length > 0 &&
+                category !== "" &&
+                (file !== null || (isArticle && article.title))
+                  ? "block"
+                  : "none",
+            }}
+          >
+            <Dash_btn1
+              btn_text="UPLOAD RESOURCE"
+              inlineStyle={styles.btnPosition}
+              callFunction={uploadResource}
             />
-          ) : (
-            <CreateArticle onArticleSubmit={addArticleToResource} />
-          )}
-        </Grid>
-      </Grid>
-      <div style={{ display: "flex", justifyContent: "end" }}>
-        <div
-          style={{
-            display:
-              title !== "" &&
-              tags.length > 0 &&
-              category !== "" &&
-              (file !== null || (isArticle && article.title))
-                ? "block"
-                : "none",
-          }}
-        >
-          <Dash_btn1
-            btn_text="UPLOAD RESOURCE"
+          </div>
+          <Dash_btn2
+            btn_text="CANCEL UPLOAD"
             inlineStyle={styles.btnPosition}
-            callFunction={uploadResource}
+            onClickEvent={() => setIsCancel(true)}
           />
         </div>
-        <Dash_btn2
-          btn_text="CANCEL UPLOAD"
-          inlineStyle={styles.btnPosition}
-          onClickEvent={() => setIsCancel(true)}
-        />
       </div>
-    </div>
+    </>
   );
 };
 

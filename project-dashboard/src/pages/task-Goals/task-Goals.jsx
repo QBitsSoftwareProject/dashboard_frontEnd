@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 
 import Modal from "@mui/material/Modal";
+import Swal from "sweetalert2";
 
 // dashboard buttons
 import Dash_btn1 from "../../components/ui/dash_btn/dash_btn1";
@@ -31,9 +32,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import {
   createGoal,
+  createTask,
   deleteGoal,
+  deleteTask,
   editGoal,
+  editTask,
   getAllGoals,
+  getAllTasks,
 } from "../../services/adminServices/adminServices";
 // table components
 
@@ -42,20 +47,13 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Snackbar from "@mui/material/Snackbar";
 
 import cancelIcon from "../../assets/images/dragAndDrop/cancel.png";
+import LoadingScreen from "../../components/ui/loadingScreen/LoadingScreen";
 
 function createData(name, setDate, lastUpdate, actions) {
   return { name, setDate, lastUpdate, actions };
 }
 
 function TaskGoals() {
-  const openNewTask = () => {
-    document.getElementById("newTask").style.width = "100%";
-  };
-
-  const closeNewTask = () => {
-    document.getElementById("newTask").style.width = "0%";
-  };
-
   const openCheckTask = () => {
     document.getElementById("checkTask").style.width = "100%";
   };
@@ -82,14 +80,30 @@ function TaskGoals() {
   const [goalSubTitle, setGoalSubTitle] = useState("");
   const [goalDescription, setGoalDescription] = useState("");
   const [goalCategory, setGoalCategory] = useState("");
-  const [objectives, setObjectives] = useState([]);
-  const [objective, setObjective] = useState("");
   const [timeDuration, setTimeDuration] = useState();
   const [timeCategory, setTimeCategory] = useState("");
+
+  // GOAL OBJECTIVES
+  const [goalObjectives, setGoalObjectives] = useState([]);
+  const [goalObjective, setGoalObjective] = useState("");
+  const [objectives, setObjectives] = useState([]);
+  const [objective, setObjective] = useState("");
+
+  // selection deletes
+  const [selectedTask, setSelectedTask] = useState({});
+  const [selectedGoal, setSelectedGoal] = useState({});
+  const [taskSelectionList, setTaskSelectionList] = useState([]);
+  const [goalSelectionList, setGoalSelectionList] = useState([]);
+  // selection deletes
 
   const handleObjectiveChange = (event) => {
     setObjective(event.target.value);
   };
+
+  const handleGoalObjective = (event) => {
+    setGoalObjective(event.target.value);
+  };
+  // GOAL OBJECTIVES
 
   const handleGoalCategory = (event) => {
     setGoalCategory(event.target.value);
@@ -103,28 +117,111 @@ function TaskGoals() {
     setTimeDuration(event.target.value);
   };
 
-  const goalDeleter = async () => {
-    try {
-      await deleteGoal(goalToDelete._id);
-    } catch (err) {
-      console.log("failed to delete goal", err.message);
-    }
-    setActionState(!actionState);
-  };
-
   const [editedTime, setEditedTime] = useState("");
 
   const handleEditTimeDuration = (event) => {
     setEditedTime(event.target.value);
   };
 
-  const editGoalData = async () => {
-    setGoalTitle(goalToEdit.title);
-    setGoalSubTitle(goalToEdit.subTitle);
-    setGoalDescription(goalToEdit.description);
-    setObjectives(goalToEdit.objectives);
-    setEditedTime(goalToEdit.duration);
-    setGoalCategory(goalToEdit.category);
+  const editGoalData = (goal) => {
+    setGoalTitle(goal.title);
+    setGoalSubTitle(goal.subTitle);
+    setGoalDescription(goal.description);
+    setObjectives(goal.objectives);
+    setEditedTime(goal.duration);
+    setGoalCategory(goal.category);
+  };
+
+  const editTaskData = async (task) => {
+    setHeadText(task.headText);
+    setHeadSubText(task.subText);
+    setTaskDay(task.day);
+    setTaskNumber(task.taskNumber);
+    setTaskDuration(task.duration);
+    setTaskStepList(task.steps);
+  };
+
+  const taskEditor = async () => {
+    let taskIdToEdit = taskToEdit._id;
+    const editedTask = {
+      headText: headText,
+      subText: headSubText,
+      steps: taskStepList,
+      duration: taskDuration,
+      day: taskDay,
+      taskNumber: taskNumber,
+    };
+    try {
+      // console.log("Editing task...", editedTask);
+      await editTask(taskIdToEdit, editedTask);
+      setOpenTaskEditor(false);
+      setActionState(!actionState);
+    } catch (err) {
+      console.log("failed to edit task, error:" + err.message);
+    }
+  };
+
+  const taskDeletor = async (taskIdToDelete) => {
+    Swal.fire({
+      title: "Are you sure you want to delete this task?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0066ff",
+      cancelButtonColor: "rgb(0, 102, 255,0.5)",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteTask(taskIdToDelete);
+          setActionState(!actionState);
+          Swal.fire({
+            title: "Deleted!",
+            text: "Task has been deleted.",
+            icon: "success",
+          });
+        } catch (err) {
+          console.log("failed to delete task,error: " + err.message);
+        }
+      }
+    });
+  };
+
+  const goalDeleter = async (goalIdToDelete) => {
+    Swal.fire({
+      title: "Are you sure you want to delete this goal?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#0066ff",
+      cancelButtonColor: "rgb(0, 102, 255,0.5)",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteGoal(goalIdToDelete);
+          setActionState(!actionState);
+          Swal.fire({
+            title: "Deleted!",
+            text: "Goal has been deleted.",
+            icon: "success",
+          });
+        } catch (err) {
+          console.log("failed to delete goal", err.message);
+        }
+      }
+    });
+  };
+
+  const handleCheckboxChange = (event) => {
+    const isChecked = event.target.checked;
+    if (isChecked) {
+      setTaskSelectionList([...taskSelectionList, selectedTask._id]);
+    } else {
+      const updatedTaskSelectionList = taskSelectionList.filter(
+        (item) => item !== selectedTask._id
+      );
+      setTaskSelectionList(updatedTaskSelectionList);
+    }
+    console.log(taskSelectionList);
   };
 
   const goalEditor = async () => {
@@ -138,12 +235,17 @@ function TaskGoals() {
       duration: timeDuration + " " + timeCategory,
       category: goalCategory,
     };
+
     try {
       console.log("editing selected goal...", goalObjectToEdit);
       await editGoal(goalToEdit._id, goalObjectToEdit);
       setFinishNewGoal(true);
+      setGoalLoading(false);
+      setActionState(!actionState);
     } catch (err) {
       setFailedNewGoal(true);
+      setGoalLoading(false);
+      setActionState(!actionState);
       alert("Failed to edit goal, error: " + err.message);
     }
   };
@@ -154,9 +256,9 @@ function TaskGoals() {
       title: goalTitle,
       subTitle: goalSubTitle,
       description: goalDescription,
-      objectives: objectives,
+      objectives: goalObjectives,
       completness: false,
-      duration: editedTime,
+      duration: timeDuration,
       category: goalCategory,
     };
     try {
@@ -173,46 +275,18 @@ function TaskGoals() {
 
   // create new goal
 
-  const actions = (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        gap: 20,
-        height: 20,
-      }}
-    >
-      <Tooltip title="Check" placement="left">
-        <img
-          src={lookIcon}
-          className={styles.actionIcons}
-          onClick={openCheckTask}
-        />
-      </Tooltip>
-      <Tooltip title="Edit" placement="bottom">
-        <img src={editIcon} className={styles.actionIcons} />
-      </Tooltip>
-      <Tooltip title="Delete" placement="right">
-        <img src={binIcon} className={styles.actionIcons} />
-      </Tooltip>
-    </div>
-  );
-
-  const [taskName, setTaskName] = useState("");
-  const [taskDescription, setTaskDescription] = useState("");
-
   // actions
   const [goalToCheck, setGoalToCheck] = useState({});
   const [goalToEdit, setGoalToEdit] = useState({});
-  const [goalToDelete, setGoalToDelete] = useState({});
   const [actionState, setActionState] = useState(false);
   // actions
 
   const [openGoalCreator, setOpenGoalCreator] = React.useState(false);
+  const [openTaskCreator, setOpenTaskCreator] = React.useState(false);
 
-  //goal editor
+  //goal and task editor
   const [openGoalEditor, setOpenGoalEditor] = React.useState(false);
+  const [openTaskEditor, setOpenTaskEditor] = React.useState(false);
 
   const handleGoalCreatorClose = () => {
     setOpenGoalCreator(false);
@@ -221,20 +295,50 @@ function TaskGoals() {
   const handleGoalEditorClose = () => {
     setOpenGoalEditor(false);
   };
-  //goal editor
 
-  const [tasks, setTasks] = useState([
-    {
-      name: "Task 001",
-      description:
-        "Eu aliqua laboris pariatur qui non consequat in officia et qui. Ullamco excepteur ipsum laboris cupidatat consectetur sit amet dolore sit aliquip. Qui voluptate sit ut culpa amet culpa anim. Laborum consectetur commodo non ipsum tempor ea qui nostrud est. Ea proident labore aliquip ad ad dolor eu ad ea nostrud amet labore dolore quis. Dolore mollit cillum enim est. Occaecat minim minim veniam incididunt occaecat deserunt irure commodo eu labore excepteur est enim.",
-      setDate: "02/02/2024",
-      lastUpdate: "02/03/2024",
-      actions,
-    },
-  ]);
+  const handleTaskCreatorClose = () => {
+    setOpenTaskCreator(false);
+  };
+
+  const handleTaskEditorClose = () => {
+    setOpenTaskEditor(false);
+  };
+  //goal and task editor
 
   const [goals, setGoals] = useState([]);
+  const [taskList, setTaskList] = useState([]);
+
+  // task services
+  const [headText, setHeadText] = useState("");
+  const [headSubText, setHeadSubText] = useState("");
+  const [taskStepList, setTaskStepList] = useState([]);
+  const [taskStep, setTaskStep] = useState("");
+  const [taskDuration, setTaskDuration] = useState("");
+  const [taskDay, setTaskDay] = useState("");
+  const [taskNumber, setTaskNumber] = useState("");
+
+  const [taskToCheck, setTaskToCheck] = useState("");
+  const [taskToEdit, setTaskToEdit] = useState([]);
+
+  const createNewTask = async () => {
+    const newTask = {
+      headText: headText,
+      subText: headSubText,
+      steps: taskStepList,
+      duration: taskDuration,
+      day: taskDay,
+      taskNumber: taskNumber,
+    };
+    try {
+      console.log("Creating new task...", newTask);
+      await createTask(newTask);
+      setOpenTaskCreator(false);
+      setActionState(!actionState);
+    } catch (err) {
+      alert("Failed to create task, error: " + err.message);
+    }
+  };
+  // task services
 
   // modal styles
   const style = {
@@ -253,35 +357,43 @@ function TaskGoals() {
   };
   // modal styles
 
+  //fetch goals
   useEffect(() => {
     const fetchGoals = async () => {
+      setLoadingState(true);
       let response = await getAllGoals();
       if (response) {
         setGoals(response.data);
+        setLoadingState(false);
       }
     };
     fetchGoals();
   }, [finishNewGoal, actionState]);
+  //fetch goals
+
+  // fetch tasks
+  useEffect(() => {
+    const fetchTasks = async () => {
+      setLoadingState(true);
+      try {
+        let response = await getAllTasks();
+        if (response) {
+          setTaskList(response.data);
+          setLoadingState(false);
+        }
+      } catch (err) {
+        console.log("failed to fetch tasks,error: ", err.message);
+      }
+    };
+    fetchTasks();
+  }, [actionState]);
+  // fetch tasks
 
   const checkBox = <Checkbox defaultChecked color="success" />;
 
-  const rows = [
-    createData("Task 001", "02/02/2024", "02/03/2024", actions),
-    createData("Task 002", "02/02/2024", "02/03/2024", actions),
-    createData("Task 003", "03/03/2024", "03/04/2024", actions),
-    createData("Task 004", "04/04/2024", "04/05/2024", actions),
-    createData("Task 005", "05/05/2024", "05/06/2024", actions),
-    createData("Task 006", "05/05/2024", "05/06/2024", actions),
-    createData("Task 007", "05/05/2024", "05/06/2024", actions),
-    createData("Task 008", "05/05/2024", "05/06/2024", actions),
-    createData("Task 009", "05/05/2024", "05/06/2024", actions),
-    createData("Task 010", "05/05/2024", "05/06/2024", actions),
-    createData("Task 011", "05/05/2024", "05/06/2024", actions),
-    createData("Task 012", "05/05/2024", "05/06/2024", actions),
-    createData("Task 013", "01/01/2024", "01/02/2024", actions),
-  ];
-
   const [isGoalsChecked, setIsGoalsChecked] = useState(false);
+
+  const [loadingState, setLoadingState] = useState(true);
 
   const handleGoalsCheckboxChange = () => {
     setIsGoalsChecked(!isGoalsChecked); // Toggle checkbox state
@@ -357,7 +469,7 @@ function TaskGoals() {
                 <label for="Goals"></label>
               </div>
             </section>
-            <h6>Goals</h6>
+            <h6>GOALS</h6>
           </div>
           <div
             style={{
@@ -396,7 +508,12 @@ function TaskGoals() {
           }}
         >
           {isTasksChecked ? (
-            <Dash_btn1 btn_text="CREATE NEW TASK" callFunction={openNewTask} />
+            <Dash_btn1
+              btn_text="CREATE NEW TASK"
+              callFunction={() => {
+                setOpenTaskCreator(true);
+              }}
+            />
           ) : (
             <Dash_btn1
               btn_text="CREATE NEW GOAL"
@@ -406,6 +523,7 @@ function TaskGoals() {
           <Dash_btn1 btn_text="DELETE SELECTED" />
         </Grid>
       </Grid>
+
       {/* topic */}
       <Grid
         item
@@ -427,51 +545,130 @@ function TaskGoals() {
         </Grid>
       </Grid>
       {/* topic */}
+
       {isTasksChecked ? (
         // task table
-        <div style={{ width: "100%", height: "70vh", overflowY: "scroll" }}>
-          <Grid item xs={12}>
-            <TableContainer>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="center" style={{ fontWeight: "bold" }}>
-                      {" "}
-                      Name{" "}
-                    </TableCell>
-                    <TableCell align="center" style={{ fontWeight: "bold" }}>
-                      Set Date
-                    </TableCell>
-                    <TableCell align="center" style={{ fontWeight: "bold" }}>
-                      Last update
-                    </TableCell>
-                    <TableCell align="center" style={{ fontWeight: "bold" }}>
-                      Actions
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {tasks.map((row) => (
-                    <TableRow
-                      key={row.name}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row" align="left">
-                        <Checkbox defaultChecked={false} />
-                        {row.name}
+        loadingState ? (
+          <div
+            style={{
+              width:"100%",
+              height:"50vh",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <LoadingScreen />
+          </div>
+        ) : (
+          <div style={{ width: "100%", height: "70vh", overflowY: "scroll" }}>
+            <Grid item xs={12}>
+              <TableContainer>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="left" style={{ fontWeight: "bold" }}>
+                        {" "}
+                        Head text{" "}
                       </TableCell>
-                      <TableCell align="center">{row.setDate}</TableCell>
-                      <TableCell align="center">{row.lastUpdate}</TableCell>
-                      <TableCell align="center">{row.actions}</TableCell>
+                      <TableCell align="center" style={{ fontWeight: "bold" }}>
+                        Sub Text
+                      </TableCell>
+                      <TableCell align="center" style={{ fontWeight: "bold" }}>
+                        Duration
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        style={{ fontWeight: "bold" }}
+                      ></TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid>
+                  </TableHead>
+                  <TableBody>
+                    {taskList.map((taskRow) => (
+                      <TableRow
+                        key={taskRow.name}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row" align="left">
+                          <Checkbox
+                            defaultChecked={false}
+                            onChange={(event) => {
+                              setSelectedTask(taskRow);
+                              handleCheckboxChange(event);
+                            }}
+                          />
+                          {taskRow.headText}
+                        </TableCell>
+                        <TableCell align="center">{taskRow.subText}</TableCell>
+                        <TableCell align="center">{taskRow.duration}</TableCell>
+                        <TableCell align="center">
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              justifyContent: "center",
+                              gap: 20,
+                              height: 20,
+                            }}
+                          >
+                            <Tooltip title="Check" placement="left">
+                              <img
+                                src={lookIcon}
+                                className={styles.actionIcons}
+                                onClick={() => {
+                                  setTaskToCheck(taskRow);
+                                  openCheckTask();
+                                }}
+                              />
+                            </Tooltip>
+                            <Tooltip title="Edit" placement="bottom">
+                              <img
+                                src={editIcon}
+                                className={styles.actionIcons}
+                                onClick={() => {
+                                  editTaskData(taskRow);
+                                  setTaskToEdit(taskRow);
+                                  setOpenTaskEditor(true);
+                                }}
+                              />
+                            </Tooltip>
+                            <Tooltip title="Delete" placement="right">
+                              <img
+                                src={binIcon}
+                                className={styles.actionIcons}
+                                onClick={() => {
+                                  // setTaskToDelete(taskRow);
+                                  taskDeletor(taskRow._id);
+                                }}
+                              />
+                            </Tooltip>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
+          </div>
+        )
+      ) : // task table
+
+      loadingState ? (
+        <div
+          style={{
+            width: "100%",
+            height: "50vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <LoadingScreen />
         </div>
       ) : (
-        // task table
         // goals table
         <div style={{ width: "100%", height: "70vh", overflowY: "scroll" }}>
           <Grid item xs={12}>
@@ -489,9 +686,10 @@ function TaskGoals() {
                     <TableCell align="center" style={{ fontWeight: "bold" }}>
                       Current Rating
                     </TableCell>
-                    <TableCell align="center" style={{ fontWeight: "bold" }}>
-                      Actions
-                    </TableCell>
+                    <TableCell
+                      align="center"
+                      style={{ fontWeight: "bold" }}
+                    ></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -533,9 +731,9 @@ function TaskGoals() {
                               src={editIcon}
                               className={styles.actionIcons}
                               onClick={() => {
+                                editGoalData(goalRow);
                                 setGoalToEdit(goalRow);
                                 setOpenGoalEditor(true);
-                                editGoalData();
                               }}
                             />
                           </Tooltip>
@@ -544,8 +742,7 @@ function TaskGoals() {
                               src={binIcon}
                               className={styles.actionIcons}
                               onClick={() => {
-                                setGoalToDelete(goalRow);
-                                goalDeleter();
+                                goalDeleter(goalRow._id);
                               }}
                             />
                           </Tooltip>
@@ -561,59 +758,352 @@ function TaskGoals() {
         // goals table
       )}
 
-      {/* creating new task */}
-      <div id="newTask" className={styles.overlay}>
-        {/* <!-- Button to close the overlay navigation --> */}
-        <a
-          href="javascript:void(0)"
-          className={styles.closebtn}
-          onClick={closeNewTask}
+      {/* creating task modal */}
+      <div>
+        <Modal
+          open={openTaskCreator}
+          onClose={handleTaskCreatorClose}
+          aria-labelledby="parent-modal-title"
+          aria-describedby="parent-modal-description"
         >
-          &times;
-        </a>
-
-        {/* <!-- Overlay content --> */}
-        <div className={styles.overlay_content}>
-          <div
-            className={styles.newTaskForm}
-            style={{ justifyContent: "flex-start" }}
+          <Box
+            sx={{
+              ...style,
+              width: 800,
+              paddingLeft: 5,
+              paddingRight: 5,
+              paddingTop: 3,
+              paddingBottom: 3,
+            }}
           >
-            <h5>CREATE NEW TASK</h5>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {goalLoading && (
+              <Box sx={{ width: "100%" }}>
+                <LinearProgress />
+              </Box>
+            )}
+            <h4>CREATE NEW TASK</h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <TextField
+                  type="number"
+                  inputProps={{ min: 0 }}
+                  id="standard-basic"
+                  label="Task Day"
+                  variant="standard"
+                  style={{ width: "30%" }}
+                  placeholder="Day X"
+                  onChange={(event) => {
+                    setTaskDay(event.target.value.toString());
+                  }}
+                />
+                <TextField
+                  type="number"
+                  inputProps={{ min: 0 }}
+                  id="standard-basic"
+                  label="Task X"
+                  variant="standard"
+                  style={{ width: "30%" }}
+                  placeholder="Day X"
+                  onChange={(event) => {
+                    setTaskNumber("task" + event.target.value);
+                  }}
+                />
+                <FormControl style={{ width: "30%" }} size="small">
+                  <InputLabel id="demo-select-small-label">
+                    Select task duration
+                  </InputLabel>
+                  <Select
+                    labelId="demo-select-large-label"
+                    id="taskDuration"
+                    label="category"
+                    style={{ height: "55px" }}
+                    onChange={(event) => {
+                      setTaskDuration(event.target.value);
+                    }}
+                  >
+                    <MenuItem value={"short-term"}>Short Term</MenuItem>
+                    <MenuItem value={"medium-term"}>Medium Term</MenuItem>
+                    <MenuItem value={"long-term"}>Long Term</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
               <TextField
                 id="standard-basic"
-                label="Task name"
+                label="Task head text"
                 variant="standard"
                 style={{ width: "100%" }}
                 onChange={(event) => {
-                  setTaskName(event.target.value);
+                  setHeadText(event.target.value);
                 }}
               />
               <TextField
                 id="standard-basic"
-                label="Task description"
+                label="Task head sub text"
                 variant="standard"
                 style={{ width: "100%" }}
                 onChange={(event) => {
-                  setTaskDescription(event.target.value);
+                  setHeadSubText(event.target.value);
                 }}
               />
-              <h5>Task Description:</h5>
-              <textarea id="myTextarea" className={styles.input_like} />
+              <h5 style={{ textAlign: "left" }}>INCLUDE TASK STEPS</h5>
+              <div className={styles.stepContainer}>
+                {taskStepList ? (
+                  <div className={styles.stepLine}>
+                    {taskStepList.map((taskStep, index) => {
+                      return (
+                        <>
+                          <div className={styles.step}>
+                            <div className={styles.stepNo}>
+                              <h4>STEP {index + 1}</h4>
+                            </div>
+                            <div className={styles.stepText}>{taskStep}</div>
+                            <div className={styles.cancelBtnContainer}>
+                              {index == taskStepList.length - 1 ? (
+                                <img
+                                  src={cancelIcon}
+                                  style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() => {
+                                    const updatedTaskStepList =
+                                      taskStepList.filter(
+                                        (item) => item !== taskStep
+                                      );
+                                    setTaskStepList(updatedTaskStepList);
+                                  }}
+                                />
+                              ) : null}
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })}
+                    <div className={styles.step}>
+                      <div className={styles.stepNo}>
+                        <h4>STEP {taskStepList.length + 1}</h4>
+                      </div>
+                      <div className={styles.stepText}>
+                        <input
+                          id="taskStepInput"
+                          className={styles.stepInput}
+                          placeholder={`Type what to do in step ${
+                            taskStepList.length + 1
+                          }`}
+                          onChange={(event) => {
+                            setTaskStep(event.target.value);
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter") {
+                              if (
+                                !taskStepList.includes(
+                                  taskStep.trim().toLowerCase()
+                                ) &&
+                                taskStep.trim().length !== 0
+                              ) {
+                                setTaskStepList([
+                                  ...taskStepList,
+                                  taskStep.toLowerCase(),
+                                ]);
+                              }
+                              document.getElementById("taskStepInput").value =
+                                "";
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: 20,
+                }}
+              >
+                <div className={styles.createGoalBtn} onClick={createNewTask}>
+                  Create Task
+                </div>
+              </div>
             </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                paddingTop: 20,
-              }}
-            >
-              <Dash_btn1 btn_text="CREATE NEW TASK" />
-            </div>
-          </div>
-        </div>
+          </Box>
+        </Modal>
       </div>
-      {/* creating new task */}
+      {/* creating task modal */}
+
+      {/* edit task modal */}
+      <div>
+        <Modal
+          open={openTaskEditor}
+          onClose={handleTaskEditorClose}
+          aria-labelledby="parent-modal-title"
+          aria-describedby="parent-modal-description"
+        >
+          <Box
+            sx={{
+              ...style,
+              width: 800,
+              paddingLeft: 5,
+              paddingRight: 5,
+              paddingTop: 3,
+              paddingBottom: 3,
+            }}
+          >
+            {goalLoading && (
+              <Box sx={{ width: "100%" }}>
+                <LinearProgress />
+              </Box>
+            )}
+            <h4>EDIT TASK</h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <FormControl style={{ width: "30%" }} size="small">
+                  <InputLabel id="demo-select-small-label">
+                    Select task duration
+                  </InputLabel>
+                  <Select
+                    labelId="demo-select-large-label"
+                    id="taskDuration"
+                    label="category"
+                    value={taskDuration}
+                    style={{ height: "55px" }}
+                    onChange={(event) => {
+                      setTaskDuration(event.target.value);
+                    }}
+                  >
+                    <MenuItem value={"short-term"}>Short Term</MenuItem>
+                    <MenuItem value={"medium-term"}>Medium Term</MenuItem>
+                    <MenuItem value={"long-term"}>Long Term</MenuItem>
+                  </Select>
+                </FormControl>
+              </div>
+              <TextField
+                id="standard-basic"
+                label="Task head text"
+                variant="standard"
+                value={headText}
+                style={{ width: "100%" }}
+                onChange={(event) => {
+                  setHeadText(event.target.value);
+                }}
+              />
+              <TextField
+                id="standard-basic"
+                label="Task head sub text"
+                value={headSubText}
+                variant="standard"
+                style={{ width: "100%" }}
+                onChange={(event) => {
+                  setHeadSubText(event.target.value);
+                }}
+              />
+              <h5 style={{ textAlign: "left" }}>EDIT TASK STEPS</h5>
+              <div className={styles.stepContainer}>
+                {taskStepList ? (
+                  <div className={styles.stepLine}>
+                    {taskStepList.map((taskStep, index) => {
+                      return (
+                        <>
+                          <div className={styles.step}>
+                            <div className={styles.stepNo}>
+                              <h4>STEP {index + 1}</h4>
+                            </div>
+                            <div className={styles.stepText}>{taskStep}</div>
+                            <div className={styles.cancelBtnContainer}>
+                              {index == taskStepList.length - 1 ? (
+                                <img
+                                  src={cancelIcon}
+                                  style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() => {
+                                    const updatedTaskStepList =
+                                      taskStepList.filter(
+                                        (item) => item !== taskStep
+                                      );
+                                    setTaskStepList(updatedTaskStepList);
+                                  }}
+                                />
+                              ) : null}
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })}
+                    <div className={styles.step}>
+                      <div className={styles.stepNo}>
+                        <h4>STEP {taskStepList.length + 1}</h4>
+                      </div>
+                      <div className={styles.stepText}>
+                        <input
+                          id="taskStepInput"
+                          className={styles.stepInput}
+                          placeholder={`Type what to do in step ${
+                            taskStepList.length + 1
+                          }`}
+                          onChange={(event) => {
+                            setTaskStep(event.target.value);
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter") {
+                              if (
+                                !taskStepList.includes(
+                                  taskStep.trim().toLowerCase()
+                                ) &&
+                                taskStep.trim().length !== 0
+                              ) {
+                                setTaskStepList([
+                                  ...taskStepList,
+                                  taskStep.toLowerCase(),
+                                ]);
+                              }
+                              document.getElementById("taskStepInput").value =
+                                "";
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: 20,
+                }}
+              >
+                <div className={styles.createGoalBtn} onClick={taskEditor}>
+                  Edit Task
+                </div>
+              </div>
+            </div>
+          </Box>
+        </Modal>
+      </div>
+      {/* edit task modal */}
 
       {/* create goal modal */}
       <div>
@@ -638,6 +1128,7 @@ function TaskGoals() {
                 <LinearProgress />
               </Box>
             )}
+            <h4>CREATE NEW GOAL</h4>
             <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
               <TextField
                 id="standard-basic"
@@ -711,38 +1202,42 @@ function TaskGoals() {
               <Grid item xs={12}>
                 <div className={styles.tagsContainer}>
                   <div className={styles.tagDisplay}>
-                    {objectives.map((oneObjective, index) => (
-                      <div className={styles.tag} key={index}>
-                        {oneObjective}
-                        <img
-                          src={cancelIcon}
-                          style={{ width: "15px", cursor: "pointer" }}
-                          onClick={() => {
-                            const updatedObjectives = objectives.filter(
-                              (item) => item !== oneObjective
-                            );
-                            setObjectives(updatedObjectives);
-                          }}
-                        />
-                      </div>
-                    ))}
+                    <div
+                      style={{ display: "flex", flexDirection: "row", gap: 10 }}
+                    >
+                      {goalObjectives.map((oneObjective, index) => (
+                        <div className={styles.tag} key={index}>
+                          {oneObjective}
+                          <img
+                            src={cancelIcon}
+                            style={{ width: "15px", cursor: "pointer" }}
+                            onClick={() => {
+                              const updatedObjectives = goalObjectives.filter(
+                                (item) => item !== oneObjective
+                              );
+                              setGoalObjectives(updatedObjectives);
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
                     <div className={styles.tagInput}>
                       <input
                         id="tgIn"
                         className={styles.tgIn}
                         placeholder="Enter goal objectives"
-                        onChange={handleObjectiveChange}
+                        onChange={handleGoalObjective}
                         onKeyDown={(event) => {
                           if (event.key === "Enter") {
                             if (
-                              !objectives.includes(
-                                objective.trim().toLowerCase()
+                              !goalObjectives.includes(
+                                goalObjective.trim().toLowerCase()
                               ) &&
-                              objective.trim().length !== 0
+                              goalObjective.trim().length !== 0
                             ) {
-                              setObjectives([
-                                ...objectives,
-                                objective.toLowerCase(),
+                              setGoalObjectives([
+                                ...goalObjectives,
+                                goalObjective.toLowerCase(),
                               ]);
                             }
                             document.getElementById("tgIn").value = "";
@@ -825,7 +1320,7 @@ function TaskGoals() {
                 id="standard-basic"
                 label="Goal Title"
                 variant="standard"
-                value={goalToEdit.title}
+                value={goalTitle}
                 style={{ width: "100%" }}
                 onChange={(event) => {
                   setGoalTitle(event.target.value);
@@ -835,7 +1330,7 @@ function TaskGoals() {
                 id="standard-basic"
                 label="Goal Sub-Title"
                 variant="standard"
-                value={goalToEdit.subTitle}
+                value={goalSubTitle}
                 style={{ width: "100%" }}
                 onChange={(event) => {
                   setGoalSubTitle(event.target.value);
@@ -851,7 +1346,7 @@ function TaskGoals() {
                 <Select
                   labelId="demo-select-large-label"
                   id="goalCategory"
-                  value={goalToEdit.category}
+                  value={goalCategory}
                   label="duration"
                   style={{ height: "55px" }}
                   onChange={handleGoalCategory}
@@ -872,10 +1367,11 @@ function TaskGoals() {
                   </MenuItem>
                 </Select>
               </FormControl>
+
               <textarea
                 placeholder="Goal Description"
                 id="myTextarea"
-                value={goalToEdit.description}
+                value={goalDescription}
                 style={{
                   marginTop: 10,
                   fontFamily: "inherit",
@@ -906,9 +1402,11 @@ function TaskGoals() {
                           src={cancelIcon}
                           style={{ width: "15px", cursor: "pointer" }}
                           onClick={() => {
-                            const updatedObjectives = objectives.filter(
-                              (item) => item !== oneObjective
-                            );
+                            const updatedObjectives = (
+                              goalToEdit.objectives
+                                ? goalToEdit.objectives
+                                : objectives
+                            ).filter((item) => item !== oneObjective);
                             setObjectives(updatedObjectives);
                           }}
                         />
@@ -916,25 +1414,25 @@ function TaskGoals() {
                     ))}
                     <div className={styles.tagInput}>
                       <input
-                        id="tgIn"
+                        id="goaltgIn"
                         className={styles.tgIn}
                         placeholder="Enter goal objectives"
                         onChange={handleObjectiveChange}
                         onKeyDown={(event) => {
                           if (event.key === "Enter") {
                             if (
-                              (goalToEdit.objectives
-                                ? goalToEdit.objectives
-                                : objectives
-                              ).includes(objective.trim().toLowerCase()) &&
+                              objectives.includes(
+                                objective.trim().toLowerCase()
+                              ) &&
                               objective.trim().length !== 0
                             ) {
                               setObjectives([
-                                ...goalToEdit.objectives,
+                                ...objectives,
                                 objective.toLowerCase(),
                               ]);
                             }
-                            document.getElementById("tgIn").value = "";
+                            document.getElementById("goaltgIn").value = "";
+                            setActionState(!actionState);
                           }
                         }}
                       />
@@ -956,7 +1454,7 @@ function TaskGoals() {
                   <TextField
                     style={{ width: "60%" }}
                     inputProps={{ min: 0 }}
-                    value={goalToEdit.duration}
+                    value={editedTime}
                     onChange={handleEditTimeDuration}
                   />
                 </div>
@@ -994,6 +1492,7 @@ function TaskGoals() {
                 style={{
                   display: "flex",
                   flexDirection: "column",
+                  justifyContent: "space-between",
                 }}
               >
                 <div
@@ -1004,26 +1503,67 @@ function TaskGoals() {
                     gap: 10,
                   }}
                 >
-                  <h5 style={{ width: "130px" }}>Task name :</h5>
-                  <span>TASK 001</span>
+                  <h5 style={{ width: "15%" }}>Task name :</h5>
+                  <span>{taskToCheck.headText}</span>
                 </div>
-                <br />
                 <div
                   style={{
                     display: "flex",
                     flexDirection: "row",
-                    alignItems: "flex-start",
+                    alignItems: "center",
                     gap: 10,
                   }}
                 >
-                  <h5 style={{ width: "550px" }}>Task description :</h5>
-                  <span>
-                    "Find a quiet, comfortable spot. Close your eyes and take
-                    deep breaths. Focus on your breath, letting go of any
-                    thoughts. Stay present in the moment. Start with just a few
-                    minutes and gradually increase the duration as you feel more
-                    comfortable. Meditation can help calm the mind and reduce
-                    stress, promoting mental well-being."
+                  <h5 style={{ width: "15%" }}>Task duration :</h5>
+                  <span>{taskToCheck.duration}</span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <h5 style={{ width: "15%" }}>Task sub-text :</h5>
+                  <span>{taskToCheck.subText}</span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <h5 style={{ width: "105px" }}>Task steps :</h5>
+                  <span
+                    style={{
+                      height: "320px",
+                      overflowY: "scroll",
+                      padding: "20px",
+                    }}
+                  >
+                    {taskToCheck
+                      ? taskToCheck.steps.map((taskStep, index) => {
+                          return (
+                            <>
+                              <span
+                                style={{
+                                  backgroundColor: "#4990fb",
+                                  borderRadius: "25px",
+                                  color: "white",
+                                  paddingLeft: "20px",
+                                  paddingRight: "20px",
+                                  paddingTop: "5px",
+                                  paddingBottom: "5px",
+                                }}
+                              >
+                                Step {index + 1} :{" "}
+                              </span>
+                              <h4>{taskStep}</h4>
+                            </>
+                          );
+                        })
+                      : null}
                   </span>
                 </div>
               </Grid>
@@ -1033,6 +1573,7 @@ function TaskGoals() {
         </div>
       </div>
       {/* check task */}
+
       {/* check goal */}
       <div id="checkGoal" className={styles.overlay}>
         {/* <!-- Button to close the overlay navigation --> */}

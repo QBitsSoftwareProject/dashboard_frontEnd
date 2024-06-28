@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "../sideNavbar.module.css";
 import btn_styles from "../sideBarButton.module.css";
+import UpperNavbar from "../upperNavbar/upperNavbar";
 
 export default function SideNavbar({ onPageChange }) {
   const imgDetails = {
@@ -35,34 +36,14 @@ export default function SideNavbar({ onPageChange }) {
       loc: require("../../../assets/images/sideBar/manage-resources(s).png"),
     },
     img4: {
-      name: "Community management",
-      status: "ns",
-      loc: require("../../../assets/images/sideBar/community-management(ns).png"),
-    },
-    img4_4: {
-      name: "Community management",
-      status: "s",
-      loc: require("../../../assets/images/sideBar/community-management(s).png"),
-    },
-    img5: {
-      name: "User control access",
+      name: "User management",
       status: "ns",
       loc: require("../../../assets/images/sideBar/user-control-access(ns).png"),
     },
-    img5_5: {
-      name: "User control access",
+    img4_4: {
+      name: "User management",
       status: "s",
       loc: require("../../../assets/images/sideBar/user-control-access(s).png"),
-    },
-    img6: {
-      name: "Appointments",
-      status: "ns",
-      loc: require("../../../assets/images/sideBar/appointments(ns).png"),
-    },
-    img6_6: {
-      name: "Appointments",
-      status: "s",
-      loc: require("../../../assets/images/sideBar/appointments(s).png"),
     },
   };
 
@@ -76,6 +57,9 @@ export default function SideNavbar({ onPageChange }) {
         <span style={{ fontSize: "20px" }}>Admin Dashboard</span>
         <br />
         <span>Welcome back</span>
+      </div>
+      <div >
+        <UpperNavbar />
       </div>
       <div className={styles.secBtns}>
         <div
@@ -146,28 +130,6 @@ export default function SideNavbar({ onPageChange }) {
         </div>
         <div
           className={
-            pageContent === "Community-Management" ||
-            onPageChange === "Community-Management"
-              ? selectedBtn
-              : not_selectedBtn
-          }
-          onClick={() => {
-            setpageContent("Community-Management");
-            onPageChange("Community-Management");
-          }}
-        >
-          <img
-            src={
-              pageContent === "Community-Management"
-                ? imgDetails.img4_4.loc
-                : imgDetails.img4.loc
-            }
-            style={{ width: 20, height: "auto", margin: 10 }}
-          />
-          <span>Community Management</span>
-        </div>
-        <div
-          className={
             pageContent === "User-control-access" ||
             onPageChange === "User-control-access"
               ? selectedBtn
@@ -181,33 +143,12 @@ export default function SideNavbar({ onPageChange }) {
           <img
             src={
               pageContent === "User-control-access"
-                ? imgDetails.img5_5.loc
-                : imgDetails.img5.loc
+                ? imgDetails.img4_4.loc
+                : imgDetails.img4.loc
             }
             style={{ width: 20, height: "auto", margin: 10 }}
           />
           <span>User control access</span>
-        </div>
-        <div
-          className={
-            pageContent === "Appointments" || onPageChange == "Appointments"
-              ? selectedBtn
-              : not_selectedBtn
-          }
-          onClick={() => {
-            setpageContent("Appointments");
-            onPageChange("Appointments");
-          }}
-        >
-          <img
-            src={
-              pageContent === "Appointments"
-                ? imgDetails.img6_6.loc
-                : imgDetails.img6.loc
-            }
-            style={{ width: 20, height: "auto", margin: 10 }}
-          />
-          <span>Appointments</span>
         </div>
       </div>
     </div>
