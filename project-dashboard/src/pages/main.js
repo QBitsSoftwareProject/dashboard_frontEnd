@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import styles from "../pages/main.module.css";
-import UpperNavBar from "../components/ui/upperNavbar/upperNavbar.jsx";
+import UpperNavBar from "../components/ui/upperNavBar/upperNavbar.jsx";
 import SideNavbar from "../components/ui/sideNavBar/sideNavbar.jsx";
 import { Grid } from "@mui/material";
 
@@ -11,17 +12,15 @@ import Appointments from "./appointments/appointments.jsx";
 import CommunityManagement from "./community-management/community-management.jsx";
 import ControlAccess from "./control-access/control-access.jsx";
 import TaskChallenges from "./task-challenges/task-challenges.jsx";
-// sections
-
-// notifications
-
-// notifications
+import MindRelaxing from "../pages/mindRelaxingMethods/mindRelaxingMethod.jsx";
+import MethodList from "../pages/mindRelaxingMethods/methodList.jsx";
+import MethodUpdate from "../pages/mindRelaxingMethods/methodUpdate.jsx";
 
 export default function Main() {
-  const [pageContent, setPageContent] = useState("View-Analytics");
+  const navigate = useNavigate();
 
   const handlePageChange = (newPageContent) => {
-    setPageContent(newPageContent);
+    navigate(`/${newPageContent}`);
   };
 
   return (
@@ -34,13 +33,18 @@ export default function Main() {
           <div className={styles.upperNavBarStyles}>
             <UpperNavBar />
           </div>
-          <div class={styles.content}>
-            {pageContent === "View-Analytics" && <ViewAnalytics/>}
-            {pageContent === "Manage-Resources" && <ResourceManagement />}
-            {pageContent === "Task-Challenges" && <TaskChallenges />}
-            {pageContent === "Community-Management" && <CommunityManagement />}
-            {pageContent === "User-control-access" && <ControlAccess />}
-            {pageContent === "Appointments" && <Appointments />}
+          <div className={styles.content}>
+            <Routes>
+              <Route path="view-analytics" element={<ViewAnalytics />} />
+              <Route path="manage-resources" element={<ResourceManagement />} />
+              <Route path="task-challenges" element={<TaskChallenges />} />
+              <Route path="community-management" element={<CommunityManagement />} />
+              <Route path="user-control-access" element={<ControlAccess />} />
+              <Route path="appointments" element={<Appointments />} />
+              <Route path="mind-relaxing-methods" element={<MindRelaxing onPageChange={handlePageChange} />} />
+              <Route path="mind-relaxing-methods-list" element={<MethodList onPageChange={handlePageChange} />} />
+              <Route path="mind-relaxing-methods-update/:id" element={<MethodUpdate onPageChange={handlePageChange} />} />
+            </Routes>
           </div>
         </Grid>
       </Grid>
