@@ -10,7 +10,7 @@
   border-radius: 20px;
   text-align: center;
   padding-top: 40px;
-  padding-bottom: 65px;
+  padding-bottom: 40px;
   position: relative;
 }
 
@@ -102,6 +102,11 @@
 }
 
 .video_preview {
+  width: 500px;
+  border-radius: 20px;
+}
+
+.audio_preview {
   width: 500px;
   border-radius: 20px;
 }

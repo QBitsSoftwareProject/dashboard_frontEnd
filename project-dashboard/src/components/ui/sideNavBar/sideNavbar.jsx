@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "../sideNavbar.module.css";
 import btn_styles from "../sideBarButton.module.css";
+import UpperNavbar from "../upperNavBar/upperNavbar";
 
 export default function SideNavbar({ onPageChange }) {
   const imgDetails = {
@@ -16,14 +17,14 @@ export default function SideNavbar({ onPageChange }) {
       loc: require("../../../assets/images/sideBar/view-analytics(s).png"),
     },
     img2: {
-      name: "Task and Challenges",
+      name: "Task and Goals",
       status: "ns",
-      loc: require("../../../assets/images/sideBar/task and challenges(ns).png"),
+      loc: require("../../../assets/images/sideBar/task and Goals(ns).png"),
     },
     img2_2: {
-      name: "Task and Challenges",
+      name: "Task and Goals",
       status: "s",
-      loc: require("../../../assets/images/sideBar/task and challenges(s).png"),
+      loc: require("../../../assets/images/sideBar/task and Goals(s).png"),
     },
     img3: {
       name: "Manage Resources",
@@ -36,22 +37,12 @@ export default function SideNavbar({ onPageChange }) {
       loc: require("../../../assets/images/sideBar/manage-resources(s).png"),
     },
     img4: {
-      name: "Community management",
-      status: "ns",
-      loc: require("../../../assets/images/sideBar/community-management(ns).png"),
-    },
-    img4_4: {
-      name: "Community management",
-      status: "s",
-      loc: require("../../../assets/images/sideBar/community-management(s).png"),
-    },
-    img5: {
-      name: "User control access",
+      name: "User management",
       status: "ns",
       loc: require("../../../assets/images/sideBar/user-control-access(ns).png"),
     },
-    img5_5: {
-      name: "User control access",
+    img4_4: {
+      name: "User management",
       status: "s",
       loc: require("../../../assets/images/sideBar/user-control-access(s).png"),
     },
@@ -95,7 +86,10 @@ export default function SideNavbar({ onPageChange }) {
         <br />
         <span>Welcome back</span>
       </div>
-      <div className={styles.secBtns}>
+      <div>
+        <UpperNavbar />
+      </div>
+      <div >
         <Link
           to="/view-analytics"
           className={pageContent === "View-Analytics" ? selectedBtn : not_selectedBtn}
@@ -112,20 +106,21 @@ export default function SideNavbar({ onPageChange }) {
           <span>View Analytics</span>
         </Link>
         <Link
-          to="/task-challenges"
-          className={pageContent === "Task-Challenges" ? selectedBtn : not_selectedBtn}
+          to="/Task-Goals"
+          className={pageContent === "Task-Goals" ? selectedBtn : not_selectedBtn}
           style={{ textDecoration: 'none' }}
           onClick={() => {
-            setpageContent("Task-Challenges");
-            onPageChange("Task-Challenges");
+            setpageContent("Task-Goals");
+            onPageChange("Task-Goals");
           }}
         >
           <img
-            src={getImageSrc(pageContent === "Task-Challenges" ? "img2_2" : "img2")}
+            src={getImageSrc(pageContent === "View-Analytics" ? "img1_1" : "img2")}
             style={{ width: 20, height: "auto", margin: 10 }}
           />
-          <span>Task and Challenges</span>
+          <span>Task and Goals</span>
         </Link>
+        
         <Link
           to="/manage-resources"
           className={pageContent === "Manage-Resources" ? selectedBtn : not_selectedBtn}
@@ -141,21 +136,7 @@ export default function SideNavbar({ onPageChange }) {
           />
           <span>Manage Resources</span>
         </Link>
-        <Link
-          to="/community-management"
-          className={pageContent === "Community-Management" ? selectedBtn : not_selectedBtn}
-          style={{ textDecoration: 'none' }}
-          onClick={() => {
-            setpageContent("Community-Management");
-            onPageChange("Community-Management");
-          }}
-        >
-          <img
-            src={getImageSrc(pageContent === "Community-Management" ? "img4_4" : "img4")}
-            style={{ width: 20, height: "auto", margin: 10 }}
-          />
-          <span>Community Management</span>
-        </Link>
+       
         <Link
           to="/user-control-access"
           className={pageContent === "User-control-access" ? selectedBtn : not_selectedBtn}
@@ -166,25 +147,10 @@ export default function SideNavbar({ onPageChange }) {
           }}
         >
           <img
-            src={getImageSrc(pageContent === "User-control-access" ? "img5_5" : "img5")}
+            src={getImageSrc(pageContent === "User-control-access" ? "img5_5" : "img4")}
             style={{ width: 20, height: "auto", margin: 10 }}
           />
           <span>User control access</span>
-        </Link>
-        <Link
-          to="/appointments"
-          className={pageContent === "Appointments" ? selectedBtn : not_selectedBtn}
-          style={{ textDecoration: 'none' }}
-          onClick={() => {
-            setpageContent("Appointments");
-            onPageChange("Appointments");
-          }}
-        >
-          <img
-            src={getImageSrc(pageContent === "Appointments" ? "img6_6" : "img6")}
-            style={{ width: 20, height: "auto", margin: 10 }}
-          />
-          <span>Appointments</span>
         </Link>
         <Link
           to="/mind-relaxing-methods"
@@ -198,7 +164,7 @@ export default function SideNavbar({ onPageChange }) {
           <img
             src={getImageSrc(pageContent === "Mind Relaxing Methods" ? "img7_7" : "img7")}
             style={{ width: 20, height: "auto", margin: 10 }}
-          />
+          /> 
           <span>Mind Relaxing Methods</span>
         </Link>
       </div>

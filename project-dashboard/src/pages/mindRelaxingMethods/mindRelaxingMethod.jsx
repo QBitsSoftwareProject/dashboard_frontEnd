@@ -1,5 +1,5 @@
 import React, { useState , useEffect } from "react";
-import styles from "../mindRelaxingMethods/mindRelaxingMethod";
+import styles from "../mindRelaxingMethods/mindRelaxingMethod.module.css";
 import Dash_btn1 from "../../components/ui/dash_btn/dash_btn1";
 import Dash_btn2 from "../../components/ui/dash_btn/dash_btn2";
 import {
@@ -317,7 +317,7 @@ const ResourceManagement = ({ onPageChange }) => {
   }, [filenameMethod]);
 
   return (
-    <div>
+    <div style={{height:"100%"}}>
       <div
         style={{
           display: "flex",
@@ -330,7 +330,7 @@ const ResourceManagement = ({ onPageChange }) => {
       <Grid
         container
         rowSpacing={3}
-        style={{ overflowY: "scroll", height: "65vh" }}
+        style={{ overflowY: "scroll", height: "90vh" }}
       >
         <Grid
           item

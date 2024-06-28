@@ -1,0 +1,286 @@
+/* .roundedOne */
+.roundedOne {
+  width: 28px;
+  height: 28px;
+  position: relative;
+  margin: 20px auto;
+  background: #fcfff4;
+  border: 2px solid #4a90bf;
+  border-radius: 50px;
+}
+.roundedOne label {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  border-radius: 50px;
+}
+.roundedOne label:after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  background: #4a90bf;
+  background: linear-gradient(to bottom, #0997f6 0%, #188ad6 100%);
+  opacity: 0;
+  border-radius: 50px;
+}
+.roundedOne label:hover::after {
+  opacity: 0.3;
+}
+.roundedOne input[type="checkbox"] {
+  visibility: hidden;
+}
+.roundedOne input[type="checkbox"]:checked + label:after {
+  opacity: 1;
+}
+
+.actionIcons {
+  cursor: pointer;
+  transition: 200ms ease-in-out;
+}
+
+.actionIcons:hover {
+  transform: scale(1.2);
+}
+
+.tagsContainer {
+  background-color: rgb(216, 216, 216, 0.5);
+  width: auto;
+  height: auto;
+  border-radius: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag {
+  background-color: #4990fb;
+  border-radius: 20px;
+  height: auto;
+  width: fit-content;
+  padding-left: 13px;
+  padding-right: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tagDisplay {
+  display: flex;
+  justify-content: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tgIn {
+  border-radius: 4px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0);
+  font-size: 16px;
+  outline: none;
+  color: rgb(137, 137, 137);
+}
+
+/* The Overlay (background) */
+.overlay {
+  /* Height & width depends on how you want to reveal the overlay (see JS below) */
+  height: 100%;
+  width: 0;
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  background-color: rgb(98, 96, 255); /* Black fallback color */
+  background-color: rgba(19, 53, 88, 0.897); /* Black w/opacity */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+}
+
+/* Position the content inside the overlay */
+.overlay_content {
+  position: relative;
+  top: 25%; /* 25% from the top */
+  width: 100%; /* 100% width */
+  text-align: center; /* Centered text/links */
+  margin-top: 30px; /* 30px top margin to avoid conflict with the close button on smaller screens */
+}
+
+/* The navigation links inside the overlay */
+.overlay a {
+  padding: 8px;
+  text-decoration: none;
+  font-size: 36px;
+  color: #818181;
+  display: block; /* Display block instead of inline */
+  transition: 0.3s; /* Transition effects on hover (color) */
+}
+
+/* When you mouse over the navigation links, change their color */
+.overlay a:hover,
+.overlay a:focus {
+  color: #f1f1f1;
+}
+
+/* Position the close button (top right corner) */
+.overlay .closebtn {
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 60px;
+  color: white;
+  overflow-y: hidden;
+}
+
+/* When the height of the screen is less than 450 pixels, change the font-size of the links and position the close button again, so they don't overlap */
+@media screen and (max-height: 450px) {
+  .overlay a {
+    font-size: 20px;
+  }
+  .overlay .closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+  }
+}
+
+.newTaskForm {
+  margin-top: -7%;
+  width: 50%;
+  height: auto;
+  border-radius: 10px;
+  background-color: white;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  text-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 20;
+}
+
+.input_like {
+  border: solid #4990fb 1px;
+  border-radius: 4px;
+  padding-left: 10px;
+  padding-top: 10px;
+  font-size: 14px;
+  height: 300px;
+  width: auto;
+  box-sizing: border-box;
+  resize: none;
+  margin-left: 12px;
+  margin-top: -20px;
+  outline: none;
+  font-weight: lighter;
+}
+
+.createGoalBtn {
+  background-color: #4990fb;
+  color: white;
+  width: 180px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  cursor: pointer;
+  transition-duration: 300ms;
+}
+
+.createGoalBtn:hover {
+  background-color: #2579f6;
+}
+
+.stepContainer {
+  background-color: rgb(226, 231, 236);
+  height: 300px;
+  border-radius: 15px;
+  margin-top: -15px;
+  padding-left: 20px;
+  padding-right: 20px;
+  overflow-y: auto;
+  width: "100%";
+}
+
+.stepLine {
+  border-left: 2px solid #4990fb;
+  z-index: 1;
+  padding-left: 30px;
+}
+
+.step {
+  background-color: rgb(73, 144, 251, 0);
+  border-radius: 15px;
+  height: 60px;
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+}
+
+.stepNo {
+  background-color: rgb(255, 255, 255);
+  width: 100px;
+  height: 100%;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bolder;
+  color: #0066ff;
+}
+
+.stepText {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  color: #0066ff;
+}
+
+.stepInput {
+  border: none;
+  outline: none;
+  width: 100%;
+  background-color: rgb(73, 144, 251, 0);
+  color: rgb(0, 102, 255);
+  font-size: 18px;
+}
+
+.cancelBtnContainer {
+  width: 70px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+input::placeholder {
+  color: rgba(22, 22, 22, 0.5); /* Change to desired color */
+  opacity: 1; /* For Firefox to make it fully opaque */
+}
+
+/* For Internet Explorer 10+ */
+input:-ms-input-placeholder {
+  color: rgba(22, 22, 22, 0.5); /* Change to desired color */
+}
+
+/* For Microsoft Edge */
+input::-ms-input-placeholder {
+  color: rgba(22, 22, 22, 0.5); /* Change to desired color */
+}
