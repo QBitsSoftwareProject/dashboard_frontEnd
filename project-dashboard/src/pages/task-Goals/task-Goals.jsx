@@ -211,19 +211,6 @@ function TaskGoals() {
     });
   };
 
-  const handleCheckboxChange = (event) => {
-    const isChecked = event.target.checked;
-    if (isChecked) {
-      setTaskSelectionList([...taskSelectionList, selectedTask._id]);
-    } else {
-      const updatedTaskSelectionList = taskSelectionList.filter(
-        (item) => item !== selectedTask._id
-      );
-      setTaskSelectionList(updatedTaskSelectionList);
-    }
-    console.log(taskSelectionList);
-  };
-
   const goalEditor = async () => {
     setGoalLoading(true);
     const goalObjectToEdit = {
@@ -520,7 +507,6 @@ function TaskGoals() {
               callFunction={setOpenGoalCreator}
             />
           )}
-          <Dash_btn1 btn_text="DELETE SELECTED" />
         </Grid>
       </Grid>
 
@@ -551,8 +537,8 @@ function TaskGoals() {
         loadingState ? (
           <div
             style={{
-              width:"100%",
-              height:"50vh",
+              width: "100%",
+              height: "50vh",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -592,13 +578,6 @@ function TaskGoals() {
                         }}
                       >
                         <TableCell component="th" scope="row" align="left">
-                          <Checkbox
-                            defaultChecked={false}
-                            onChange={(event) => {
-                              setSelectedTask(taskRow);
-                              handleCheckboxChange(event);
-                            }}
-                          />
                           {taskRow.headText}
                         </TableCell>
                         <TableCell align="center">{taskRow.subText}</TableCell>
@@ -699,7 +678,6 @@ function TaskGoals() {
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
                       <TableCell component="th" scope="row" align="left">
-                        <Checkbox defaultChecked={false} />
                         {goalRow.title}
                       </TableCell>
                       <TableCell align="center">{goalRow.category}</TableCell>

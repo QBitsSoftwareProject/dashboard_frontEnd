@@ -1,15 +1,14 @@
 import React from "react";
-import { Badge, Button, Menu, MenuItem } from "@mui/material";
+import { Badge, Button } from "@mui/material";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import styles from "../upperNavBar.module.css";
-import img1 from "../../../assets/images/profileImgs/img1.png";
 
 // notifications
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 // notifications
 
-export default function UpperNavbar() {
+export default function UpperNavBar() {
   // notification sidebar
   const [state, setState] = React.useState({
     right: false,
@@ -92,7 +91,6 @@ export default function UpperNavbar() {
                 >
                   Administrator
                 </Button>
-                
               </span>
             </div>
           </div>
@@ -100,4 +98,4 @@ export default function UpperNavbar() {
       </div>
     </>
   );
-}
+};

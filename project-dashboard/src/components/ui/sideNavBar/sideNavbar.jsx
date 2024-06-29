@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "../sideNavbar.module.css";
 import btn_styles from "../sideBarButton.module.css";
-import UpperNavbar from "../upperNavBar/upperNavbar";
+import UpperNavBar from "../upperNavbar/upperNavbar";
 
 export default function SideNavbar({ onPageChange }) {
   const imgDetails = {
@@ -59,7 +59,7 @@ export default function SideNavbar({ onPageChange }) {
     img7: {
       name: "Mind Relaxing Methods",
       status: "ns",
-      loc: require("../../../assets/images/sideBar/appointments(s).png"),
+      loc: require("../../../assets/images/sideBar/appointments(ns).png"),
     },
     img7_7: {
       name: "Mind Relaxing Methods",
@@ -86,85 +86,109 @@ export default function SideNavbar({ onPageChange }) {
         <br />
         <span>Welcome back</span>
       </div>
+      {/* upper navbar */}
       <div>
-        <UpperNavbar />
+        <UpperNavBar />
       </div>
-      <div >
+      {/* upper navbar */}
+      <div style={{ marginTop: "15vh" }}>
         <Link
           to="/view-analytics"
-          className={pageContent === "View-Analytics" ? selectedBtn : not_selectedBtn}
-          style={{ textDecoration: 'none' }}
+          className={
+            pageContent === "View-Analytics" ? selectedBtn : not_selectedBtn
+          }
+          style={{ textDecoration: "none" }}
           onClick={() => {
             setpageContent("View-Analytics");
             onPageChange("View-Analytics");
           }}
         >
           <img
-            src={getImageSrc(pageContent === "View-Analytics" ? "img1_1" : "img1")}
+            src={getImageSrc(
+              pageContent === "View-Analytics" ? "img1_1" : "img1"
+            )}
             style={{ width: 20, height: "auto", margin: 10 }}
           />
           <span>View Analytics</span>
         </Link>
         <Link
           to="/Task-Goals"
-          className={pageContent === "Task-Goals" ? selectedBtn : not_selectedBtn}
-          style={{ textDecoration: 'none' }}
+          className={
+            pageContent === "Task-Goals" ? selectedBtn : not_selectedBtn
+          }
+          style={{ textDecoration: "none" }}
           onClick={() => {
             setpageContent("Task-Goals");
             onPageChange("Task-Goals");
           }}
         >
           <img
-            src={getImageSrc(pageContent === "View-Analytics" ? "img1_1" : "img2")}
+            src={getImageSrc(pageContent === "Task-Goals" ? "img2_2" : "img2")}
             style={{ width: 20, height: "auto", margin: 10 }}
           />
           <span>Task and Goals</span>
         </Link>
-        
+
         <Link
           to="/manage-resources"
-          className={pageContent === "Manage-Resources" ? selectedBtn : not_selectedBtn}
-          style={{ textDecoration: 'none' }}
+          className={
+            pageContent === "Manage-Resources" ? selectedBtn : not_selectedBtn
+          }
+          style={{ textDecoration: "none" }}
           onClick={() => {
             setpageContent("Manage-Resources");
             onPageChange("Manage-Resources");
           }}
         >
           <img
-            src={getImageSrc(pageContent === "Manage-Resources" ? "img3_3" : "img3")}
+            src={getImageSrc(
+              pageContent === "Manage-Resources" ? "img3_3" : "img3"
+            )}
             style={{ width: 20, height: "auto", margin: 10 }}
           />
           <span>Manage Resources</span>
         </Link>
-       
+
         <Link
           to="/user-control-access"
-          className={pageContent === "User-control-access" ? selectedBtn : not_selectedBtn}
-          style={{ textDecoration: 'none' }}
+          className={
+            pageContent === "User-control-access"
+              ? selectedBtn
+              : not_selectedBtn
+          }
+          style={{ textDecoration: "none" }}
           onClick={() => {
             setpageContent("User-control-access");
             onPageChange("User-control-access");
           }}
         >
           <img
-            src={getImageSrc(pageContent === "User-control-access" ? "img5_5" : "img4")}
+            src={getImageSrc(
+              pageContent === "User-control-access" ? "img4_4" : "img4"
+            )}
             style={{ width: 20, height: "auto", margin: 10 }}
           />
           <span>User control access</span>
         </Link>
         <Link
           to="/mind-relaxing-methods"
-          className={pageContent === "Mind Relaxing Methods" ? selectedBtn : not_selectedBtn}
-          style={{ textDecoration: 'none' }}
+          className={
+            pageContent === "Mind Relaxing Methods"
+              ? selectedBtn
+              : not_selectedBtn
+          }
+          style={{ textDecoration: "none" }}
           onClick={() => {
             setpageContent("Mind Relaxing Methods");
             onPageChange("Mind Relaxing Methods");
           }}
         >
           <img
-            src={getImageSrc(pageContent === "Mind Relaxing Methods" ? "img7_7" : "img7")}
+            src={getImageSrc(
+              pageContent === "Mind Relaxing Methods" ? "img7_7" : "img7"
+            )}
             style={{ width: 20, height: "auto", margin: 10 }}
-          /> 
+          />
           <span>Mind Relaxing Methods</span>
         </Link>
       </div>

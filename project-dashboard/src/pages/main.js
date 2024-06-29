@@ -1,7 +1,6 @@
 import React from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import styles from "../pages/main.module.css";
-import UpperNavBar from "../components/ui/upperNavBar/upperNavbar.jsx";
 import SideNavbar from "../components/ui/sideNavBar/sideNavbar.jsx";
 import { Grid } from "@mui/material";
 

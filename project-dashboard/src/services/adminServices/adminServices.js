@@ -206,6 +206,14 @@ export const editDoctorAccess = async (doctorId, access) => {
     }
 }
 
+export const editUserAccess = async (userId, access) => {
+    try {
+        await axios.put(BACKEND_URI + '/user/edit-user-access/' + userId, access);
+    } catch (err) {
+        console.log("error editing user access level, error:" + err.message);
+    }
+}
+
 export const getDoctorAppointmentCount = async (doctorId) => {
     try {
         const response = await axios.get(BACKEND_URI + '/appointments/doctor-appointments/' + doctorId);
@@ -224,7 +232,7 @@ export const geCompletedtDoctorAppointmentCount = async (doctorId) => {
     }
 }
 
-export const getReports =async()=>{
+export const getReports = async () => {
     try {
         const response = await axios.get(BACKEND_URI + '/report/view-report/');
         return response;
@@ -233,4 +241,20 @@ export const getReports =async()=>{
     }
 }
 
-export const getPostInfo=async()=>{}
+export const getPost = async (postId) => {
+    try {
+        const response = await axios.get(BACKEND_URI + '/posts/view-a-post/' + postId);
+        return response;
+    } catch (err) {
+        console.log("error fetching report information, error:" + err.message);
+    }
+}
+
+export const getUser = async (userId) => {
+    try {
+        const response = await axios.get(BACKEND_URI + '/user/one-user-by-id/' + userId);
+        return response;
+    } catch (err) {
+        console.log("error fetching report information, error:" + err.message);
+    }
+}

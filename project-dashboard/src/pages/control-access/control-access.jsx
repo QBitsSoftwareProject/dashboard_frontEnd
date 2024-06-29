@@ -18,10 +18,13 @@ import {
 import {
   editDoctor,
   editDoctorAccess,
+  editUserAccess,
   geCompletedtDoctorAppointmentCount,
   getAllDoctors,
   getDoctorAppointmentCount,
+  getPost,
   getReports,
+  getUser,
 } from "../../services/adminServices/adminServices";
 
 import Swal from "sweetalert2";
@@ -34,7 +37,12 @@ export default function ControlAccess() {
     useState();
 
   const [openDoctorModal, setOpenDoctorModal] = React.useState(false);
-  const [blockState, setBlockState] = React.useState(false);
+
+  const [openReportModal, setOpenReportModal] = React.useState(false);
+
+  const [doctorBlockState, setDoctorBlockState] = React.useState(false);
+
+  const [userBlockState, setUserBlockState] = React.useState(false);
 
   const [reportList, setReportList] = useState([]);
 
@@ -131,6 +139,11 @@ export default function ControlAccess() {
     setActionState(!actionState);
   };
 
+  const handleOpenReportModalClose = async () => {
+    setOpenReportModal(false);
+    setActionState(!actionState);
+  };
+
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
     return (
@@ -160,6 +173,22 @@ export default function ControlAccess() {
 
   const [doctorToCheck, setDoctorToCheck] = useState({});
 
+  const [reportToCheck, setReportToCheck] = useState({});
+  const [reportingUser, setReportingUser] = useState({});
+  const [reportedUser, setReportedUser] = useState({});
+  const [reportingPost, setReportingPost] = useState({});
+
+  const getUserAndPostInfo = async (report) => {
+    setReportToCheck(report);
+    let user1 = await getUser(report.ReportingUser); // Reporting User
+    let user2 = await getUser(report.ReportedUser); // Reported User
+    let post = await getPost(report.ReportedPost); // reported Post
+    setReportingUser(user1.data);
+    setReportedUser(user2.data);
+    setReportingPost(post.data);
+    setUserBlockState(reportedUser.access);
+  };
+
   const completeRegistration = async () => {
     let newDoctorRegStatus = { regStatus: true };
     try {
@@ -176,15 +205,29 @@ export default function ControlAccess() {
   };
 
   const changeDoctorAccess = async () => {
-    let newAccessStatus = !blockState;
+    let newAccessStatus = !doctorBlockState;
     let newAccess = { access: newAccessStatus };
-    setBlockState(newAccessStatus);
+    setDoctorBlockState(newAccessStatus);
     try {
       await editDoctorAccess(doctorToCheck._id, newAccess);
       setActionState(!actionState);
       handleOpenDoctorModalClose();
     } catch (err) {
       console.log("error editing doctor access status,error: " + err.message);
+    }
+  };
+
+  const changeUserAccess = async () => {
+    let newAccessStatus = !userBlockState;
+    let newAccess = { access: newAccessStatus };
+    setUserBlockState(newAccessStatus);
+    console.log(newAccessStatus);
+    try {
+      await editUserAccess(reportedUser._id, newAccess);
+      setActionState(!actionState);
+      handleOpenReportModalClose();
+    } catch (err) {
+      console.log("error editing user access status,error: " + err.message);
     }
   };
 
@@ -239,7 +282,7 @@ export default function ControlAccess() {
                       alignItems: "center",
                     }}
                   >
-                    {blockState ? (
+                    {doctorBlockState ? (
                       <span style={{ color: "green", marginRight: 20 }}>
                         GRANTED
                       </span>
@@ -250,7 +293,7 @@ export default function ControlAccess() {
                     )}
                     <label className={styles.switch}>
                       <input
-                        checked={blockState}
+                        checked={doctorBlockState}
                         type="checkbox"
                         onChange={() => {
                           changeDoctorAccess();
@@ -464,8 +507,215 @@ export default function ControlAccess() {
           </Modal>
         </div>
       ) : null}
-
       {/* doctor modal */}
+
+      {/* report modal */}
+      {reportToCheck ? (
+        <div>
+          <Modal
+            open={openReportModal}
+            onClose={handleOpenReportModalClose}
+            aria-labelledby="parent-modal-title"
+            aria-describedby="parent-modal-description"
+          >
+            <Box
+              sx={{
+                ...style,
+                width: 800,
+                paddingLeft: 5,
+                height: 530,
+                paddingRight: 5,
+                paddingTop: 3,
+                paddingBottom: 9,
+                border: "none",
+              }}
+            >
+              <div>
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="basic tabs example"
+                >
+                  <Tab label="POST DETAILS" {...a11yProps(0)} />
+                  <Tab label="REPORTING USER DETAILS" {...a11yProps(1)} />
+                  <Tab label="REPORTED USER DETAILS" {...a11yProps(2)} />
+                </Tabs>
+              </div>
+
+              {/* reporting post details details section */}
+              <CustomTabPanel value={value} index={0}>
+                <Grid container>
+                  {/* post details */}
+                  <Grid item xs={12} style={{ height: "200px" }}>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <img
+                        src={reportingPost.image}
+                        style={{ width: "400px", borderRadius: "10px" }}
+                      />
+                    </div>
+                    <div style={{ marginTop: "30px" }}>
+                      <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                        Report statement :{" "}
+                      </span>
+                      <span>{reportToCheck.ReportStatement}</span>
+                    </div>
+                    <div style={{ marginTop: "20px" }}>
+                      <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                        Post description :{" "}
+                      </span>
+                      <span>{reportingPost.description}</span>
+                    </div>
+                    <div style={{ marginTop: "20px" }}>
+                      <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                        Post category :{" "}
+                      </span>
+                      <span>{reportingPost.postCategory}</span>
+                    </div>
+                    <div style={{ marginTop: "20px" }}>
+                      <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                        Reported on :{" "}
+                      </span>
+                      <span>
+                        {new Date(reportingPost.createdAt).getUTCFullYear() +
+                          " / " +
+                          (new Date(reportingPost.createdAt).getUTCMonth() +
+                            1) +
+                          " / " +
+                          new Date(reportingPost.createdAt).getUTCDate()}
+                      </span>
+                    </div>
+                  </Grid>
+                </Grid>
+              </CustomTabPanel>
+              {/* reporting post details section */}
+
+              {/* reporting user details */}
+              <CustomTabPanel value={value} index={1}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Avatar
+                    alt="Remy Sharp"
+                    src={reportingUser.proPic}
+                    sx={{ width: 200, height: 200 }}
+                  />
+                </div>
+                <div style={{ marginTop: "60px" }}>
+                  <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                    Reporting user :{" "}
+                  </span>
+                  <span>{reportingUser.fullName}</span>
+                </div>
+                <div style={{ marginTop: "20px" }}>
+                  <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                    Email :{" "}
+                  </span>
+                  <span>{reportingUser.email}</span>
+                </div>
+                <div style={{ marginTop: "20px" }}>
+                  <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                    Contact number :{" "}
+                  </span>
+                  <span>{reportingUser.contactNumber}</span>
+                </div>
+                <div style={{ marginTop: "20px" }}>
+                  <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                    Address :{" "}
+                  </span>
+                  <span>{reportingUser.address}</span>
+                </div>
+                <div style={{ marginTop: "20px" }}>
+                  <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                    Country :{" "}
+                  </span>
+                  <span>{reportingUser.country}</span>
+                </div>
+                <div></div>
+              </CustomTabPanel>
+              {/* reporting user details */}
+
+              {/* reported user details */}
+              <CustomTabPanel value={value} index={2}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Avatar
+                    alt="Remy Sharp"
+                    src={reportedUser.proPic}
+                    sx={{ width: 200, height: 200 }}
+                  />
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginTop: "20px",
+                      gap: 10,
+                    }}
+                  >
+                    {userBlockState ? (
+                      <span style={{ color: "green" }}>GRANTED</span>
+                    ) : (
+                      <span style={{ color: "red" }}>BLOCKED</span>
+                    )}
+                    <label className={styles.switch}>
+                      <input
+                        checked={userBlockState}
+                        type="checkbox"
+                        onChange={() => {
+                          changeUserAccess();
+                        }}
+                      />
+                      <span className={styles.slider}></span>
+                      <span className={styles.knob}></span>
+                    </label>
+                  </div>
+                </div>
+                <div style={{ marginTop: "60px" }}>
+                  <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                    Reported user :{" "}
+                  </span>
+                  <span>{reportedUser.fullName}</span>
+                </div>
+                <div style={{ marginTop: "20px" }}>
+                  <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                    Email :{" "}
+                  </span>
+                  <span>{reportedUser.email}</span>
+                </div>
+                <div style={{ marginTop: "20px" }}>
+                  <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                    Contact number :{" "}
+                  </span>
+                  <span>{reportedUser.contactNumber}</span>
+                </div>
+                <div style={{ marginTop: "20px" }}>
+                  <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                    Address :{" "}
+                  </span>
+                  <span>{reportedUser.address}</span>
+                </div>
+                <div style={{ marginTop: "20px" }}>
+                  <span style={{ color: "#0997f6", fontWeight: "bold" }}>
+                    Country :{" "}
+                  </span>
+                  <span>{reportedUser.country}</span>
+                </div>
+              </CustomTabPanel>
+              {/* reported user details */}
+            </Box>
+          </Modal>
+        </div>
+      ) : null}
+      {/* report modal */}
 
       {/* modals */}
       <div>
@@ -633,7 +883,7 @@ export default function ControlAccess() {
                                 style={{ color: "#0997f6", cursor: "pointer" }}
                                 onClick={() => {
                                   setDoctorToCheck(doctor);
-                                  setBlockState(doctor.access);
+                                  setDoctorBlockState(doctor.access);
                                   setActionState(!actionState);
                                   setOpenDoctorModal(true);
                                 }}
@@ -698,6 +948,12 @@ export default function ControlAccess() {
                           <TableCell align="center">
                             <span
                               style={{ color: "#0997f6", cursor: "pointer" }}
+                              onClick={() => {
+                                getUserAndPostInfo(report);
+                                setUserBlockState(reportedUser.access);
+                                setActionState(!actionState);
+                                setOpenReportModal(true);
+                              }}
                             >
                               VIEW MORE
                             </span>
