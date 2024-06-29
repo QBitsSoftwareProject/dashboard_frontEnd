@@ -191,6 +191,21 @@ export default function SideNavbar({ onPageChange }) {
           />
           <span>Mind Relaxing Methods</span>
         </Link>
+        <Link
+          to="/stress-level-questions"
+          className={pageContent === "stress level question" ? selectedBtn : not_selectedBtn}
+          style={{ textDecoration: 'none' }}
+          onClick={() => {
+            setpageContent("stress level question");
+            onPageChange("stress level question");
+          }}
+        >
+          <img
+            src={getImageSrc(pageContent === "Mind Relaxing Methods" ? "img7_7" : "img7")}
+            style={{ width: 20, height: "auto", margin: 10 }}
+          /> 
+          <span>Stress Level Questions</span>
+        </Link>
       </div>
     </div>
   );

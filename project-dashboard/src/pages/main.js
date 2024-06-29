@@ -13,6 +13,9 @@ import MindRelaxing from "../pages/mindRelaxingMethods/mindRelaxingMethod.jsx";
 import MethodList from "../pages/mindRelaxingMethods/methodList.jsx";
 import MethodUpdate from "../pages/mindRelaxingMethods/methodUpdate.jsx";
 import TaskGoals from "../pages/task-Goals/task-Goals.jsx";
+import StressLevelQuestions from "../pages/stresslevelQuestions/question-management.jsx"
+import StressLevelQuestionList from "../pages/stresslevelQuestions/questionList.jsx"
+import StressLevelQuestionUpdate from "../pages/stresslevelQuestions/questionUpdate.jsx"
 
 export default function Main() {
   const navigate = useNavigate();
@@ -40,6 +43,9 @@ export default function Main() {
               <Route path="mind-relaxing-methods-list" element={<MethodList onPageChange={handlePageChange} />} />
               <Route path="mind-relaxing-methods-update/:id" element={<MethodUpdate onPageChange={handlePageChange} />} />
               <Route path="Task-Goals" element={<TaskGoals/>} />
+              <Route path="stress-level-questions" element={<StressLevelQuestions  onPageChange={handlePageChange} />}/>
+              <Route path="stress-level-questions-list" element={<StressLevelQuestionList  onPageChange={handlePageChange} />}/>
+              <Route path="stress-level-questions-update/:id" element={<StressLevelQuestionUpdate  onPageChange={handlePageChange} />}/>
             </Routes>
           </div>
         </Grid>
