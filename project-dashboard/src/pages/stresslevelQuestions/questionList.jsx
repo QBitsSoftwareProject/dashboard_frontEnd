@@ -166,7 +166,7 @@ function TaskChallenges({ onPageChange }) {
               <TableHead>
                 <TableRow>
                   <TableCell align="center" style={{ fontWeight: "bold" }}>
-                    Name
+                    Questions
                   </TableCell>
                   
                   
