@@ -66,6 +66,16 @@ export default function SideNavbar({ onPageChange }) {
       status: "s",
       loc: require("../../../assets/images/sideBar/appointments(s).png"),
     },
+    img8: {
+      name: "Stress Level Questions",
+      status: "ns",
+      loc: require("../../../assets/images/sideBar/stress-level-questions(ns).png"),
+    },
+    img8_8: {
+      name: "Stress Level Question",
+      status: "s",
+      loc: require("../../../assets/images/sideBar/stress-level-questions(s).png"),
+    },
   };
 
   const selectedBtn = `${btn_styles.btnContainer} ${btn_styles.btnSelected}`;
@@ -91,7 +101,14 @@ export default function SideNavbar({ onPageChange }) {
         <UpperNavBar />
       </div>
       {/* upper navbar */}
-      <div style={{ marginTop: "15vh" }}>
+      <div
+        style={{
+          marginTop: "20vh",
+          display: "flex",
+          flexDirection: "column",
+          gap: 20,
+        }}
+      >
         <Link
           to="/view-analytics"
           className={
@@ -193,17 +210,23 @@ export default function SideNavbar({ onPageChange }) {
         </Link>
         <Link
           to="/stress-level-questions"
-          className={pageContent === "stress level question" ? selectedBtn : not_selectedBtn}
-          style={{ textDecoration: 'none' }}
+          className={
+            pageContent === "stress level question"
+              ? selectedBtn
+              : not_selectedBtn
+          }
+          style={{ textDecoration: "none" }}
           onClick={() => {
             setpageContent("stress level question");
             onPageChange("stress level question");
           }}
         >
           <img
-            src={getImageSrc(pageContent === "Mind Relaxing Methods" ? "img7_7" : "img7")}
+            src={getImageSrc(
+              pageContent === "stress level question" ? "img8_8" : "img8"
+            )}
             style={{ width: 20, height: "auto", margin: 10 }}
-          /> 
+          />
           <span>Stress Level Questions</span>
         </Link>
       </div>

@@ -658,7 +658,6 @@ const ResourceManagement = () => {
                 <MenuItem value={"video"}>Video</MenuItem>
                 <MenuItem value={"audio"}>Audio</MenuItem>
                 <MenuItem value={"pdf"}>Article(Create article)</MenuItem>
-                <MenuItem value={"story"}>Story(pdf)</MenuItem>
               </Select>
             </FormControl>
           </Grid>

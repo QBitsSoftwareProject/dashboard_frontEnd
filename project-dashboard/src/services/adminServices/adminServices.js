@@ -255,6 +255,25 @@ export const getUser = async (userId) => {
         const response = await axios.get(BACKEND_URI + '/user/one-user-by-id/' + userId);
         return response;
     } catch (err) {
+        console.log("error fetching user information, error:" + err.message);
+    }
+}
+
+export const getAllUsers = async () => {
+    try {
+        const response = await axios.get(BACKEND_URI + '/user/');
+        return response;
+    } catch (err) {
+        console.log("error fetching users, error:" + err.message);
+    }
+}
+
+export const getAllMarks = async () => {
+    try {
+        const response = await axios.get('http://localhost:3000/mark/get-all-marks');
+        return response;
+    } catch (err) {
         console.log("error fetching report information, error:" + err.message);
     }
 }
+

@@ -442,14 +442,14 @@ const ResourceManagement = ({ onPageChange }) => {
           }}
         >
           <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
-            Method discription :
+            Method description :
           </span>
         </Grid>
         <Grid item xs={10} style={{ paddingRight: "20px" }}>
           <TextField
             id="rName"
-            placeholder="Enter method discription"
-            label="Enter method discription"
+            placeholder="Enter method description"
+            label="Enter method description"
             value={methodDescription}
             variant="outlined"
             style={{ width: "100%" }}

@@ -64,38 +64,7 @@ export default function UpperNavBar() {
             </Drawer>
           </React.Fragment>
         </div>
-        <div
-          className={styles.container}
-          style={{ display: "flex", justifyContent: "right" }}
-        >
-          <div className={styles.details}>
-            <div>
-              <Badge badgeContent={4} color="error">
-                <NotificationsNoneIcon
-                  color="action"
-                  onClick={toggleDrawer("right", true)}
-                  style={{ cursor: "pointer" }}
-                />
-              </Badge>
-            </div>
-            <div className="name">
-              <span style={{ fontWeight: "bold" }}>Dinul Perera</span>
-              <br />
-              <span style={{ fontSize: 10 }}>
-                <Button
-                  id="basic-button"
-                  aria-controls={open ? "basic-menu" : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={open ? "true" : undefined}
-                  onClick={handleClick}
-                >
-                  Administrator
-                </Button>
-              </span>
-            </div>
-          </div>
-        </div>
       </div>
     </>
   );
-};
+}
