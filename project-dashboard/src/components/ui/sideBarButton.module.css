@@ -1,39 +1,50 @@
 .btnContainer {
   width: 80%;
   height: 55px;
-  border-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
   display: flex;
   justify-content: start;
   align-items: center;
   margin-left: auto;
   margin-right: auto;
+  padding-left: 15px;
 }
 
-.btnContainer:hover{
+.btnContainer:hover {
   cursor: pointer;
-  color:#2F79E9;
+  color: #2f79e9;
 }
 
 .btnSelected {
-  background-color: rgb(118, 190, 238, 25%);
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-left: #2f79e9 solid 4px;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
+    rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
 }
 
 .btnSelected span {
-  color:#2F79E9;
+  color: #2f79e9;
   font-weight: bold;
 }
 
 .btnNotSelected {
   background-color: rgb(118, 190, 238, 0%);
+  transition-duration: 300ms;
 }
 
 .btnNotSelected:hover {
-  background-color: rgba(226, 239, 248, 0.7);
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  background-color: rgba(255, 255, 255, 0.7);
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 15px -3px,
+    rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
   transition-duration: 100ms;
-  border-left: #2F79E9 solid;
 }
 
 .btnNotSelected span {
-   color:#818FAA;
-  font-weight:lighter;
+  color: #818faa;
+  font-weight: lighter;
 }

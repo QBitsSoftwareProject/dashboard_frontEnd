@@ -12,6 +12,18 @@ import {
   getAllVideos,
 } from "../../services/adminServices/adminServices";
 
+// icons-black
+import doctor from "../../assets/images/analytics_icons/doctor.png";
+import patient from "../../assets/images/analytics_icons/patient.png";
+import resource from "../../assets/images/analytics_icons/resource.png";
+// icons-black
+
+// icons-white
+import doctorW from "../../assets/images/analytics_icons/doctor-white.png";
+import patientW from "../../assets/images/analytics_icons/patient-white.png";
+import resourceW from "../../assets/images/analytics_icons/resource-white.png";
+// icons-white
+
 defaults.responsive = true;
 
 defaults.plugins.title.display = true;
@@ -93,12 +105,37 @@ export default function ViewAnalytics() {
         {/* counts */}
         <div className={(styles.patientCount, styles.count)}>
           <span>{patientCount} Patients</span>
+          {/* patient image */}
+          <div className={styles.countImgBox}>
+            <img
+              src={patient}
+              style={{
+                width: "25px",
+              }}
+            />
+          </div>
         </div>
         <div className={(styles.doctorCount, styles.count)}>
           <span>{doctorCount} Doctors</span>
+          <div className={styles.countImgBox}>
+            <img
+              src={doctor}
+              style={{
+                width: "25px",
+              }}
+            />
+          </div>
         </div>
         <div className={(styles.resourceCount, styles.count)}>
           <span>{resourceCount} Resources</span>
+          <div className={styles.countImgBox}>
+            <img
+              src={resource}
+              style={{
+                width: "25px",
+              }}
+            />
+          </div>
         </div>
         {/* counts */}
       </div>
@@ -124,6 +161,19 @@ export default function ViewAnalytics() {
                       veryHighStressCount,
                     ],
                     borderRadius: 7,
+                    backgroundColor: [
+                      "rgb(11, 240, 240, 0.2)",
+                      "rgb(11, 175, 240, 0.2)",
+                      "rgb(11, 122, 240, 0.2)",
+                      "rgb(11, 42, 240, 0.2)",
+                    ],
+                    borderColor: [
+                      "rgb(11, 240, 240)",
+                      "rgb(11, 175, 240)",
+                      "rgb(11, 122, 240)",
+                      "rgb(11, 42, 240)",
+                    ],
+                    borderWidth: 1,
                   },
                 ],
               }}

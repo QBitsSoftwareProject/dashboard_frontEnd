@@ -126,7 +126,7 @@ export default function SideNavbar({ onPageChange }) {
             )}
             style={{ width: 20, height: "auto", margin: 10 }}
           />
-          <span>View Analytics</span>
+          <span>View analytics</span>
         </Link>
         <Link
           to="/Task-Goals"
@@ -143,7 +143,7 @@ export default function SideNavbar({ onPageChange }) {
             src={getImageSrc(pageContent === "Task-Goals" ? "img2_2" : "img2")}
             style={{ width: 20, height: "auto", margin: 10 }}
           />
-          <span>Task and Goals</span>
+          <span>Task and goals</span>
         </Link>
 
         <Link
@@ -163,7 +163,7 @@ export default function SideNavbar({ onPageChange }) {
             )}
             style={{ width: 20, height: "auto", margin: 10 }}
           />
-          <span>Manage Resources</span>
+          <span>Manage resources</span>
         </Link>
 
         <Link
@@ -206,7 +206,7 @@ export default function SideNavbar({ onPageChange }) {
             )}
             style={{ width: 20, height: "auto", margin: 10 }}
           />
-          <span>Mind Relaxing Methods</span>
+          <span>Mind relaxing methods</span>
         </Link>
         <Link
           to="/stress-level-questions"
@@ -227,7 +227,7 @@ export default function SideNavbar({ onPageChange }) {
             )}
             style={{ width: 20, height: "auto", margin: 10 }}
           />
-          <span>Stress Level Questions</span>
+          <span>Stress level questions</span>
         </Link>
       </div>
     </div>
