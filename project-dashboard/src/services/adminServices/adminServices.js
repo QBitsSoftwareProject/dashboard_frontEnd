@@ -277,3 +277,12 @@ export const getAllMarks = async () => {
     }
 }
 
+export const getUsersByMonth = async (monthId) => {
+    try {
+        const response = await axios.get(BACKEND_URI + '/user/get-users-by-month/?month=' + monthId);
+        return response;
+    } catch (err) {
+        console.log("error fetching users by month, error:" + err.message);
+    }
+}
+

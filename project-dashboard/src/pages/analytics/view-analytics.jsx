@@ -10,6 +10,7 @@ import {
   getAllMarks,
   getAllUsers,
   getAllVideos,
+  getUsersByMonth,
 } from "../../services/adminServices/adminServices";
 
 // icons-black
@@ -44,6 +45,27 @@ export default function ViewAnalytics() {
   const [highStressCount, setHighStressCount] = useState(0);
   const [veryHighStressCount, setVeryHighStressCount] = useState(0);
   // stress level categories
+
+  // fetching users by month
+  const [regMonths, setRegMonths] = useState([]);
+
+  useEffect(() => {
+    const fetchUsersByMonth = async () => {
+      try {
+        const monthsData = [];
+        for (let monthNo = 1; monthNo <= 12; monthNo++) {
+          let response = await getUsersByMonth(monthNo);
+          monthsData.push(response.data);
+        }
+        setRegMonths(monthsData);
+      } catch (err) {
+        console.log("Error fetching users by month, error: " + err.message);
+      }
+    };
+    fetchUsersByMonth();
+    console.log(regMonths);
+  }, []);
+  // fetching users by month
 
   useEffect(() => {
     const fetchAllMarks = async () => {
@@ -104,7 +126,15 @@ export default function ViewAnalytics() {
       <div className={styles.userAnalyticsContainer}>
         {/* counts */}
         <div className={(styles.patientCount, styles.count)}>
-          <span>{patientCount} Patients</span>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <span style={{ fontSize: "12px" }}>Total number of patients</span>
+            <span style={{ fontSize: "25px" }}>{patientCount} Patients</span>
+          </div>
           {/* patient image */}
           <div className={styles.countImgBox}>
             <img
@@ -116,7 +146,15 @@ export default function ViewAnalytics() {
           </div>
         </div>
         <div className={(styles.doctorCount, styles.count)}>
-          <span>{doctorCount} Doctors</span>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <span style={{ fontSize: "12px" }}>Total number of doctors</span>
+            <span style={{ fontSize: "25px" }}>{doctorCount} Doctors</span>
+          </div>
           <div className={styles.countImgBox}>
             <img
               src={doctor}
@@ -127,7 +165,15 @@ export default function ViewAnalytics() {
           </div>
         </div>
         <div className={(styles.resourceCount, styles.count)}>
-          <span>{resourceCount} Resources</span>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <span style={{ fontSize: "12px" }}>Total number of resources</span>
+            <span style={{ fontSize: "25px" }}>{resourceCount} Resources</span>
+          </div>
           <div className={styles.countImgBox}>
             <img
               src={resource}
@@ -178,6 +224,58 @@ export default function ViewAnalytics() {
                 ],
               }}
               options={{
+                plugins: {
+                  title: {
+                    text: "Stress level categories",
+                  },
+                },
+              }}
+            />
+          </Grid>
+          <Grid xs={6}>
+            <Line
+              data={{
+                labels: [
+                  "Jan",
+                  "Feb",
+                  "Mar",
+                  "Apr",
+                  "May",
+                  "Jun",
+                  "Jul",
+                  "Aug",
+                  "Sep",
+                  "Oct",
+                  "Nov",
+                  "Dec",
+                ],
+                datasets: [
+                  {
+                    label: "User registrations",
+                    data: regMonths,
+                    borderRadius: 7,
+                    backgroundColor: [
+                      "rgb(11, 240, 240, 0.2)",
+                      "rgb(11, 175, 240, 0.2)",
+                      "rgb(11, 122, 240, 0.2)",
+                      "rgb(11, 42, 240, 0.2)",
+                    ],
+                    borderColor: [
+                      "rgb(11, 240, 240)",
+                      "rgb(11, 175, 240)",
+                      "rgb(11, 122, 240)",
+                      "rgb(11, 42, 240)",
+                    ],
+                    borderWidth: 1,
+                  },
+                ],
+              }}
+              options={{
+                elements: {
+                  line: {
+                    tension: 0.4,
+                  },
+                },
                 plugins: {
                   title: {
                     text: "Stress level categories",

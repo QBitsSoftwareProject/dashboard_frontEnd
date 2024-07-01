@@ -125,3 +125,8 @@
 .switch input:checked ~ .knob {
   transform: translateX(27px) translateY(-50%);
 }
+
+.default {
+  color: rgb(227, 122, 17);
+  background-color: rgba(238, 154, 10, 0.5);
+}

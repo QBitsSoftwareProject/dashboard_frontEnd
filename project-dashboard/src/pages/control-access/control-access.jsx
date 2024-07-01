@@ -420,9 +420,29 @@ export default function ControlAccess() {
                     <span style={{ marginTop: "20px" }}>
                       <>
                         {doctorToCheck.regStatus ? (
-                          <div style={{ color: "green" }}>REGISTERED</div>
+                          <div
+                            style={{
+                              color: "rgb(24, 178, 24)",
+                              backgroundColor: "rgb(17, 221, 17, 0.1)",
+                              fontWeight: "bold",
+                              padding: "10px",
+                              borderRadius: "5px",
+                            }}
+                          >
+                            REGISTERED
+                          </div>
                         ) : (
-                          <div style={{ color: "red" }}>NOT REGISTERED</div>
+                          <div
+                            style={{
+                              color: "rgb(227, 122, 17)",
+                              backgroundColor: "rgba(238, 154, 10, 0.2)",
+                              fontWeight: "bold",
+                              padding: "7px",
+                              borderRadius: "5px",
+                            }}
+                          >
+                            NOT REGISTERED
+                          </div>
                         )}
                       </>
                     </span>
@@ -861,11 +881,28 @@ export default function ControlAccess() {
                             <TableCell align="center">
                               <>
                                 {doctor.regStatus ? (
-                                  <div style={{ color: "#09e535" }}>
+                                  <div
+                                    style={{
+                                      color: "rgb(24, 178, 24)",
+                                      backgroundColor: "rgb(17, 221, 17, 0.1)",
+                                      fontWeight: "bold",
+                                      padding: "7px",
+                                      borderRadius: "5px",
+                                    }}
+                                  >
                                     REGISTERED
                                   </div>
                                 ) : (
-                                  <div style={{ color: "#e10d0d" }}>
+                                  <div
+                                    style={{
+                                      color: "rgb(227, 122, 17)",
+                                      backgroundColor:
+                                        "rgba(238, 154, 10, 0.2)",
+                                      fontWeight: "bold",
+                                      padding: "7px",
+                                      borderRadius: "5px",
+                                    }}
+                                  >
                                     NOT REGISTERED
                                   </div>
                                 )}
@@ -943,7 +980,11 @@ export default function ControlAccess() {
                             {report.ReportStatement}
                           </TableCell>
                           <TableCell align="center">
-                            {report.createdAt}
+                            {new Date(report.createdAt).getUTCFullYear() +
+                              " / " +
+                              (new Date(report.createdAt).getUTCMonth() + 1) +
+                              " / " +
+                              new Date(report.createdAt).getUTCDate()}
                           </TableCell>
                           <TableCell align="center">
                             <span
