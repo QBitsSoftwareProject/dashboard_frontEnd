@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../mindRelaxingMethods/mindRelaxingMethod.module.css";
 import Dash_btn1 from "../../components/ui/dash_btn/dash_btn1";
 import Dash_btn2 from "../../components/ui/dash_btn/dash_btn2";
@@ -31,7 +31,6 @@ import uploadImg from "../../assets/images/dragAndDrop/uploadImg.png";
 
 import { storeMethod } from "../../service/methodService";
 
-
 const ResourceManagement = ({ onPageChange }) => {
   const [isCancel, setIsCancel] = useState(false);
   const [isArticle, setIsArticle] = useState(false);
@@ -60,30 +59,28 @@ const ResourceManagement = ({ onPageChange }) => {
 
   const [imageUpload, setImageUpload] = useState(null);
   const [imageList, setImageList] = useState([]);
-  const imageListRef = ref(storage, "images/")
-  const [imageUrl, setImageUrl] = useState(''); 
+  const imageListRef = ref(storage, "images/");
+  const [imageUrl, setImageUrl] = useState("");
 
   const [methodUpload, setMethodUpload] = useState(null);
-  const methodListRef = ref(storage, "images/")
-  const [methodUrl, setMethodUrl] = useState(''); 
+  const methodListRef = ref(storage, "images/");
+  const [methodUrl, setMethodUrl] = useState("");
 
-  const [fileName, setFilename] = useState('');
-  const [ImgUrl,setImageSrc] = useState(uploadImg);
-  const [imgurl, srtImgurl] = useState('');
+  const [fileName, setFilename] = useState("");
+  const [ImgUrl, setImageSrc] = useState(uploadImg);
+  const [imgurl, srtImgurl] = useState("");
 
-  const [srcUrl,setMethodSrc] = useState(uploadImg);
-  const [methodurl, srtmethod] = useState('');
+  const [srcUrl, setMethodSrc] = useState(uploadImg);
+  const [methodurl, srtmethod] = useState("");
 
-
-  const [methodName, setMethodName] = useState('');
-  const [mark, setMark] = useState('');
-  const [methodType, setMethodType]  = useState('');
-  const [methodDescription, setMethodDescription] = useState('');
- 
+  const [methodName, setMethodName] = useState("");
+  const [mark, setMark] = useState("");
+  const [methodType, setMethodType] = useState("");
+  const [methodDescription, setMethodDescription] = useState("");
 
   useEffect(() => {
     setMethodType(fileType);
-  },[fileType])
+  }, [fileType]);
 
   // console.log(isCancel);
 
@@ -91,36 +88,40 @@ const ResourceManagement = ({ onPageChange }) => {
     setMethodName(event.target.value);
   };
 
- 
-
   const handleDescriptionChange = (event) => {
     setMethodDescription(event.target.value);
   };
 
   const handleSubmit = () => {
     console.log(methodName);
-    console.log(methodType)
-    console.log(methodCategory)
-    console.log(methodDescription)
-    console.log(imageUrl)
-    console.log(methodUrl)
+    console.log(methodType);
+    console.log(methodCategory);
+    console.log(methodDescription);
+    console.log(imageUrl);
+    console.log(methodUrl);
 
-    storeMethod(methodType,methodCategory,methodName,methodDescription,imageUrl,methodUrl);
+    storeMethod(
+      methodType,
+      methodCategory,
+      methodName,
+      methodDescription,
+      imageUrl,
+      methodUrl
+    );
 
     refrechForm();
-  }
+  };
 
   const refrechForm = () => {
-    setMethodName('');
-    setMark('');
-    setMethodCategory('');
-    setMethodDescription('');
-    
-    setMethodUpload('');
-    setFilenameMethod('');
-    setCategory('')
+    setMethodName("");
+    setMark("");
+    setMethodCategory("");
+    setMethodDescription("");
 
-  }
+    setMethodUpload("");
+    setFilenameMethod("");
+    setCategory("");
+  };
 
   const handleTypeChange = (event) => {
     setCategory(event.target.value);
@@ -140,10 +141,9 @@ const ResourceManagement = ({ onPageChange }) => {
     }
   };
 
-  const[methodCategory, setMethodCategory] = useState('')
+  const [methodCategory, setMethodCategory] = useState("");
   const handleCtegoryChange = (event) => {
     setMethodCategory(event.target.value);
-    
   };
   useEffect(() => {
     console.log(methodCategory);
@@ -177,64 +177,62 @@ const ResourceManagement = ({ onPageChange }) => {
     window.location.reload();
   };
 
-
-
-
   const uploadImage = () => {
     if (imageUpload == null) return;
-    
-    const imageRef = ref(storage,`coverImages/${imageUpload.name + v4()}`);
+
+    const imageRef = ref(storage, `coverImages/${imageUpload.name + v4()}`);
     uploadBytes(imageRef, imageUpload).then(() => {
       // alert("Image upload");
-    //   toast.success("Image is set");
+      //   toast.success("Image is set");
 
-      getDownloadURL(imageRef).then(url => {
+      getDownloadURL(imageRef)
+        .then((url) => {
+          //getting the download url for the uploaded image
+          console.log("Download URL:", url);
 
-        //getting the download url for the uploaded image
-        console.log("Download URL:", url);
-        
-        //set download url for usestate for displayinf in frontend
-        setImageUrl(url);
-        srtImgurl(url);
-
-      }).catch(error => {
-        console.error("Error uploading image:", error);
-      });
-
+          //set download url for usestate for displayinf in frontend
+          setImageUrl(url);
+          srtImgurl(url);
+        })
+        .catch((error) => {
+          console.error("Error uploading image:", error);
+        });
     });
   };
 
   const uploadMethod = () => {
-    console.log('uploading');
+    console.log("uploading");
 
     if (!methodUpload) {
-        console.error('No file to upload');
-        return;
+      console.error("No file to upload");
+      return;
     }
 
-    const methodRef = ref(storage, `relaxingMethods/${methodUpload.name + v4()}`);
-    
-    uploadBytes(methodRef, methodUpload)
-        .then(() => {
-            console.log('Upload successful, fetching download URL...');
-            return getDownloadURL(methodRef);
-        })
-        .then((url) => {
-            console.log("Method Download URL:", url);
-            setMethodUrl(url);
-            srtImgurl(url);
-        })
-        .catch((error) => {
-            console.error("Error uploading resource:", error);
-        });
-};
+    const methodRef = ref(
+      storage,
+      `relaxingMethods/${methodUpload.name + v4()}`
+    );
 
+    uploadBytes(methodRef, methodUpload)
+      .then(() => {
+        console.log("Upload successful, fetching download URL...");
+        return getDownloadURL(methodRef);
+      })
+      .then((url) => {
+        console.log("Method Download URL:", url);
+        setMethodUrl(url);
+        srtImgurl(url);
+      })
+      .catch((error) => {
+        console.error("Error uploading resource:", error);
+      });
+  };
 
   //to display choosed imaage
   const onChangeFile = (e) => {
     const file = e.target.files[0];
     setFilename(file);
-    console.log(fileName)
+    console.log(fileName);
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
@@ -243,10 +241,7 @@ const ResourceManagement = ({ onPageChange }) => {
 
     //for firebase
     setImageUpload(file);
-    
   };
-
-
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -270,39 +265,35 @@ const ResourceManagement = ({ onPageChange }) => {
 
   useEffect(() => {
     console.log(fileName);
-
   }, [fileName]);
 
-  const [filenameMethod,setFilenameMethod] = useState('');
+  const [filenameMethod, setFilenameMethod] = useState("");
 
   const onChangeFileMethod = (e) => {
     const file = e.target.files[0];
     setFilenameMethod(file);
-    console.log(filenameMethod)
+    console.log(filenameMethod);
     const reader = new FileReader();
     reader.readAsDataURL(file);
-   
-    
   };
 
   const handleList = () => {
-    console.log('pressed')
+    console.log("pressed");
     onPageChange("mind-relaxing-methods-list");
-  }
-
+  };
 
   const handleDropMethod = (e) => {
     e.preventDefault();
     e.stopPropagation();
     const file = e.dataTransfer.files[0];
     if (file) {
-        setFilenameMethod(file);
+      setFilenameMethod(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
-    //   reader.onload = () => {
-    //     // setImageSrc(reader.result);
-    //   };
-       setMethodUpload(file);
+      //   reader.onload = () => {
+      //     // setImageSrc(reader.result);
+      //   };
+      setMethodUpload(file);
     }
   };
 
@@ -313,19 +304,21 @@ const ResourceManagement = ({ onPageChange }) => {
 
   useEffect(() => {
     console.log(filenameMethod);
-
   }, [filenameMethod]);
 
   return (
-    <div style={{height:"100%"}}>
+    <div style={{ height: "100%" }}>
       <div
         style={{
           display: "flex",
           justifyContent: "end",
         }}
       >
-        <Dash_btn1 btn_text="VIEW METHODS" inlineStyle={styles.btnPosition} 
-        callFunction={handleList} />
+        <Dash_btn1
+          btn_text="VIEW METHODS"
+          inlineStyle={styles.btnPosition}
+          callFunction={handleList}
+        />
       </div>
       <Grid
         container
@@ -339,14 +332,13 @@ const ResourceManagement = ({ onPageChange }) => {
             display: "flex",
             justifyContent: "start",
             alignItems: "center",
-           
           }}
         >
           <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
             Method name :
           </span>
         </Grid>
-        <Grid item xs={10} style={{ paddingRight: "20px"}}>
+        <Grid item xs={10} style={{ paddingRight: "20px" }}>
           <TextField
             id="rName"
             placeholder="Enter Method name"
@@ -357,8 +349,6 @@ const ResourceManagement = ({ onPageChange }) => {
             onChange={handleTitleChange}
           />
         </Grid>
-
-        
 
         <Grid
           item
@@ -425,7 +415,9 @@ const ResourceManagement = ({ onPageChange }) => {
               <MenuItem value={"soundTherapy"}>soundTherapy</MenuItem>
               <MenuItem value={"relaxation"}>relaxation</MenuItem>
               <MenuItem value={"physicalActivity"}>physicalActivity</MenuItem>
-              <MenuItem value={"inspirationalContent"}>inspirationalContent</MenuItem>
+              <MenuItem value={"inspirationalContent"}>
+                inspirationalContent
+              </MenuItem>
               <MenuItem value={"cognitiveTraining"}>cognitiveTraining</MenuItem>
             </Select>
           </FormControl>
@@ -438,7 +430,6 @@ const ResourceManagement = ({ onPageChange }) => {
             display: "flex",
             justifyContent: "start",
             alignItems: "center",
-            
           }}
         >
           <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
@@ -466,7 +457,6 @@ const ResourceManagement = ({ onPageChange }) => {
             display: "flex",
             justifyContent: "start",
             alignItems: "center",
-           
           }}
         >
           <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
@@ -475,45 +465,44 @@ const ResourceManagement = ({ onPageChange }) => {
         </Grid>
 
         <Grid item xs={10} style={{ paddingRight: "20px" }}>
-        <div className="second-row"
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                style={{
-                  border: "2px dashed #cccccc",
-                  borderRadius: "5px",
-                  padding: "10px",
-                  paddingBottom: "20px",                 
-                  textAlign: "center",
-                  width: "310px",
-                  height: "200px",
-                }}>
-                <input 
-                  type="file" 
-                  onChange={onChangeFile}
-                  style={{ display: "none" }}
-                  id="fileInput"
-                  accept="image/*"
-                />
-                <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-                  <div>
-                    Drag and drop an image here
-                  </div>
-                </label>
-                <div className="img-back">
-                {ImgUrl && (
-                  
-                    <div>
-                    <img src={ImgUrl} width={200} height={150} alt="Preview" /></div>
-                  
-                )}
-                
-                <div><button className="img-btn" onClick={uploadImage}>
-                  Confirm image
-                </button></div>
+          <div
+            className="second-row"
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            style={{
+              border: "2px dashed #cccccc",
+              borderRadius: "5px",
+              padding: "10px",
+              paddingBottom: "20px",
+              textAlign: "center",
+              width: "310px",
+              height: "200px",
+            }}
+          >
+            <input
+              type="file"
+              onChange={onChangeFile}
+              style={{ display: "none" }}
+              id="fileInput"
+              accept="image/*"
+            />
+            <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+              <div>Drag and drop an image here</div>
+            </label>
+            <div className="img-back">
+              {ImgUrl && (
+                <div>
+                  <img src={ImgUrl} width={200} height={150} alt="Preview" />
                 </div>
+              )}
+
+              <div>
+                <button className="img-btn" onClick={uploadImage}>
+                  Confirm image
+                </button>
               </div>
-
-
+            </div>
+          </div>
         </Grid>
         <Grid
           item
@@ -522,80 +511,94 @@ const ResourceManagement = ({ onPageChange }) => {
             display: "flex",
             justifyContent: "start",
             alignItems: "center",
-           
           }}
         >
-          <span style={{ fontWeight: "bold", marginLeft: "20px" ,marginRight:20}}>
+          <span
+            style={{ fontWeight: "bold", marginLeft: "20px", marginRight: 20 }}
+          >
             Method resource :
           </span>
         </Grid>
         <Grid item xs={10} style={{ paddingRight: "20px" }}>
-        <div className="second-row"
-                onDrop={handleDropMethod}
-                onDragOver={handleDragOverMethod}
-                style={{
-                  border: "2px dashed #cccccc",
-                  borderRadius: "5px",
-                  padding: "10px",
-                  paddingBottom: "20px",                 
-                  textAlign: "center",
-                  width: "310px",
-                  height: "200px",
-                }}>
-                <input 
-                  type="file" 
-                  onChange={onChangeFileMethod}
-                  style={{ display: "none" }}
-                  id="fileInput"
-                  accept="image/*"
-                />
-                <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-                  <div>
-                    Drag and drop the resource here
+          <div
+            className="second-row"
+            onDrop={handleDropMethod}
+            onDragOver={handleDragOverMethod}
+            style={{
+              border: "2px dashed #cccccc",
+              borderRadius: "5px",
+              padding: "10px",
+              paddingBottom: "20px",
+              textAlign: "center",
+              width: "310px",
+              height: "200px",
+            }}
+          >
+            <input
+              type="file"
+              onChange={onChangeFileMethod}
+              style={{ display: "none" }}
+              id="fileInput"
+              accept="image/*"
+            />
+            <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+              <div>Drag and drop the resource here</div>
+            </label>
+            <div className="img-back">
+              <div>
+                {filenameMethod ? (
+                  <div
+                    classname="methods"
+                    style={{
+                      height: 150,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                      width: 310,
+                    }}
+                  >
+                    {filenameMethod.name}
                   </div>
-                </label>
-                <div className="img-back">
-                  
-                <div>
-          {filenameMethod ? (
-              <div classname="methods" style={{ height:150 , justifyContent:'center',alignItems:'center',display: 'flex',width:310 }}>{filenameMethod.name}</div>
-               ) : (
-               ImgUrl && (
-               <div>
-               <img src={uploadImg} width={200} height={150} alt="Preview" />
-              </div>
-              )
-               )}
-               </div>
-                
-                
-                <div><button className="img-btn" onClick={uploadMethod}>
-                  Confirm Resource
-                </button></div>
-                </div>
+                ) : (
+                  ImgUrl && (
+                    <div>
+                      <img
+                        src={uploadImg}
+                        width={200}
+                        height={150}
+                        alt="Preview"
+                      />
+                    </div>
+                  )
+                )}
               </div>
 
-       </Grid>
-               <div className="uploadBtn" style = {{margin:30, justifyContent:'center', alignItems:'center',display:'flex', width:'100%'}}>
-        <Dash_btn1 
+              <div>
+                <button className="img-btn" onClick={uploadMethod}>
+                  Confirm Resource
+                </button>
+              </div>
+            </div>
+          </div>
+        </Grid>
+        <div
+          className="uploadBtn"
+          style={{
+            margin: 30,
+            justifyContent: "center",
+            alignItems: "center",
+            display: "flex",
+            width: "100%",
+          }}
+        >
+          <Dash_btn1
             btn_text="UPLOAD METHOD"
             inlineStyle={styles.btnPosition}
             callFunction={handleSubmit}
           />
-        
         </div>
-
-
-        
       </Grid>
-
-      
-
-      
-            
-      
-      </div>
-    
+    </div>
   );
 };
 

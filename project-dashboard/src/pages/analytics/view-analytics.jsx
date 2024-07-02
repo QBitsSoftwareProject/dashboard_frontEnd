@@ -44,6 +44,7 @@ export default function ViewAnalytics() {
   const [mediumStressCount, setMediumStressCount] = useState(0);
   const [highStressCount, setHighStressCount] = useState(0);
   const [veryHighStressCount, setVeryHighStressCount] = useState(0);
+  const [totalMarks, setTotalMarks] = useState(0);
   // stress level categories
 
   // fetching users by month
@@ -55,7 +56,7 @@ export default function ViewAnalytics() {
         const monthsData = [];
         for (let monthNo = 1; monthNo <= 12; monthNo++) {
           let response = await getUsersByMonth(monthNo);
-          monthsData.push(response.data);
+          monthsData.push(response.data.userCount);
         }
         setRegMonths(monthsData);
       } catch (err) {
@@ -75,6 +76,7 @@ export default function ViewAnalytics() {
         let mediumCount = 0;
         let highCount = 0;
         let veryHighCount = 0;
+        let totalCount = allMarks.data.length;
 
         allMarks.data.forEach((markObj) => {
           if (markObj.mark <= 10) {
@@ -88,10 +90,11 @@ export default function ViewAnalytics() {
           }
         });
 
-        setLowStressCount(lowCount);
-        setMediumStressCount(mediumCount);
-        setHighStressCount(highCount);
-        setVeryHighStressCount(veryHighCount);
+        setLowStressCount((lowCount / totalCount) * 100);
+        setMediumStressCount((mediumCount / totalCount) * 100);
+        setHighStressCount((highCount / totalCount) * 100);
+        setVeryHighStressCount((veryHighCount / totalCount) * 100);
+        setTotalMarks(totalCount);
       } catch (err) {
         console.log("error fetching marks details,error:" + err.message);
       }
@@ -229,6 +232,25 @@ export default function ViewAnalytics() {
                     text: "Stress level categories",
                   },
                 },
+                scales: {
+                  x: {
+                    title: {
+                      display: true,
+                      text: "Stress Levels",
+                    },
+                  },
+                  y: {
+                    title: {
+                      display: true,
+                      text: "Percentage of Total Users",
+                    },
+                    ticks: {
+                      callback: function (value) {
+                        return value + "%"; // Add percentage symbol to the y-axis values
+                      },
+                    },
+                  },
+                },
               }}
             />
           </Grid>
@@ -278,7 +300,21 @@ export default function ViewAnalytics() {
                 },
                 plugins: {
                   title: {
-                    text: "Stress level categories",
+                    text: "Monthly user registrations",
+                  },
+                },
+                scales: {
+                  x: {
+                    title: {
+                      display: true,
+                      text: "Months",
+                    },
+                  },
+                  y: {
+                    title: {
+                      display: true,
+                      text: "Number of Registrations",
+                    },
                   },
                 },
               }}
