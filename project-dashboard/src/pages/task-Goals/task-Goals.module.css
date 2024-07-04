@@ -284,3 +284,8 @@ input:-ms-input-placeholder {
 input::-ms-input-placeholder {
   color: rgba(22, 22, 22, 0.5); /* Change to desired color */
 }
+
+.confirmBtn {
+  background-color: #0066ff;
+  color: white;
+}

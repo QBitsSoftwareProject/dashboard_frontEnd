@@ -238,26 +238,42 @@ function TaskGoals() {
   };
 
   const createNewGoal = async () => {
-    setGoalLoading(true);
-    const newGoal = {
-      title: goalTitle,
-      subTitle: goalSubTitle,
-      description: goalDescription,
-      objectives: goalObjectives,
-      completness: false,
-      duration: timeDuration,
-      category: goalCategory,
-    };
-    try {
-      console.log("Creating new goal...", newGoal);
-      await createGoal(newGoal);
-      setFinishNewGoal(true);
-    } catch (err) {
-      setFailedNewGoal(true);
-      alert("Failed to create goal, error: " + err.message);
+    if (
+      goalTitle.trim() !== "" &&
+      goalSubTitle.trim() !== "" &&
+      goalDescription.trim() !== "" &&
+      goalObjective.trim() !== "" &&
+      timeDuration !== "" &&
+      timeCategory !== ""
+    ) {
+      setGoalLoading(true);
+      const newGoal = {
+        title: goalTitle,
+        subTitle: goalSubTitle,
+        description: goalDescription,
+        objectives: goalObjectives,
+        completness: false,
+        duration: timeDuration,
+        category: goalCategory,
+      };
+      try {
+        console.log("Creating new goal...", newGoal);
+        await createGoal(newGoal);
+        setFinishNewGoal(true);
+      } catch (err) {
+        setFailedNewGoal(true);
+        alert("Failed to create goal, error: " + err.message);
+      }
+      setGoalLoading(false);
+      handleGoalCreatorClose();
+    } else {
+      handleGoalCreatorClose();
+       Swal.fire({
+         icon: "error",
+         title: "Failed to create new goal",
+         text: "Please complete the form to create new goal",
+       });
     }
-    setGoalLoading(false);
-    handleGoalCreatorClose();
   };
 
   // create new goal
@@ -308,21 +324,37 @@ function TaskGoals() {
   const [taskToEdit, setTaskToEdit] = useState([]);
 
   const createNewTask = async () => {
-    const newTask = {
-      headText: headText,
-      subText: headSubText,
-      steps: taskStepList,
-      duration: taskDuration,
-      day: taskDay,
-      taskNumber: taskNumber,
-    };
-    try {
-      console.log("Creating new task...", newTask);
-      await createTask(newTask);
-      setOpenTaskCreator(false);
-      setActionState(!actionState);
-    } catch (err) {
-      alert("Failed to create task, error: " + err.message);
+    if (
+      headText.trim() !== "" &&
+      headSubText.trim() !== "" &&
+      taskStepList.length != 0 &&
+      taskDuration !== "" &&
+      taskDay !== "" &&
+      taskNumber !== ""
+    ) {
+      const newTask = {
+        headText: headText,
+        subText: headSubText,
+        steps: taskStepList,
+        duration: taskDuration,
+        day: taskDay,
+        taskNumber: taskNumber,
+      };
+      try {
+        console.log("Creating new task...", newTask);
+        await createTask(newTask);
+        setOpenTaskCreator(false);
+        setActionState(!actionState);
+      } catch (err) {
+        alert("Failed to create task, error: " + err.message);
+      }
+    } else {
+      handleTaskCreatorClose();
+      Swal.fire({
+        icon: "error",
+        title: "Failed to create new task",
+        text: "Please complete the form to create new task",
+      });
     }
   };
   // task services
@@ -395,145 +427,257 @@ function TaskGoals() {
   };
 
   return (
-    <Grid container className={styles.mainContent}>
-      {finishNewGoal && (
-        <Snackbar
-          open={finishNewGoal}
-          autoHideDuration={5000}
-          onClose={() => {
-            setFinishNewGoal(false);
-          }}
-        >
-          <Alert
+    <>
+      <Grid container className={styles.mainContent}>
+        {finishNewGoal && (
+          <Snackbar
+            open={finishNewGoal}
+            autoHideDuration={5000}
             onClose={() => {
               setFinishNewGoal(false);
             }}
-            severity="info"
-            variant="filled"
-            sx={{ width: "100%", color: "white" }}
           >
-            New Goal created successfully
-          </Alert>
-        </Snackbar>
-      )}
-      {failedNewGoal && (
-        <Snackbar
-          open={failedNewGoal}
-          autoHideDuration={6000}
-          onClose={() => setFailedNewGoal(false)}
-        >
-          <Alert severity="error" onClose={() => setFailedNewGoal(false)}>
-            Failed to create new goal, Please try again
-          </Alert>
-        </Snackbar>
-      )}
-      <Grid
-        item
-        xs={12}
-        style={{
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
-        <Grid item xs={3} style={{ display: "flex", flexDirection: "row" }}>
-          <div
-            style={{
-              padding: 5,
-              display: "flex",
-              flexDirection: "row",
-              gap: 10,
-            }}
+            <Alert
+              onClose={() => {
+                setFinishNewGoal(false);
+              }}
+              severity="info"
+              variant="filled"
+              sx={{ width: "100%", color: "white" }}
+            >
+              New Goal created successfully
+            </Alert>
+          </Snackbar>
+        )}
+        {failedNewGoal && (
+          <Snackbar
+            open={failedNewGoal}
+            autoHideDuration={6000}
+            onClose={() => setFailedNewGoal(false)}
           >
-            <section title=".roundedOne">
-              <div className={styles.roundedOne}>
-                <input
-                  type="checkbox"
-                  id="Goals"
-                  name="check"
-                  checked={isGoalsChecked}
-                  onChange={handleGoalsCheckboxChange}
-                />
-                <label for="Goals"></label>
-              </div>
-            </section>
-            <h6>GOALS</h6>
-          </div>
-          <div
-            style={{
-              padding: 5,
-              display: "flex",
-              flexDirection: "row",
-              gap: 10,
-            }}
-          >
-            <section title=".roundedOne">
-              <div className={styles.roundedOne}>
-                <input
-                  type="checkbox"
-                  value="None"
-                  id="Tasks"
-                  name="check"
-                  checked={isTasksChecked}
-                  onChange={handleTasksCheckboxChange}
-                />
-                <label for="Tasks"></label>
-              </div>
-            </section>
-            <h6>TASKS</h6>
-          </div>
-        </Grid>
+            <Alert severity="error" onClose={() => setFailedNewGoal(false)}>
+              Failed to create new goal, Please try again
+            </Alert>
+          </Snackbar>
+        )}
         <Grid
           item
-          xs={9}
+          xs={12}
           style={{
             display: "flex",
             flexDirection: "row",
-            alignItems: "center",
-            gap: 20,
-            justifyContent: "flex-end",
-            paddingRight: 10,
           }}
         >
-          {isTasksChecked ? (
-            <Dash_btn1
-              btn_text="CREATE NEW TASK"
-              callFunction={() => {
-                setOpenTaskCreator(true);
+          <Grid item xs={3} style={{ display: "flex", flexDirection: "row" }}>
+            <div
+              style={{
+                padding: 5,
+                display: "flex",
+                flexDirection: "row",
+                gap: 10,
               }}
-            />
+            >
+              <section title=".roundedOne">
+                <div className={styles.roundedOne}>
+                  <input
+                    type="checkbox"
+                    id="Goals"
+                    name="check"
+                    checked={isGoalsChecked}
+                    onChange={handleGoalsCheckboxChange}
+                  />
+                  <label for="Goals"></label>
+                </div>
+              </section>
+              <h6>GOALS</h6>
+            </div>
+            <div
+              style={{
+                padding: 5,
+                display: "flex",
+                flexDirection: "row",
+                gap: 10,
+              }}
+            >
+              <section title=".roundedOne">
+                <div className={styles.roundedOne}>
+                  <input
+                    type="checkbox"
+                    value="None"
+                    id="Tasks"
+                    name="check"
+                    checked={isTasksChecked}
+                    onChange={handleTasksCheckboxChange}
+                  />
+                  <label for="Tasks"></label>
+                </div>
+              </section>
+              <h6>TASKS</h6>
+            </div>
+          </Grid>
+          <Grid
+            item
+            xs={9}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 20,
+              justifyContent: "flex-end",
+              paddingRight: 10,
+            }}
+          >
+            {isTasksChecked ? (
+              <Dash_btn1
+                btn_text="CREATE NEW TASK"
+                callFunction={() => {
+                  setOpenTaskCreator(true);
+                }}
+              />
+            ) : (
+              <Dash_btn1
+                btn_text="CREATE NEW GOAL"
+                callFunction={setOpenGoalCreator}
+              />
+            )}
+          </Grid>
+        </Grid>
+
+        {/* topic */}
+        <Grid
+          item
+          xs={12}
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "",
+            alignItems: "center",
+          }}
+        >
+          <Grid item xs={2} style={{ textAlign: "center" }}>
+            <h5 style={{ color: "#A0A0A0" }}>
+              {isTasksChecked ? "ALLOCATED TASKS" : "ALLOCATED GOALS"}
+            </h5>
+          </Grid>
+          <Grid item xs={10}>
+            <hr />
+          </Grid>
+        </Grid>
+        {/* topic */}
+
+        {isTasksChecked ? (
+          // task table
+          loadingState ? (
+            <div
+              style={{
+                width: "100%",
+                height: "50vh",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <LoadingScreen />
+            </div>
           ) : (
-            <Dash_btn1
-              btn_text="CREATE NEW GOAL"
-              callFunction={setOpenGoalCreator}
-            />
-          )}
-        </Grid>
-      </Grid>
+            <div style={{ width: "100%", height: "70vh", overflowY: "scroll" }}>
+              <Grid item xs={12}>
+                <TableContainer>
+                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="left" style={{ fontWeight: "bold" }}>
+                          {" "}
+                          Head text{" "}
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          style={{ fontWeight: "bold" }}
+                        >
+                          Sub Text
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          style={{ fontWeight: "bold" }}
+                        >
+                          Duration
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          style={{ fontWeight: "bold" }}
+                        ></TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {taskList.map((taskRow) => (
+                        <TableRow
+                          key={taskRow.name}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
+                        >
+                          <TableCell component="th" scope="row" align="left">
+                            {taskRow.headText}
+                          </TableCell>
+                          <TableCell align="center">
+                            {taskRow.subText}
+                          </TableCell>
+                          <TableCell align="center">
+                            {taskRow.duration}
+                          </TableCell>
+                          <TableCell align="center">
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "center",
+                                gap: 20,
+                                height: 20,
+                              }}
+                            >
+                              <Tooltip title="Check" placement="left">
+                                <img
+                                  src={lookIcon}
+                                  className={styles.actionIcons}
+                                  onClick={() => {
+                                    setTaskToCheck(taskRow);
+                                    openCheckTask();
+                                  }}
+                                />
+                              </Tooltip>
+                              <Tooltip title="Edit" placement="bottom">
+                                <img
+                                  src={editIcon}
+                                  className={styles.actionIcons}
+                                  onClick={() => {
+                                    editTaskData(taskRow);
+                                    setTaskToEdit(taskRow);
+                                    setOpenTaskEditor(true);
+                                  }}
+                                />
+                              </Tooltip>
+                              <Tooltip title="Delete" placement="right">
+                                <img
+                                  src={binIcon}
+                                  className={styles.actionIcons}
+                                  onClick={() => {
+                                    // setTaskToDelete(taskRow);
+                                    taskDeletor(taskRow._id);
+                                  }}
+                                />
+                              </Tooltip>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+            </div>
+          )
+        ) : // task table
 
-      {/* topic */}
-      <Grid
-        item
-        xs={12}
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "",
-          alignItems: "center",
-        }}
-      >
-        <Grid item xs={2} style={{ textAlign: "center" }}>
-          <h5 style={{ color: "#A0A0A0" }}>
-            {isTasksChecked ? "ALLOCATED TASKS" : "ALLOCATED GOALS"}
-          </h5>
-        </Grid>
-        <Grid item xs={10}>
-          <hr />
-        </Grid>
-      </Grid>
-      {/* topic */}
-
-      {isTasksChecked ? (
-        // task table
         loadingState ? (
           <div
             style={{
@@ -547,6 +691,7 @@ function TaskGoals() {
             <LoadingScreen />
           </div>
         ) : (
+          // goals table
           <div style={{ width: "100%", height: "70vh", overflowY: "scroll" }}>
             <Grid item xs={12}>
               <TableContainer>
@@ -555,13 +700,13 @@ function TaskGoals() {
                     <TableRow>
                       <TableCell align="left" style={{ fontWeight: "bold" }}>
                         {" "}
-                        Head text{" "}
+                        Goal Title{" "}
                       </TableCell>
                       <TableCell align="center" style={{ fontWeight: "bold" }}>
-                        Sub Text
+                        Goal Category
                       </TableCell>
                       <TableCell align="center" style={{ fontWeight: "bold" }}>
-                        Duration
+                        Current Rating
                       </TableCell>
                       <TableCell
                         align="center"
@@ -570,18 +715,20 @@ function TaskGoals() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {taskList.map((taskRow) => (
+                    {goals.map((goalRow) => (
                       <TableRow
-                        key={taskRow.name}
+                        key={goalRow.name}
                         sx={{
                           "&:last-child td, &:last-child th": { border: 0 },
                         }}
                       >
                         <TableCell component="th" scope="row" align="left">
-                          {taskRow.headText}
+                          {goalRow.title}
                         </TableCell>
-                        <TableCell align="center">{taskRow.subText}</TableCell>
-                        <TableCell align="center">{taskRow.duration}</TableCell>
+                        <TableCell align="center">{goalRow.category}</TableCell>
+                        <TableCell align="center">
+                          {goalRow.currentRating}
+                        </TableCell>
                         <TableCell align="center">
                           <div
                             style={{
@@ -597,8 +744,8 @@ function TaskGoals() {
                                 src={lookIcon}
                                 className={styles.actionIcons}
                                 onClick={() => {
-                                  setTaskToCheck(taskRow);
-                                  openCheckTask();
+                                  setGoalToCheck(goalRow);
+                                  openCheckGoal();
                                 }}
                               />
                             </Tooltip>
@@ -607,9 +754,9 @@ function TaskGoals() {
                                 src={editIcon}
                                 className={styles.actionIcons}
                                 onClick={() => {
-                                  editTaskData(taskRow);
-                                  setTaskToEdit(taskRow);
-                                  setOpenTaskEditor(true);
+                                  editGoalData(goalRow);
+                                  setGoalToEdit(goalRow);
+                                  setOpenGoalEditor(true);
                                 }}
                               />
                             </Tooltip>
@@ -618,8 +765,7 @@ function TaskGoals() {
                                 src={binIcon}
                                 className={styles.actionIcons}
                                 onClick={() => {
-                                  // setTaskToDelete(taskRow);
-                                  taskDeletor(taskRow._id);
+                                  goalDeleter(goalRow._id);
                                 }}
                               />
                             </Tooltip>
@@ -632,1050 +778,966 @@ function TaskGoals() {
               </TableContainer>
             </Grid>
           </div>
-        )
-      ) : // task table
+          // goals table
+        )}
 
-      loadingState ? (
-        <div
-          style={{
-            width: "100%",
-            height: "50vh",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <LoadingScreen />
-        </div>
-      ) : (
-        // goals table
-        <div style={{ width: "100%", height: "70vh", overflowY: "scroll" }}>
-          <Grid item xs={12}>
-            <TableContainer>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="left" style={{ fontWeight: "bold" }}>
-                      {" "}
-                      Goal Title{" "}
-                    </TableCell>
-                    <TableCell align="center" style={{ fontWeight: "bold" }}>
-                      Goal Category
-                    </TableCell>
-                    <TableCell align="center" style={{ fontWeight: "bold" }}>
-                      Current Rating
-                    </TableCell>
-                    <TableCell
-                      align="center"
-                      style={{ fontWeight: "bold" }}
-                    ></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {goals.map((goalRow) => (
-                    <TableRow
-                      key={goalRow.name}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      <TableCell component="th" scope="row" align="left">
-                        {goalRow.title}
-                      </TableCell>
-                      <TableCell align="center">{goalRow.category}</TableCell>
-                      <TableCell align="center">
-                        {goalRow.currentRating}
-                      </TableCell>
-                      <TableCell align="center">
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            gap: 20,
-                            height: 20,
-                          }}
-                        >
-                          <Tooltip title="Check" placement="left">
-                            <img
-                              src={lookIcon}
-                              className={styles.actionIcons}
-                              onClick={() => {
-                                setGoalToCheck(goalRow);
-                                openCheckGoal();
-                              }}
-                            />
-                          </Tooltip>
-                          <Tooltip title="Edit" placement="bottom">
-                            <img
-                              src={editIcon}
-                              className={styles.actionIcons}
-                              onClick={() => {
-                                editGoalData(goalRow);
-                                setGoalToEdit(goalRow);
-                                setOpenGoalEditor(true);
-                              }}
-                            />
-                          </Tooltip>
-                          <Tooltip title="Delete" placement="right">
-                            <img
-                              src={binIcon}
-                              className={styles.actionIcons}
-                              onClick={() => {
-                                goalDeleter(goalRow._id);
-                              }}
-                            />
-                          </Tooltip>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Grid>
-        </div>
-        // goals table
-      )}
-
-      {/* creating task modal */}
-      <div>
-        <Modal
-          open={openTaskCreator}
-          onClose={handleTaskCreatorClose}
-          aria-labelledby="parent-modal-title"
-          aria-describedby="parent-modal-description"
-        >
-          <Box
-            sx={{
-              ...style,
-              width: 800,
-              paddingLeft: 5,
-              paddingRight: 5,
-              paddingTop: 3,
-              paddingBottom: 3,
-            }}
+        {/* creating task modal */}
+        <div>
+          <Modal
+            open={openTaskCreator}
+            onClose={handleTaskCreatorClose}
+            aria-labelledby="parent-modal-title"
+            aria-describedby="parent-modal-description"
           >
-            {goalLoading && (
-              <Box sx={{ width: "100%" }}>
-                <LinearProgress />
-              </Box>
-            )}
-            <h4>CREATE NEW TASK</h4>
-            <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
+            <Box
+              sx={{
+                ...style,
+                width: 800,
+                paddingLeft: 5,
+                paddingRight: 5,
+                paddingTop: 3,
+                paddingBottom: 3,
+              }}
+            >
+              {goalLoading && (
+                <Box sx={{ width: "100%" }}>
+                  <LinearProgress />
+                </Box>
+              )}
+              <h4>CREATE NEW TASK</h4>
               <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
+                style={{ display: "flex", flexDirection: "column", gap: 15 }}
               >
-                <TextField
-                  type="number"
-                  inputProps={{ min: 0 }}
-                  id="standard-basic"
-                  label="Task Day"
-                  variant="standard"
-                  style={{ width: "30%" }}
-                  placeholder="Day X"
-                  onChange={(event) => {
-                    setTaskDay(event.target.value.toString());
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
                   }}
-                />
-                <TextField
-                  type="number"
-                  inputProps={{ min: 0 }}
-                  id="standard-basic"
-                  label="Task X"
-                  variant="standard"
-                  style={{ width: "30%" }}
-                  placeholder="Day X"
-                  onChange={(event) => {
-                    setTaskNumber("task" + event.target.value);
-                  }}
-                />
-                <FormControl style={{ width: "30%" }} size="small">
-                  <InputLabel id="demo-select-small-label">
-                    Select task duration
-                  </InputLabel>
-                  <Select
-                    labelId="demo-select-large-label"
-                    id="taskDuration"
-                    label="category"
-                    style={{ height: "55px" }}
-                    onChange={(event) => {
-                      setTaskDuration(event.target.value);
-                    }}
-                  >
-                    <MenuItem value={"short-term"}>Short Term</MenuItem>
-                    <MenuItem value={"medium-term"}>Medium Term</MenuItem>
-                    <MenuItem value={"long-term"}>Long Term</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
-              <TextField
-                id="standard-basic"
-                label="Task head text"
-                variant="standard"
-                style={{ width: "100%" }}
-                onChange={(event) => {
-                  setHeadText(event.target.value);
-                }}
-              />
-              <TextField
-                id="standard-basic"
-                label="Task head sub text"
-                variant="standard"
-                style={{ width: "100%" }}
-                onChange={(event) => {
-                  setHeadSubText(event.target.value);
-                }}
-              />
-              <h5 style={{ textAlign: "left" }}>INCLUDE TASK STEPS</h5>
-              <div className={styles.stepContainer}>
-                {taskStepList ? (
-                  <div className={styles.stepLine}>
-                    {taskStepList.map((taskStep, index) => {
-                      return (
-                        <>
-                          <div className={styles.step}>
-                            <div className={styles.stepNo}>
-                              <h4>STEP {index + 1}</h4>
-                            </div>
-                            <div className={styles.stepText}>{taskStep}</div>
-                            <div className={styles.cancelBtnContainer}>
-                              {index == taskStepList.length - 1 ? (
-                                <img
-                                  src={cancelIcon}
-                                  style={{
-                                    width: "30px",
-                                    height: "30px",
-                                    cursor: "pointer",
-                                  }}
-                                  onClick={() => {
-                                    const updatedTaskStepList =
-                                      taskStepList.filter(
-                                        (item) => item !== taskStep
-                                      );
-                                    setTaskStepList(updatedTaskStepList);
-                                  }}
-                                />
-                              ) : null}
-                            </div>
-                          </div>
-                        </>
-                      );
-                    })}
-                    <div className={styles.step}>
-                      <div className={styles.stepNo}>
-                        <h4>STEP {taskStepList.length + 1}</h4>
-                      </div>
-                      <div className={styles.stepText}>
-                        <input
-                          id="taskStepInput"
-                          className={styles.stepInput}
-                          placeholder={`Type what to do in step ${
-                            taskStepList.length + 1
-                          }`}
-                          onChange={(event) => {
-                            setTaskStep(event.target.value);
-                          }}
-                          onKeyDown={(event) => {
-                            if (event.key === "Enter") {
-                              if (
-                                !taskStepList.includes(
-                                  taskStep.trim().toLowerCase()
-                                ) &&
-                                taskStep.trim().length !== 0
-                              ) {
-                                setTaskStepList([
-                                  ...taskStepList,
-                                  taskStep.toLowerCase(),
-                                ]);
-                              }
-                              document.getElementById("taskStepInput").value =
-                                "";
-                            }
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 20,
-                }}
-              >
-                <div className={styles.createGoalBtn} onClick={createNewTask}>
-                  Create Task
-                </div>
-              </div>
-            </div>
-          </Box>
-        </Modal>
-      </div>
-      {/* creating task modal */}
-
-      {/* edit task modal */}
-      <div>
-        <Modal
-          open={openTaskEditor}
-          onClose={handleTaskEditorClose}
-          aria-labelledby="parent-modal-title"
-          aria-describedby="parent-modal-description"
-        >
-          <Box
-            sx={{
-              ...style,
-              width: 800,
-              paddingLeft: 5,
-              paddingRight: 5,
-              paddingTop: 3,
-              paddingBottom: 3,
-            }}
-          >
-            {goalLoading && (
-              <Box sx={{ width: "100%" }}>
-                <LinearProgress />
-              </Box>
-            )}
-            <h4>EDIT TASK</h4>
-            <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <FormControl style={{ width: "30%" }} size="small">
-                  <InputLabel id="demo-select-small-label">
-                    Select task duration
-                  </InputLabel>
-                  <Select
-                    labelId="demo-select-large-label"
-                    id="taskDuration"
-                    label="category"
-                    value={taskDuration}
-                    style={{ height: "55px" }}
-                    onChange={(event) => {
-                      setTaskDuration(event.target.value);
-                    }}
-                  >
-                    <MenuItem value={"short-term"}>Short Term</MenuItem>
-                    <MenuItem value={"medium-term"}>Medium Term</MenuItem>
-                    <MenuItem value={"long-term"}>Long Term</MenuItem>
-                  </Select>
-                </FormControl>
-              </div>
-              <TextField
-                id="standard-basic"
-                label="Task head text"
-                variant="standard"
-                value={headText}
-                style={{ width: "100%" }}
-                onChange={(event) => {
-                  setHeadText(event.target.value);
-                }}
-              />
-              <TextField
-                id="standard-basic"
-                label="Task head sub text"
-                value={headSubText}
-                variant="standard"
-                style={{ width: "100%" }}
-                onChange={(event) => {
-                  setHeadSubText(event.target.value);
-                }}
-              />
-              <h5 style={{ textAlign: "left" }}>EDIT TASK STEPS</h5>
-              <div className={styles.stepContainer}>
-                {taskStepList ? (
-                  <div className={styles.stepLine}>
-                    {taskStepList.map((taskStep, index) => {
-                      return (
-                        <>
-                          <div className={styles.step}>
-                            <div className={styles.stepNo}>
-                              <h4>STEP {index + 1}</h4>
-                            </div>
-                            <div className={styles.stepText}>{taskStep}</div>
-                            <div className={styles.cancelBtnContainer}>
-                              {index == taskStepList.length - 1 ? (
-                                <img
-                                  src={cancelIcon}
-                                  style={{
-                                    width: "30px",
-                                    height: "30px",
-                                    cursor: "pointer",
-                                  }}
-                                  onClick={() => {
-                                    const updatedTaskStepList =
-                                      taskStepList.filter(
-                                        (item) => item !== taskStep
-                                      );
-                                    setTaskStepList(updatedTaskStepList);
-                                  }}
-                                />
-                              ) : null}
-                            </div>
-                          </div>
-                        </>
-                      );
-                    })}
-                    <div className={styles.step}>
-                      <div className={styles.stepNo}>
-                        <h4>STEP {taskStepList.length + 1}</h4>
-                      </div>
-                      <div className={styles.stepText}>
-                        <input
-                          id="taskStepInput"
-                          className={styles.stepInput}
-                          placeholder={`Type what to do in step ${
-                            taskStepList.length + 1
-                          }`}
-                          onChange={(event) => {
-                            setTaskStep(event.target.value);
-                          }}
-                          onKeyDown={(event) => {
-                            if (event.key === "Enter") {
-                              if (
-                                !taskStepList.includes(
-                                  taskStep.trim().toLowerCase()
-                                ) &&
-                                taskStep.trim().length !== 0
-                              ) {
-                                setTaskStepList([
-                                  ...taskStepList,
-                                  taskStep.toLowerCase(),
-                                ]);
-                              }
-                              document.getElementById("taskStepInput").value =
-                                "";
-                            }
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 20,
-                }}
-              >
-                <div className={styles.createGoalBtn} onClick={taskEditor}>
-                  Edit Task
-                </div>
-              </div>
-            </div>
-          </Box>
-        </Modal>
-      </div>
-      {/* edit task modal */}
-
-      {/* create goal modal */}
-      <div>
-        <Modal
-          open={openGoalCreator}
-          onClose={handleGoalCreatorClose}
-          aria-labelledby="parent-modal-title"
-          aria-describedby="parent-modal-description"
-        >
-          <Box
-            sx={{
-              ...style,
-              width: 800,
-              paddingLeft: 5,
-              paddingRight: 5,
-              paddingTop: 3,
-              paddingBottom: 3,
-            }}
-          >
-            {goalLoading && (
-              <Box sx={{ width: "100%" }}>
-                <LinearProgress />
-              </Box>
-            )}
-            <h4>CREATE NEW GOAL</h4>
-            <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
-              <TextField
-                id="standard-basic"
-                label="Goal Title"
-                variant="standard"
-                style={{ width: "100%" }}
-                onChange={(event) => {
-                  setGoalTitle(event.target.value);
-                }}
-              />
-              <TextField
-                id="standard-basic"
-                label="Goal Sub-Title"
-                variant="standard"
-                style={{ width: "100%" }}
-                onChange={(event) => {
-                  setGoalSubTitle(event.target.value);
-                }}
-              />
-              <FormControl
-                style={{ width: "100%", marginTop: 15 }}
-                size="small"
-              >
-                <InputLabel id="demo-select-small-label">
-                  Select Goal Category
-                </InputLabel>
-                <Select
-                  labelId="demo-select-large-label"
-                  id="goalCategory"
-                  value={goalCategory}
-                  label="duration"
-                  style={{ height: "55px" }}
-                  onChange={handleGoalCategory}
                 >
-                  <MenuItem value={"meditation"}>meditation</MenuItem>
-                  <MenuItem value={"physicalActivity"}>
-                    physical activity
-                  </MenuItem>
-                  <MenuItem value={"socialConnection"}>
-                    social connection
-                  </MenuItem>
-                  <MenuItem value={"creativeExpression"}>
-                    creative expression
-                  </MenuItem>
-                  <MenuItem value={"personalGrowth"}>personal growth</MenuItem>
-                  <MenuItem value={"inspirationalContent"}>
-                    inspirational content
-                  </MenuItem>
-                </Select>
-              </FormControl>
-              <textarea
-                placeholder="Goal Description"
-                id="myTextarea"
-                style={{
-                  marginTop: 10,
-                  fontFamily: "inherit",
-                  width: "100%",
-                  height: "250px",
-                  border: "solid #4990fb 1px",
-                  borderRadius: "4px",
-                  paddingLeft: "10px",
-                  paddingTop: "10px",
-                  fontSize: "14px",
-                  boxSizing: "border-box",
-                  resize: "none",
-                  outline: "none",
-                }}
-                onChange={(event) => setGoalDescription(event.target.value)}
-              />
-              <span>Goal Objectives</span>
-              <Grid item xs={12}>
-                <div className={styles.tagsContainer}>
-                  <div className={styles.tagDisplay}>
-                    <div
-                      style={{ display: "flex", flexDirection: "row", gap: 10 }}
+                  <TextField
+                    type="number"
+                    inputProps={{ min: 0 }}
+                    id="standard-basic"
+                    label="Task Day"
+                    variant="standard"
+                    style={{ width: "30%" }}
+                    placeholder="Day X"
+                    onChange={(event) => {
+                      setTaskDay(event.target.value.toString());
+                    }}
+                  />
+                  <TextField
+                    type="number"
+                    inputProps={{ min: 0 }}
+                    id="standard-basic"
+                    label="Task X"
+                    variant="standard"
+                    style={{ width: "30%" }}
+                    placeholder="Day X"
+                    onChange={(event) => {
+                      setTaskNumber("task" + event.target.value);
+                    }}
+                  />
+                  <FormControl style={{ width: "30%" }} size="small">
+                    <InputLabel id="demo-select-small-label">
+                      Select task duration
+                    </InputLabel>
+                    <Select
+                      labelId="demo-select-large-label"
+                      id="taskDuration"
+                      label="category"
+                      style={{ height: "55px" }}
+                      onChange={(event) => {
+                        setTaskDuration(event.target.value);
+                      }}
                     >
-                      {goalObjectives.map((oneObjective, index) => (
+                      <MenuItem value={"short-term"}>Short Term</MenuItem>
+                      <MenuItem value={"medium-term"}>Medium Term</MenuItem>
+                      <MenuItem value={"long-term"}>Long Term</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+                <TextField
+                  id="standard-basic"
+                  label="Task head text"
+                  variant="standard"
+                  style={{ width: "100%" }}
+                  onChange={(event) => {
+                    setHeadText(event.target.value);
+                  }}
+                />
+                <TextField
+                  id="standard-basic"
+                  label="Task head sub text"
+                  variant="standard"
+                  style={{ width: "100%" }}
+                  onChange={(event) => {
+                    setHeadSubText(event.target.value);
+                  }}
+                />
+                <h5 style={{ textAlign: "left" }}>INCLUDE TASK STEPS</h5>
+                <div className={styles.stepContainer}>
+                  {taskStepList ? (
+                    <div className={styles.stepLine}>
+                      {taskStepList.map((taskStep, index) => {
+                        return (
+                          <>
+                            <div className={styles.step}>
+                              <div className={styles.stepNo}>
+                                <h4>STEP {index + 1}</h4>
+                              </div>
+                              <div className={styles.stepText}>{taskStep}</div>
+                              <div className={styles.cancelBtnContainer}>
+                                {index == taskStepList.length - 1 ? (
+                                  <img
+                                    src={cancelIcon}
+                                    style={{
+                                      width: "30px",
+                                      height: "30px",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() => {
+                                      const updatedTaskStepList =
+                                        taskStepList.filter(
+                                          (item) => item !== taskStep
+                                        );
+                                      setTaskStepList(updatedTaskStepList);
+                                    }}
+                                  />
+                                ) : null}
+                              </div>
+                            </div>
+                          </>
+                        );
+                      })}
+                      <div className={styles.step}>
+                        <div className={styles.stepNo}>
+                          <h4>STEP {taskStepList.length + 1}</h4>
+                        </div>
+                        <div className={styles.stepText}>
+                          <input
+                            id="taskStepInput"
+                            className={styles.stepInput}
+                            placeholder={`Type what to do in step ${
+                              taskStepList.length + 1
+                            }`}
+                            onChange={(event) => {
+                              setTaskStep(event.target.value);
+                            }}
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter") {
+                                if (
+                                  !taskStepList.includes(
+                                    taskStep.trim().toLowerCase()
+                                  ) &&
+                                  taskStep.trim().length !== 0
+                                ) {
+                                  setTaskStepList([
+                                    ...taskStepList,
+                                    taskStep.toLowerCase(),
+                                  ]);
+                                }
+                                document.getElementById("taskStepInput").value =
+                                  "";
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: 20,
+                  }}
+                >
+                  <div className={styles.createGoalBtn} onClick={createNewTask}>
+                    Create Task
+                  </div>
+                </div>
+              </div>
+            </Box>
+          </Modal>
+        </div>
+        {/* creating task modal */}
+
+        {/* edit task modal */}
+        <div>
+          <Modal
+            open={openTaskEditor}
+            onClose={handleTaskEditorClose}
+            aria-labelledby="parent-modal-title"
+            aria-describedby="parent-modal-description"
+          >
+            <Box
+              sx={{
+                ...style,
+                width: 800,
+                paddingLeft: 5,
+                paddingRight: 5,
+                paddingTop: 3,
+                paddingBottom: 3,
+              }}
+            >
+              {goalLoading && (
+                <Box sx={{ width: "100%" }}>
+                  <LinearProgress />
+                </Box>
+              )}
+              <h4>EDIT TASK</h4>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 15 }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <FormControl style={{ width: "30%" }} size="small">
+                    <InputLabel id="demo-select-small-label">
+                      Select task duration
+                    </InputLabel>
+                    <Select
+                      labelId="demo-select-large-label"
+                      id="taskDuration"
+                      label="category"
+                      value={taskDuration}
+                      style={{ height: "55px" }}
+                      onChange={(event) => {
+                        setTaskDuration(event.target.value);
+                      }}
+                    >
+                      <MenuItem value={"short-term"}>Short Term</MenuItem>
+                      <MenuItem value={"medium-term"}>Medium Term</MenuItem>
+                      <MenuItem value={"long-term"}>Long Term</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+                <TextField
+                  id="standard-basic"
+                  label="Task head text"
+                  variant="standard"
+                  value={headText}
+                  style={{ width: "100%" }}
+                  onChange={(event) => {
+                    setHeadText(event.target.value);
+                  }}
+                />
+                <TextField
+                  id="standard-basic"
+                  label="Task head sub text"
+                  value={headSubText}
+                  variant="standard"
+                  style={{ width: "100%" }}
+                  onChange={(event) => {
+                    setHeadSubText(event.target.value);
+                  }}
+                />
+                <h5 style={{ textAlign: "left" }}>EDIT TASK STEPS</h5>
+                <div className={styles.stepContainer}>
+                  {taskStepList ? (
+                    <div className={styles.stepLine}>
+                      {taskStepList.map((taskStep, index) => {
+                        return (
+                          <>
+                            <div className={styles.step}>
+                              <div className={styles.stepNo}>
+                                <h4>STEP {index + 1}</h4>
+                              </div>
+                              <div className={styles.stepText}>{taskStep}</div>
+                              <div className={styles.cancelBtnContainer}>
+                                {index == taskStepList.length - 1 ? (
+                                  <img
+                                    src={cancelIcon}
+                                    style={{
+                                      width: "30px",
+                                      height: "30px",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() => {
+                                      const updatedTaskStepList =
+                                        taskStepList.filter(
+                                          (item) => item !== taskStep
+                                        );
+                                      setTaskStepList(updatedTaskStepList);
+                                    }}
+                                  />
+                                ) : null}
+                              </div>
+                            </div>
+                          </>
+                        );
+                      })}
+                      <div className={styles.step}>
+                        <div className={styles.stepNo}>
+                          <h4>STEP {taskStepList.length + 1}</h4>
+                        </div>
+                        <div className={styles.stepText}>
+                          <input
+                            id="taskStepInput"
+                            className={styles.stepInput}
+                            placeholder={`Type what to do in step ${
+                              taskStepList.length + 1
+                            }`}
+                            onChange={(event) => {
+                              setTaskStep(event.target.value);
+                            }}
+                            onKeyDown={(event) => {
+                              if (event.key === "Enter") {
+                                if (
+                                  !taskStepList.includes(
+                                    taskStep.trim().toLowerCase()
+                                  ) &&
+                                  taskStep.trim().length !== 0
+                                ) {
+                                  setTaskStepList([
+                                    ...taskStepList,
+                                    taskStep.toLowerCase(),
+                                  ]);
+                                }
+                                document.getElementById("taskStepInput").value =
+                                  "";
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: 20,
+                  }}
+                >
+                  <div className={styles.createGoalBtn} onClick={taskEditor}>
+                    Edit Task
+                  </div>
+                </div>
+              </div>
+            </Box>
+          </Modal>
+        </div>
+        {/* edit task modal */}
+
+        {/* create goal modal */}
+        <div>
+          <Modal
+            open={openGoalCreator}
+            onClose={handleGoalCreatorClose}
+            aria-labelledby="parent-modal-title"
+            aria-describedby="parent-modal-description"
+          >
+            <Box
+              sx={{
+                ...style,
+                width: 800,
+                paddingLeft: 5,
+                paddingRight: 5,
+                paddingTop: 3,
+                paddingBottom: 3,
+              }}
+            >
+              {goalLoading && (
+                <Box sx={{ width: "100%" }}>
+                  <LinearProgress />
+                </Box>
+              )}
+              <h4>CREATE NEW GOAL</h4>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 15 }}
+              >
+                <TextField
+                  id="standard-basic"
+                  label="Goal Title"
+                  variant="standard"
+                  style={{ width: "100%" }}
+                  onChange={(event) => {
+                    setGoalTitle(event.target.value);
+                  }}
+                />
+                <TextField
+                  id="standard-basic"
+                  label="Goal Sub-Title"
+                  variant="standard"
+                  style={{ width: "100%" }}
+                  onChange={(event) => {
+                    setGoalSubTitle(event.target.value);
+                  }}
+                />
+                <FormControl
+                  style={{ width: "100%", marginTop: 15 }}
+                  size="small"
+                >
+                  <InputLabel id="demo-select-small-label">
+                    Select Goal Category
+                  </InputLabel>
+                  <Select
+                    labelId="demo-select-large-label"
+                    id="goalCategory"
+                    value={goalCategory}
+                    label="duration"
+                    style={{ height: "55px" }}
+                    onChange={handleGoalCategory}
+                  >
+                    <MenuItem value={"meditation"}>meditation</MenuItem>
+                    <MenuItem value={"physicalActivity"}>
+                      physical activity
+                    </MenuItem>
+                    <MenuItem value={"socialConnection"}>
+                      social connection
+                    </MenuItem>
+                    <MenuItem value={"creativeExpression"}>
+                      creative expression
+                    </MenuItem>
+                    <MenuItem value={"personalGrowth"}>
+                      personal growth
+                    </MenuItem>
+                    <MenuItem value={"inspirationalContent"}>
+                      inspirational content
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+                <textarea
+                  placeholder="Goal Description"
+                  id="myTextarea"
+                  style={{
+                    marginTop: 10,
+                    fontFamily: "inherit",
+                    width: "100%",
+                    height: "250px",
+                    border: "solid #4990fb 1px",
+                    borderRadius: "4px",
+                    paddingLeft: "10px",
+                    paddingTop: "10px",
+                    fontSize: "14px",
+                    boxSizing: "border-box",
+                    resize: "none",
+                    outline: "none",
+                  }}
+                  onChange={(event) => setGoalDescription(event.target.value)}
+                />
+                <span>Goal Objectives</span>
+                <Grid item xs={12}>
+                  <div className={styles.tagsContainer}>
+                    <div className={styles.tagDisplay}>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          gap: 10,
+                        }}
+                      >
+                        {goalObjectives.map((oneObjective, index) => (
+                          <div className={styles.tag} key={index}>
+                            {oneObjective}
+                            <img
+                              src={cancelIcon}
+                              style={{ width: "15px", cursor: "pointer" }}
+                              onClick={() => {
+                                const updatedObjectives = goalObjectives.filter(
+                                  (item) => item !== oneObjective
+                                );
+                                setGoalObjectives(updatedObjectives);
+                              }}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <div className={styles.tagInput}>
+                        <input
+                          id="tgIn"
+                          className={styles.tgIn}
+                          placeholder="Enter goal objectives"
+                          onChange={handleGoalObjective}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter") {
+                              if (
+                                !goalObjectives.includes(
+                                  goalObjective.trim().toLowerCase()
+                                ) &&
+                                goalObjective.trim().length !== 0
+                              ) {
+                                setGoalObjectives([
+                                  ...goalObjectives,
+                                  goalObjective.toLowerCase(),
+                                ]);
+                              }
+                              document.getElementById("tgIn").value = "";
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Grid>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-evenly",
+                    alignItems: "center",
+                    marginTop: 20,
+                  }}
+                >
+                  <span>Goal Duration :</span>
+                  <div style={{ display: "flex", gap: 20, width: "60%" }}>
+                    <TextField
+                      type="number"
+                      style={{ width: "30%" }}
+                      inputProps={{ min: 0 }}
+                      onChange={handleTimeDuration}
+                    />
+                    <FormControl style={{ width: "60%" }} size="small">
+                      <InputLabel id="demo-select-small-label">
+                        Select Time Period
+                      </InputLabel>
+                      <Select
+                        labelId="demo-select-large-label"
+                        id="timeCategory"
+                        value={timeCategory}
+                        label="duration"
+                        style={{ height: "55px" }}
+                        onChange={handleTimeCategory}
+                      >
+                        <MenuItem value={"days"}>Days</MenuItem>
+                        <MenuItem value={"weeks"}>Weeks</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </div>
+                  <div className={styles.createGoalBtn} onClick={createNewGoal}>
+                    Create Goal
+                  </div>
+                </div>
+              </div>
+            </Box>
+          </Modal>
+        </div>
+        {/* create goal modal */}
+
+        {/* edit goal modal */}
+        <div>
+          <Modal
+            open={openGoalEditor}
+            onClose={handleGoalEditorClose}
+            aria-labelledby="parent-modal-title"
+            aria-describedby="parent-modal-description"
+          >
+            <Box
+              sx={{
+                ...style,
+                width: 800,
+                paddingLeft: 5,
+                paddingRight: 5,
+                paddingTop: 3,
+                paddingBottom: 3,
+              }}
+            >
+              {goalLoading && (
+                <Box sx={{ width: "100%" }}>
+                  <LinearProgress />
+                </Box>
+              )}
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 15 }}
+              >
+                <TextField
+                  id="standard-basic"
+                  label="Goal Title"
+                  variant="standard"
+                  value={goalTitle}
+                  style={{ width: "100%" }}
+                  onChange={(event) => {
+                    setGoalTitle(event.target.value);
+                  }}
+                />
+                <TextField
+                  id="standard-basic"
+                  label="Goal Sub-Title"
+                  variant="standard"
+                  value={goalSubTitle}
+                  style={{ width: "100%" }}
+                  onChange={(event) => {
+                    setGoalSubTitle(event.target.value);
+                  }}
+                />
+                <FormControl
+                  style={{ width: "100%", marginTop: 15 }}
+                  size="small"
+                >
+                  <InputLabel id="demo-select-small-label">
+                    Select Goal Category
+                  </InputLabel>
+                  <Select
+                    labelId="demo-select-large-label"
+                    id="goalCategory"
+                    value={goalCategory}
+                    label="duration"
+                    style={{ height: "55px" }}
+                    onChange={handleGoalCategory}
+                  >
+                    <MenuItem value={"meditation"}>meditation</MenuItem>
+                    <MenuItem value={"physicalActivity"}>
+                      physical activity
+                    </MenuItem>
+                    <MenuItem value={"socialConnection"}>
+                      social connection
+                    </MenuItem>
+                    <MenuItem value={"creativeExpression"}>
+                      creative expression
+                    </MenuItem>
+                    <MenuItem value={"personalGrowth"}>
+                      personal growth
+                    </MenuItem>
+                    <MenuItem value={"inspirationalContent"}>
+                      inspirational content
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+
+                <textarea
+                  placeholder="Goal Description"
+                  id="myTextarea"
+                  value={goalDescription}
+                  style={{
+                    marginTop: 10,
+                    fontFamily: "inherit",
+                    width: "100%",
+                    height: "250px",
+                    border: "solid #4990fb 1px",
+                    borderRadius: "4px",
+                    paddingLeft: "10px",
+                    paddingTop: "10px",
+                    fontSize: "14px",
+                    boxSizing: "border-box",
+                    resize: "none",
+                    outline: "none",
+                  }}
+                  onChange={(event) => setGoalDescription(event.target.value)}
+                />
+                <span>Goal Objectives</span>
+                <Grid item xs={12}>
+                  <div className={styles.tagsContainer}>
+                    <div className={styles.tagDisplay}>
+                      {(goalToEdit.objectives
+                        ? goalToEdit.objectives
+                        : objectives
+                      ).map((oneObjective, index) => (
                         <div className={styles.tag} key={index}>
                           {oneObjective}
                           <img
                             src={cancelIcon}
                             style={{ width: "15px", cursor: "pointer" }}
                             onClick={() => {
-                              const updatedObjectives = goalObjectives.filter(
-                                (item) => item !== oneObjective
-                              );
-                              setGoalObjectives(updatedObjectives);
+                              const updatedObjectives = (
+                                goalToEdit.objectives
+                                  ? goalToEdit.objectives
+                                  : objectives
+                              ).filter((item) => item !== oneObjective);
+                              setObjectives(updatedObjectives);
                             }}
                           />
                         </div>
                       ))}
-                    </div>
-                    <div className={styles.tagInput}>
-                      <input
-                        id="tgIn"
-                        className={styles.tgIn}
-                        placeholder="Enter goal objectives"
-                        onChange={handleGoalObjective}
-                        onKeyDown={(event) => {
-                          if (event.key === "Enter") {
-                            if (
-                              !goalObjectives.includes(
-                                goalObjective.trim().toLowerCase()
-                              ) &&
-                              goalObjective.trim().length !== 0
-                            ) {
-                              setGoalObjectives([
-                                ...goalObjectives,
-                                goalObjective.toLowerCase(),
-                              ]);
+                      <div className={styles.tagInput}>
+                        <input
+                          id="goaltgIn"
+                          className={styles.tgIn}
+                          placeholder="Enter goal objectives"
+                          onChange={handleObjectiveChange}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter") {
+                              if (
+                                objectives.includes(
+                                  objective.trim().toLowerCase()
+                                ) &&
+                                objective.trim().length !== 0
+                              ) {
+                                setObjectives([
+                                  ...objectives,
+                                  objective.toLowerCase(),
+                                ]);
+                              }
+                              document.getElementById("goaltgIn").value = "";
+                              setActionState(!actionState);
                             }
-                            document.getElementById("tgIn").value = "";
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </Grid>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
-                  marginTop: 20,
-                }}
-              >
-                <span>Goal Duration :</span>
-                <div style={{ display: "flex", gap: 20, width: "60%" }}>
-                  <TextField
-                    type="number"
-                    style={{ width: "30%" }}
-                    inputProps={{ min: 0 }}
-                    onChange={handleTimeDuration}
-                  />
-                  <FormControl style={{ width: "60%" }} size="small">
-                    <InputLabel id="demo-select-small-label">
-                      Select Time Period
-                    </InputLabel>
-                    <Select
-                      labelId="demo-select-large-label"
-                      id="timeCategory"
-                      value={timeCategory}
-                      label="duration"
-                      style={{ height: "55px" }}
-                      onChange={handleTimeCategory}
-                    >
-                      <MenuItem value={"days"}>Days</MenuItem>
-                      <MenuItem value={"weeks"}>Weeks</MenuItem>
-                    </Select>
-                  </FormControl>
-                </div>
-                <div className={styles.createGoalBtn} onClick={createNewGoal}>
-                  Create Goal
-                </div>
-              </div>
-            </div>
-          </Box>
-        </Modal>
-      </div>
-      {/* create goal modal */}
-
-      {/* edit goal modal */}
-      <div>
-        <Modal
-          open={openGoalEditor}
-          onClose={handleGoalEditorClose}
-          aria-labelledby="parent-modal-title"
-          aria-describedby="parent-modal-description"
-        >
-          <Box
-            sx={{
-              ...style,
-              width: 800,
-              paddingLeft: 5,
-              paddingRight: 5,
-              paddingTop: 3,
-              paddingBottom: 3,
-            }}
-          >
-            {goalLoading && (
-              <Box sx={{ width: "100%" }}>
-                <LinearProgress />
-              </Box>
-            )}
-            <div style={{ display: "flex", flexDirection: "column", gap: 15 }}>
-              <TextField
-                id="standard-basic"
-                label="Goal Title"
-                variant="standard"
-                value={goalTitle}
-                style={{ width: "100%" }}
-                onChange={(event) => {
-                  setGoalTitle(event.target.value);
-                }}
-              />
-              <TextField
-                id="standard-basic"
-                label="Goal Sub-Title"
-                variant="standard"
-                value={goalSubTitle}
-                style={{ width: "100%" }}
-                onChange={(event) => {
-                  setGoalSubTitle(event.target.value);
-                }}
-              />
-              <FormControl
-                style={{ width: "100%", marginTop: 15 }}
-                size="small"
-              >
-                <InputLabel id="demo-select-small-label">
-                  Select Goal Category
-                </InputLabel>
-                <Select
-                  labelId="demo-select-large-label"
-                  id="goalCategory"
-                  value={goalCategory}
-                  label="duration"
-                  style={{ height: "55px" }}
-                  onChange={handleGoalCategory}
-                >
-                  <MenuItem value={"meditation"}>meditation</MenuItem>
-                  <MenuItem value={"physicalActivity"}>
-                    physical activity
-                  </MenuItem>
-                  <MenuItem value={"socialConnection"}>
-                    social connection
-                  </MenuItem>
-                  <MenuItem value={"creativeExpression"}>
-                    creative expression
-                  </MenuItem>
-                  <MenuItem value={"personalGrowth"}>personal growth</MenuItem>
-                  <MenuItem value={"inspirationalContent"}>
-                    inspirational content
-                  </MenuItem>
-                </Select>
-              </FormControl>
-
-              <textarea
-                placeholder="Goal Description"
-                id="myTextarea"
-                value={goalDescription}
-                style={{
-                  marginTop: 10,
-                  fontFamily: "inherit",
-                  width: "100%",
-                  height: "250px",
-                  border: "solid #4990fb 1px",
-                  borderRadius: "4px",
-                  paddingLeft: "10px",
-                  paddingTop: "10px",
-                  fontSize: "14px",
-                  boxSizing: "border-box",
-                  resize: "none",
-                  outline: "none",
-                }}
-                onChange={(event) => setGoalDescription(event.target.value)}
-              />
-              <span>Goal Objectives</span>
-              <Grid item xs={12}>
-                <div className={styles.tagsContainer}>
-                  <div className={styles.tagDisplay}>
-                    {(goalToEdit.objectives
-                      ? goalToEdit.objectives
-                      : objectives
-                    ).map((oneObjective, index) => (
-                      <div className={styles.tag} key={index}>
-                        {oneObjective}
-                        <img
-                          src={cancelIcon}
-                          style={{ width: "15px", cursor: "pointer" }}
-                          onClick={() => {
-                            const updatedObjectives = (
-                              goalToEdit.objectives
-                                ? goalToEdit.objectives
-                                : objectives
-                            ).filter((item) => item !== oneObjective);
-                            setObjectives(updatedObjectives);
                           }}
                         />
                       </div>
-                    ))}
-                    <div className={styles.tagInput}>
-                      <input
-                        id="goaltgIn"
-                        className={styles.tgIn}
-                        placeholder="Enter goal objectives"
-                        onChange={handleObjectiveChange}
-                        onKeyDown={(event) => {
-                          if (event.key === "Enter") {
-                            if (
-                              objectives.includes(
-                                objective.trim().toLowerCase()
-                              ) &&
-                              objective.trim().length !== 0
-                            ) {
-                              setObjectives([
-                                ...objectives,
-                                objective.toLowerCase(),
-                              ]);
-                            }
-                            document.getElementById("goaltgIn").value = "";
-                            setActionState(!actionState);
-                          }
-                        }}
-                      />
                     </div>
                   </div>
-                </div>
-              </Grid>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
-                  marginTop: 20,
-                }}
-              >
-                <span>Goal Duration :</span>
-                <div style={{ display: "flex", gap: 20, width: "60%" }}>
-                  <TextField
-                    style={{ width: "60%" }}
-                    inputProps={{ min: 0 }}
-                    value={editedTime}
-                    onChange={handleEditTimeDuration}
-                  />
-                </div>
-                <div className={styles.createGoalBtn} onClick={goalEditor}>
-                  Edit Goal
+                </Grid>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-evenly",
+                    alignItems: "center",
+                    marginTop: 20,
+                  }}
+                >
+                  <span>Goal Duration :</span>
+                  <div style={{ display: "flex", gap: 20, width: "60%" }}>
+                    <TextField
+                      style={{ width: "60%" }}
+                      inputProps={{ min: 0 }}
+                      value={editedTime}
+                      onChange={handleEditTimeDuration}
+                    />
+                  </div>
+                  <div className={styles.createGoalBtn} onClick={goalEditor}>
+                    Edit Goal
+                  </div>
                 </div>
               </div>
-            </div>
-          </Box>
-        </Modal>
-      </div>
-      {/* edit goal modal */}
+            </Box>
+          </Modal>
+        </div>
+        {/* edit goal modal */}
 
-      {/* check task */}
-      <div id="checkTask" className={styles.overlay}>
-        {/* <!-- Button to close the overlay navigation --> */}
-        <a
-          href="javascript:void(0)"
-          className={styles.closebtn}
-          onClick={closeCheckTask}
-        >
-          &times;
-        </a>
-
-        {/* <!-- Overlay content --> */}
-        <div className={styles.overlay_content}>
-          <div
-            className={styles.newTaskForm}
-            style={{ justifyContent: "flex-start" }}
+        {/* check task */}
+        <div id="checkTask" className={styles.overlay}>
+          {/* <!-- Button to close the overlay navigation --> */}
+          <a
+            href="javascript:void(0)"
+            className={styles.closebtn}
+            onClick={closeCheckTask}
           >
-            <Grid container>
-              <Grid
-                item
-                xs={12}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                }}
-              >
-                <div
+            &times;
+          </a>
+
+          {/* <!-- Overlay content --> */}
+          <div className={styles.overlay_content}>
+            <div
+              className={styles.newTaskForm}
+              style={{ justifyContent: "flex-start" }}
+            >
+              <Grid container>
+                <Grid
+                  item
+                  xs={12}
                   style={{
                     display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
+                    flexDirection: "column",
+                    justifyContent: "space-between",
                   }}
                 >
-                  <h5 style={{ width: "15%" }}>Task name :</h5>
-                  <span>{taskToCheck.headText}</span>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  <h5 style={{ width: "15%" }}>Task duration :</h5>
-                  <span>{taskToCheck.duration}</span>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <h5 style={{ width: "15%" }}>Task sub-text :</h5>
-                  <span>{taskToCheck.subText}</span>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <h5 style={{ width: "105px" }}>Task steps :</h5>
-                  <span
+                  <div
                     style={{
-                      height: "320px",
-                      overflowY: "scroll",
-                      padding: "20px",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
                     }}
                   >
-                    {taskToCheck
-                      ? taskToCheck.steps.map((taskStep, index) => {
-                          return (
-                            <>
-                              <span
-                                style={{
-                                  backgroundColor: "#4990fb",
-                                  borderRadius: "25px",
-                                  color: "white",
-                                  paddingLeft: "20px",
-                                  paddingRight: "20px",
-                                  paddingTop: "5px",
-                                  paddingBottom: "5px",
-                                }}
-                              >
-                                Step {index + 1} :{" "}
-                              </span>
-                              <h4>{taskStep}</h4>
-                            </>
-                          );
-                        })
-                      : null}
-                  </span>
-                </div>
+                    <h5 style={{ width: "15%" }}>Task name :</h5>
+                    <span>{taskToCheck.headText}</span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
+                    }}
+                  >
+                    <h5 style={{ width: "15%" }}>Task duration :</h5>
+                    <span>{taskToCheck.duration}</span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <h5 style={{ width: "15%" }}>Task sub-text :</h5>
+                    <span>{taskToCheck.subText}</span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                    }}
+                  >
+                    <h5 style={{ width: "105px" }}>Task steps :</h5>
+                    <span
+                      style={{
+                        height: "320px",
+                        overflowY: "scroll",
+                        padding: "20px",
+                      }}
+                    >
+                      {taskToCheck
+                        ? taskToCheck.steps.map((taskStep, index) => {
+                            return (
+                              <>
+                                <span
+                                  style={{
+                                    backgroundColor: "#4990fb",
+                                    borderRadius: "25px",
+                                    color: "white",
+                                    paddingLeft: "20px",
+                                    paddingRight: "20px",
+                                    paddingTop: "5px",
+                                    paddingBottom: "5px",
+                                  }}
+                                >
+                                  Step {index + 1} :{" "}
+                                </span>
+                                <h4>{taskStep}</h4>
+                              </>
+                            );
+                          })
+                        : null}
+                    </span>
+                  </div>
+                </Grid>
+                <Grid item xs={12}></Grid>
               </Grid>
-              <Grid item xs={12}></Grid>
-            </Grid>
+            </div>
           </div>
         </div>
-      </div>
-      {/* check task */}
+        {/* check task */}
 
-      {/* check goal */}
-      <div id="checkGoal" className={styles.overlay}>
-        {/* <!-- Button to close the overlay navigation --> */}
-        <a
-          href="javascript:void(0)"
-          className={styles.closebtn}
-          onClick={closeCheckGoal}
-        >
-          &times;
-        </a>
-
-        {/* <!-- Overlay content --> */}
-        <div className={styles.overlay_content}>
-          <div
-            className={styles.newTaskForm}
-            style={{ justifyContent: "flex-start" }}
+        {/* check goal */}
+        <div id="checkGoal" className={styles.overlay}>
+          {/* <!-- Button to close the overlay navigation --> */}
+          <a
+            href="javascript:void(0)"
+            className={styles.closebtn}
+            onClick={closeCheckGoal}
           >
-            <Grid container>
-              <Grid
-                item
-                xs={12}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <div
+            &times;
+          </a>
+
+          {/* <!-- Overlay content --> */}
+          <div className={styles.overlay_content}>
+            <div
+              className={styles.newTaskForm}
+              style={{ justifyContent: "flex-start" }}
+            >
+              <Grid container>
+                <Grid
+                  item
+                  xs={12}
                   style={{
                     display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
+                    flexDirection: "column",
                   }}
                 >
-                  <h5 style={{ width: "130px" }}>Goal name :</h5>
-                  <span>{goalToCheck.title}</span>
-                </div>
-                <br />
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "flex-start",
-                    gap: 10,
-                  }}
-                >
-                  <h5 style={{ width: "220px" }}>Goal description :</h5>
-                  <span>{goalToCheck.description}</span>
-                </div>
-                <br />
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  <h5 style={{ width: "130px" }}>Goal category :</h5>
-                  <span>{goalToCheck.category}</span>
-                </div>
-                <br />
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  <h5 style={{ width: "130px" }}>Current Rating :</h5>
-                  <span>{goalToCheck.currentRating}</span>
-                </div>
-                <br />
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  <h5 style={{ width: "130px" }}>Duration :</h5>
-                  <span>{goalToCheck.duration}</span>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  <h5 style={{ width: "130px" }}>Goal Objectives :</h5>
-                  {/* {goalToCheck.objectives} */}
-                  <span>
-                    {goalToCheck.objectives?.map((objective, index) => (
-                      <span
-                        key={index}
-                        style={{
-                          backgroundColor: "rgba(0,0,0,0.7)",
-                          color: "white",
-                          marginRight: 10,
-                          paddingTop: 5,
-                          paddingBottom: 5,
-                          paddingLeft: 10,
-                          paddingRight: 10,
-                          borderRadius: 100,
-                          fontSize: 14,
-                        }}
-                      >
-                        {objective}
-                      </span>
-                    ))}
-                  </span>
-                </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
+                    }}
+                  >
+                    <h5 style={{ width: "130px" }}>Goal name :</h5>
+                    <span>{goalToCheck.title}</span>
+                  </div>
+                  <br />
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "flex-start",
+                      gap: 10,
+                    }}
+                  >
+                    <h5 style={{ width: "220px" }}>Goal description :</h5>
+                    <span>{goalToCheck.description}</span>
+                  </div>
+                  <br />
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
+                    }}
+                  >
+                    <h5 style={{ width: "130px" }}>Goal category :</h5>
+                    <span>{goalToCheck.category}</span>
+                  </div>
+                  <br />
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
+                    }}
+                  >
+                    <h5 style={{ width: "130px" }}>Current Rating :</h5>
+                    <span>{goalToCheck.currentRating}</span>
+                  </div>
+                  <br />
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
+                    }}
+                  >
+                    <h5 style={{ width: "130px" }}>Duration :</h5>
+                    <span>{goalToCheck.duration}</span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 10,
+                    }}
+                  >
+                    <h5 style={{ width: "130px" }}>Goal Objectives :</h5>
+                    {/* {goalToCheck.objectives} */}
+                    <span>
+                      {goalToCheck.objectives?.map((objective, index) => (
+                        <span
+                          key={index}
+                          style={{
+                            backgroundColor: "rgba(0,0,0,0.7)",
+                            color: "white",
+                            marginRight: 10,
+                            paddingTop: 5,
+                            paddingBottom: 5,
+                            paddingLeft: 10,
+                            paddingRight: 10,
+                            borderRadius: 100,
+                            fontSize: 14,
+                          }}
+                        >
+                          {objective}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                </Grid>
+                <Grid item xs={12}></Grid>
               </Grid>
-              <Grid item xs={12}></Grid>
-            </Grid>
+            </div>
           </div>
         </div>
-      </div>
-      {/* check goal */}
-    </Grid>
+        {/* check goal */}
+      </Grid>
+    </>
   );
 }
 

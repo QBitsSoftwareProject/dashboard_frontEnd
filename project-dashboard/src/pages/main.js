@@ -31,9 +31,6 @@ export default function Main() {
           <SideNavbar onPageChange={handlePageChange} />
         </Grid>
         <Grid item xs={9}>
-            <div className={styles.upperNavBarStyles}>
-            {/* <UpperNavBar /> */}
-          </div>
           <div className={styles.content}>
             <Routes>
               <Route path="view-analytics" element={<ViewAnalytics />} />
@@ -42,15 +39,14 @@ export default function Main() {
               <Route path="mind-relaxing-methods" element={<MindRelaxing onPageChange={handlePageChange} />} />
               <Route path="mind-relaxing-methods-list" element={<MethodList onPageChange={handlePageChange} />} />
               <Route path="mind-relaxing-methods-update/:id" element={<MethodUpdate onPageChange={handlePageChange} />} />
-              <Route path="Task-Goals" element={<TaskGoals/>} />
-              <Route path="stress-level-questions" element={<StressLevelQuestions  onPageChange={handlePageChange} />}/>
-              <Route path="stress-level-questions-list" element={<StressLevelQuestionList  onPageChange={handlePageChange} />}/>
-              <Route path="stress-level-questions-update/:id" element={<StressLevelQuestionUpdate  onPageChange={handlePageChange} />}/>
+              <Route path="Task-Goals" element={<TaskGoals />} />
+              <Route path="stress-level-questions" element={<StressLevelQuestions onPageChange={handlePageChange} />} />
+              <Route path="stress-level-questions-list" element={<StressLevelQuestionList onPageChange={handlePageChange} />} />
+              <Route path="stress-level-questions-update/:id" element={<StressLevelQuestionUpdate onPageChange={handlePageChange} />} />
             </Routes>
           </div>
         </Grid>
       </Grid>
-
     </div>
   );
 }

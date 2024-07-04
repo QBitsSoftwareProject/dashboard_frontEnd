@@ -3,12 +3,12 @@
   src: url(../assets/fonts/Poppins-Regular.ttf);
 }
 
-*{
-  font-family:"poppins-regular";
+* {
+  font-family: "poppins-regular";
 }
 
 .loginContainer {
-  /* background-color: red; */
+  background-color: #2f79e9;
   height: 100vh;
   position: relative;
   display: flex;
@@ -58,19 +58,31 @@
 }
 
 .loginBtn {
-  background-color: #70c0fb;
+  margin-top: 50px;
+  background-color: #2f79e9;
   color: white;
   width: 80%;
   border: none;
-  border-radius: 100px;
-  height: 40px;
+  border-radius: 10px;
+  height: 50px;
   font-family: "poppins-regular";
   font-size: 15px;
   cursor: pointer;
-  transition: 0.2s ease-in-out;
+  transition-duration: 200ms;
 }
 
 .loginBtn:hover {
   box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px,
     rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+  scale: 1.05;
+}
+
+.loginDetailsContainer {
+  width: 40%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 50vh;
+  margin-top: 20vh;
+  background-color: white;
+  border-radius: 10px;
 }

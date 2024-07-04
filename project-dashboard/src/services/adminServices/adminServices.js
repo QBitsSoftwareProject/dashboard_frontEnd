@@ -3,6 +3,17 @@ import { BACKEND_URI } from "../../config/env";
 
 const URL = BACKEND_URI + "/resources";
 
+// admin login
+export const adminLogin = async (adminDetails) => {
+    try {
+        await axios.post(BACKEND_URI + '/admin/', adminDetails);
+    } catch (err) {
+        console.log("error logging in, error:" + err.message);
+    }
+}
+// admin login
+
+
 //get author details
 export const getAuthors = async () => {
     try {

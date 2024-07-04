@@ -249,7 +249,7 @@ export default function ControlAccess() {
                 ...style,
                 width: 800,
                 paddingLeft: 5,
-                height: 530,
+                height: "fit-content",
                 paddingRight: 5,
                 paddingTop: 3,
                 paddingBottom: 9,
@@ -414,7 +414,7 @@ export default function ControlAccess() {
                       }}
                       src={doctorToCheck.proPic}
                     />
-                    <span style={{ marginTop: "20px" }}>
+                    <span style={{ marginTop: "20px",textAlign:"center" }}>
                       {doctorToCheck.fullName}
                     </span>
                     <span style={{ marginTop: "20px" }}>

@@ -452,31 +452,26 @@ const ResourceManagement = ({ onPageChange }) => {
 
         <Grid
           item
-          xs={2}
+          xs={6}
           style={{
             display: "flex",
-            justifyContent: "start",
+            justifyContent: "center",
             alignItems: "center",
+            flexDirection: "column",
           }}
         >
-          <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
-            Method cover image :
-          </span>
-        </Grid>
-
-        <Grid item xs={10} style={{ paddingRight: "20px" }}>
           <div
             className="second-row"
             onDrop={handleDrop}
             onDragOver={handleDragOver}
             style={{
-              border: "2px dashed #cccccc",
+              border: "2px dashed rgb(47, 121, 233)",
               borderRadius: "5px",
               padding: "10px",
               paddingBottom: "20px",
               textAlign: "center",
-              width: "310px",
-              height: "200px",
+              width: "90%",
+              height: "300px",
             }}
           >
             <input
@@ -486,52 +481,50 @@ const ResourceManagement = ({ onPageChange }) => {
               id="fileInput"
               accept="image/*"
             />
-            <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-              <div>Drag and drop an image here</div>
-            </label>
-            <div className="img-back">
+
+            <div className="img-back" style={{ marginTop: "50px" }}>
               {ImgUrl && (
                 <div>
-                  <img src={ImgUrl} width={200} height={150} alt="Preview" />
+                  <img src={ImgUrl} width={150} alt="Preview" />
                 </div>
               )}
-
+              <label
+                htmlFor="fileInput"
+                style={{ cursor: "pointer", marginTop: "20px" }}
+              >
+                <div>Drag and drop an image here</div>
+              </label>
               <div>
-                <button className="img-btn" onClick={uploadImage}>
+                <button className={styles.imgBtn} onClick={uploadImage}>
                   Confirm image
                 </button>
               </div>
             </div>
           </div>
+          <h5>Method cover image</h5>
         </Grid>
         <Grid
           item
-          xs={2}
+          xs={6}
           style={{
+            flexDirection: "column",
             display: "flex",
-            justifyContent: "start",
+            justifyContent: "center",
             alignItems: "center",
           }}
         >
-          <span
-            style={{ fontWeight: "bold", marginLeft: "20px", marginRight: 20 }}
-          >
-            Method resource :
-          </span>
-        </Grid>
-        <Grid item xs={10} style={{ paddingRight: "20px" }}>
           <div
             className="second-row"
             onDrop={handleDropMethod}
             onDragOver={handleDragOverMethod}
             style={{
-              border: "2px dashed #cccccc",
+              border: "2px dashed rgb(47, 121, 233)",
               borderRadius: "5px",
               padding: "10px",
               paddingBottom: "20px",
               textAlign: "center",
-              width: "310px",
-              height: "200px",
+              width: "90%",
+              height: "300px",
             }}
           >
             <input
@@ -541,10 +534,8 @@ const ResourceManagement = ({ onPageChange }) => {
               id="fileInput"
               accept="image/*"
             />
-            <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-              <div>Drag and drop the resource here</div>
-            </label>
-            <div className="img-back">
+
+            <div className="img-back" style={{ marginTop: "50px" }}>
               <div>
                 {filenameMethod ? (
                   <div
@@ -562,24 +553,25 @@ const ResourceManagement = ({ onPageChange }) => {
                 ) : (
                   ImgUrl && (
                     <div>
-                      <img
-                        src={uploadImg}
-                        width={200}
-                        height={150}
-                        alt="Preview"
-                      />
+                      <img src={uploadImg} width={150} alt="Preview" />
                     </div>
                   )
                 )}
+                <label
+                  htmlFor="fileInput"
+                  style={{ cursor: "pointer", marginTop: "20px" }}
+                >
+                  <div>Drag and drop an image here</div>
+                </label>
               </div>
-
               <div>
-                <button className="img-btn" onClick={uploadMethod}>
+                <button className={styles.imgBtn} onClick={uploadMethod}>
                   Confirm Resource
                 </button>
               </div>
             </div>
           </div>
+          <h5>Method resource</h5>
         </Grid>
         <div
           className="uploadBtn"
