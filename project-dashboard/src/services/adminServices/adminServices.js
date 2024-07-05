@@ -6,7 +6,10 @@ const URL = BACKEND_URI + "/resources";
 // admin login
 export const adminLogin = async (adminDetails) => {
     try {
-        await axios.post(BACKEND_URI + '/admin/', adminDetails);
+        const response = await axios.post(BACKEND_URI + '/admin/login', adminDetails);
+
+        // Save the authentication token in local storage
+        localStorage.setItem('authToken', response.data.authtoken);
     } catch (err) {
         console.log("error logging in, error:" + err.message);
     }
@@ -27,7 +30,8 @@ export const getAuthors = async () => {
 // register new author
 export const registerAuthor = async (newAuthor) => {
     try {
-        await axios.post(URL + '/author/', newAuthor);
+        const token = localStorage.getItem("authToken");
+        await axios.post(URL + '/author/', newAuthor, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error registering author , error:" + err.message);
     }
@@ -36,7 +40,8 @@ export const registerAuthor = async (newAuthor) => {
 // uploading custom created article
 export const createNewArticle = async (newArticle) => {
     try {
-        await axios.post(URL + '/article/', newArticle);
+        const token = localStorage.getItem("authToken");
+        await axios.post(URL + '/article/', newArticle, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error creating new article , error:" + err.message);
     }
@@ -45,7 +50,8 @@ export const createNewArticle = async (newArticle) => {
 // uploading video resource
 export const createVideoResource = async (newVideo) => {
     try {
-        await axios.post(URL + '/video/', newVideo);
+        const token = localStorage.getItem("authToken");
+        await axios.post(URL + '/video/', newVideo, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error creating new video , error:" + err.message);
     }
@@ -54,7 +60,8 @@ export const createVideoResource = async (newVideo) => {
 // uploading video resource
 export const createAudioResource = async (newAudio) => {
     try {
-        await axios.post(URL + '/audio/', newAudio);
+        const token = localStorage.getItem("authToken");
+        await axios.post(URL + '/audio/', newAudio, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error creating new audio , error:" + err.message);
     }
@@ -151,7 +158,8 @@ export const getAuthorInfo = async (authorId) => {
 
 export const articleDelete = async (articleId) => {
     try {
-        await axios.delete(URL + '/article/' + articleId);
+        const token = localStorage.getItem("authToken");
+        await axios.delete(URL + '/article/' + articleId, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error deleting article, error:" + err.message);
     }
@@ -159,7 +167,8 @@ export const articleDelete = async (articleId) => {
 
 export const getAllVideos = async () => {
     try {
-        const response = await axios.get(URL + '/video/');
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(URL + '/video/', { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching videos, error:" + err.message);
@@ -168,7 +177,8 @@ export const getAllVideos = async () => {
 
 export const deleteVideo = async (videoId) => {
     try {
-        await axios.delete(URL + '/video/' + videoId);
+        const token = localStorage.getItem("authToken");
+        await axios.delete(URL + '/video/' + videoId, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error deleting video, error:" + err.message);
     }
@@ -185,7 +195,8 @@ export const getAllAudios = async () => {
 
 export const deleteAudio = async (audioId) => {
     try {
-        await axios.delete(URL + '/audio/' + audioId);
+        const token = localStorage.getItem("authToken");
+        await axios.delete(URL + '/audio/' + audioId, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error deleting audio, error:" + err.message);
     }
