@@ -4,11 +4,25 @@ import playBtn from "../../../assets/images/icons/play.png";
 
 import deleteBtn from "../../../assets/images/icons/delete.png";
 
+import editBtn from "../../../assets/images/icons/edit.png";
+
 import { useState } from "react";
 
 import Swal from "sweetalert2";
-import { Box, Modal } from "@mui/material";
-import { deleteVideo } from "../../../services/adminServices/adminServices";
+
+import {
+  Box,
+  FormControl,
+  MenuItem,
+  Modal,
+  Select,
+  TextField,
+} from "@mui/material";
+
+import {
+  deleteVideo,
+  editVideo,
+} from "../../../services/adminServices/adminServices";
 
 const VideoCard = ({ video, modalClose, actionStateFunction, actionState }) => {
   // modal styles
@@ -29,9 +43,14 @@ const VideoCard = ({ video, modalClose, actionStateFunction, actionState }) => {
   };
 
   const [manageVideoPlayer, setManageVideoPlayer] = useState(false);
+  const [manageVideoEditor, setManageVideoEditor] = useState(false);
 
   const handleManageVideoPlayerClose = () => {
     setManageVideoPlayer(false);
+  };
+
+  const handleManageVideoEditorClose = () => {
+    setManageVideoEditor(false);
   };
 
   const videoDeleter = async (videoId) => {
@@ -40,8 +59,8 @@ const VideoCard = ({ video, modalClose, actionStateFunction, actionState }) => {
       title: "Are you sure you want to delete this video?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#0066ff",
-      cancelButtonColor: "rgb(0, 102, 255,0.5)",
+      confirmButtonColor: "rgb(0, 102, 255,0.5)",
+      cancelButtonColor: "#0066ff",
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -58,6 +77,66 @@ const VideoCard = ({ video, modalClose, actionStateFunction, actionState }) => {
         }
       }
     });
+  };
+
+  const videoEditorModal = (video) => {
+    setNewVideoTitle(video.title);
+    setNewVideoCategory(video.tags[0]);
+    setManageVideoEditor(true);
+  };
+
+  const videoEditor = async () => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      },
+    });
+    if (newVideoTitle !== "" && newVideoCategory !== "") {
+      const newVideoDetails = {
+        title: newVideoTitle,
+        tags: newVideoCategory,
+      };
+      console.log("video to edit:", video);
+      console.log("new video details:", newVideoDetails);
+      const response = await editVideo(video._id, newVideoDetails);
+      if (response) {
+        handleManageVideoEditorClose();
+        actionStateFunction(!actionState);
+        modalClose();
+        Toast.fire({
+          icon: "success",
+          title: "Video details edited successfully",
+        });
+      }
+    } else {
+      handleManageVideoEditorClose();
+      actionStateFunction(!actionState);
+      modalClose();
+      Swal.fire({
+        icon: "error",
+        title: "Failed to create edit video details",
+        text: "Please complete the form to edit video details",
+      });
+    }
+  };
+
+  // video edit
+  const [newVideoTitle, setNewVideoTitle] = useState("");
+  const [newVideoCategory, setNewVideoCategory] = useState("");
+  // video edit
+
+  const handleVideoTitle = (event) => {
+    setNewVideoTitle(event.target.value);
+  };
+
+  const handleVideoCategory = (event) => {
+    setNewVideoCategory(event.target.value);
   };
 
   return (
@@ -102,7 +181,118 @@ const VideoCard = ({ video, modalClose, actionStateFunction, actionState }) => {
           </Box>
         </Modal>
       </div>
-      {/* audio player modal */}
+      {/* video player modal */}
+
+      {/* video details editor modal */}
+      <Modal
+        open={manageVideoEditor}
+        onClose={handleManageVideoEditorClose}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box
+          sx={{
+            ...style,
+            width: 600,
+            paddingLeft: 5,
+            paddingRight: 5,
+            paddingTop: 3,
+            paddingBottom: 3,
+            flexDirection: "column",
+            height: "350px",
+            display: "flex",
+            alignItems: "center",
+            gap: 5,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 20,
+              width: "100%",
+            }}
+          >
+            <h4>Enter new video details</h4>
+            <div
+              style={{
+                width: "100%",
+                height: "fit-content",
+                display: "flex",
+                flexDirection: "column",
+                gap: 5,
+              }}
+            >
+              <label>Enter new video title</label>
+              <TextField
+                value={newVideoTitle}
+                id="outlined-basic"
+                variant="outlined"
+                placeholder="Video title"
+                fullWidth
+                onChange={handleVideoTitle}
+              />
+            </div>
+            <div
+              style={{
+                width: "100%",
+                height: "fit-content",
+                display: "flex",
+                flexDirection: "column",
+                gap: 5,
+              }}
+            >
+              <label>Select new video Category</label>
+              <FormControl fullWidth>
+                <Select
+                  value={newVideoCategory}
+                  onChange={handleVideoCategory}
+                  displayEmpty
+                  inputProps={{ "aria-label": "Without label" }}
+                >
+                  <MenuItem value="meditation and mindfulness">
+                    Meditation and mindfulness
+                  </MenuItem>
+                  <MenuItem value="physical exercise and yoga">
+                    Physical exercises and yoga
+                  </MenuItem>
+                  <MenuItem value="nature and relaxation">
+                    Nature and relaxation
+                  </MenuItem>
+                  <MenuItem value="positive affirmations and inspirational content">
+                    Positive affirmations and inspirational content
+                  </MenuItem>
+                  <MenuItem value="music and sound therapy">
+                    Music and sound therapy
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 30,
+              width: "100%",
+              justifyContent: "center",
+            }}
+          >
+            <button className={styles.editBtn} onClick={videoEditor}>
+              Edit video
+            </button>
+            <button
+              className={styles.cancelBtn}
+              onClick={handleManageVideoEditorClose}
+            >
+              Cancel edit
+            </button>
+          </div>
+        </Box>
+      </Modal>
+      {/* video details editor modal */}
+
       <div className={styles.videoCard}>
         {/* video title and category */}
         <div className={styles.VideotitleAndCategory}>
@@ -128,6 +318,14 @@ const VideoCard = ({ video, modalClose, actionStateFunction, actionState }) => {
             }}
           >
             <img src={playBtn} style={{ width: "15px" }} />
+          </div>
+          <div
+            className={styles.actionBtn}
+            onClick={() => {
+              videoEditorModal(video);
+            }}
+          >
+            <img src={editBtn} style={{ width: "18px" }} />
           </div>
           <div
             className={styles.actionBtn}

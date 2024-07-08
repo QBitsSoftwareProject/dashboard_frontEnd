@@ -268,11 +268,11 @@ function TaskGoals() {
       handleGoalCreatorClose();
     } else {
       handleGoalCreatorClose();
-       Swal.fire({
-         icon: "error",
-         title: "Failed to create new goal",
-         text: "Please complete the form to create new goal",
-       });
+      Swal.fire({
+        icon: "error",
+        title: "Failed to create new goal",
+        text: "Please complete the form to create new goal",
+      });
     }
   };
 
@@ -531,6 +531,7 @@ function TaskGoals() {
               <Dash_btn1
                 btn_text="CREATE NEW TASK"
                 callFunction={() => {
+                  setTaskStepList([]);
                   setOpenTaskCreator(true);
                 }}
               />

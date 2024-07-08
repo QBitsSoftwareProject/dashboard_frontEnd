@@ -185,7 +185,9 @@ export default function ControlAccess() {
     let post = await getPost(report.ReportedPost); // reported Post
     setReportingUser(user1.data);
     setReportedUser(user2.data);
-    setReportingPost(post.data);
+    if (post) {
+      setReportingPost(post.data);
+    }
     setUserBlockState(reportedUser.access);
   };
 
@@ -414,7 +416,7 @@ export default function ControlAccess() {
                       }}
                       src={doctorToCheck.proPic}
                     />
-                    <span style={{ marginTop: "20px",textAlign:"center" }}>
+                    <span style={{ marginTop: "20px", textAlign: "center" }}>
                       {doctorToCheck.fullName}
                     </span>
                     <span style={{ marginTop: "20px" }}>

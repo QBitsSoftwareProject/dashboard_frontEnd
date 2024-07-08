@@ -55,6 +55,7 @@
   transition-duration: 0.3s;
   padding-left: 20px;
 }
+
 /* hover effect button's text */
 .logoutBtn:hover .logoutText {
   opacity: 1;
@@ -62,7 +63,8 @@
   transition-duration: 0.3s;
   padding-right: 15px;
 }
+
 /* button click effect*/
 .logoutBtn:active {
-  transform: translate(2px, 2px);
+  color: black;
 }

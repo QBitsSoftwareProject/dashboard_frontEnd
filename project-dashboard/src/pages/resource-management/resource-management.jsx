@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "../resource-management/resource-management.module.css";
 import Dash_btn1 from "../../components/ui/dash_btn/dash_btn1";
 import Dash_btn2 from "../../components/ui/dash_btn/dash_btn2";
@@ -355,6 +355,12 @@ const ResourceManagement = () => {
 
   // fetch resources
 
+  // mounts
+  const hasVideoMounted = useRef(false); // Create a ref to track the initial mount
+  const hasAudioMounted = useRef(false); // Create a ref to track the initial mount
+  const hasArticleMounted = useRef(false); // Create a ref to track the initial mount
+  // mounts
+
   // 1. articles
   const [articleList, setArticleList] = useState([]);
   useEffect(() => {
@@ -368,8 +374,23 @@ const ResourceManagement = () => {
         console.log("error fetching articles,error: ", err.message);
       }
     };
-    fetchArticles();
+    if (hasArticleMounted.current) {
+      fetchArticles();
+    } else {
+      hasArticleMounted.current = true;
+    }
   }, [actionState]);
+
+  const fetchArticles = async () => {
+    try {
+      let response = await getAllArticles();
+      if (response) {
+        setArticleList(response.data);
+      }
+    } catch (err) {
+      console.log("error fetching articles,error: ", err.message);
+    }
+  };
 
   // 2.videos
   const [videoList, setVideoList] = useState([]);
@@ -384,8 +405,24 @@ const ResourceManagement = () => {
         console.log("error fetching videos,error: ", err.message);
       }
     };
+    if (hasVideoMounted.current) {
+      fetchVideos();
+    } else {
+      hasVideoMounted.current = true;
+    }
     fetchVideos();
   }, [actionState]);
+
+  const fetchVideos = async () => {
+    try {
+      let response = await getAllVideos();
+      if (response) {
+        setVideoList(response.data);
+      }
+    } catch (err) {
+      console.log("error fetching videos,error: ", err.message);
+    }
+  };
 
   // 3.audios
   const [audioList, setAudioList] = useState([]);
@@ -400,8 +437,23 @@ const ResourceManagement = () => {
         console.log("error fetching audios,error: ", err.message);
       }
     };
-    fetchAudios();
+    if (hasAudioMounted.current) {
+      fetchAudios();
+    } else {
+      hasAudioMounted.current = true;
+    }
   }, [actionState]);
+
+  const fetchAudios = async () => {
+    try {
+      let response = await getAllAudios();
+      if (response) {
+        setAudioList(response.data);
+      }
+    } catch (err) {
+      console.log("error fetching audios,error: ", err.message);
+    }
+  };
 
   // fetch resources
 
@@ -432,9 +484,27 @@ const ResourceManagement = () => {
                 onChange={handleChange}
                 aria-label="basic tabs example"
               >
-                <Tab label="ARTICLES" {...a11yProps(0)} />
-                <Tab label="VIDEOS" {...a11yProps(1)} />
-                <Tab label="AUDIOS" {...a11yProps(2)} />
+                <Tab
+                  label="ARTICLES"
+                  onClick={() => {
+                    fetchArticles();
+                  }}
+                  {...a11yProps(0)}
+                />
+                <Tab
+                  label="VIDEOS"
+                  onClick={() => {
+                    fetchVideos();
+                  }}
+                  {...a11yProps(1)}
+                />
+                <Tab
+                  label="AUDIOS"
+                  onClick={() => {
+                    fetchAudios();
+                  }}
+                  {...a11yProps(2)}
+                />
               </Tabs>
             </Box>
 

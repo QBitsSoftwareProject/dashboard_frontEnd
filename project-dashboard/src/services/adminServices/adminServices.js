@@ -6,10 +6,11 @@ const URL = BACKEND_URI + "/resources";
 // admin login
 export const adminLogin = async (adminDetails) => {
     try {
+        console.log(BACKEND_URI + '/admin/login', adminDetails);
         const response = await axios.post(BACKEND_URI + '/admin/login', adminDetails);
-
         // Save the authentication token in local storage
         localStorage.setItem('authToken', response.data.authtoken);
+        return response.data;
     } catch (err) {
         console.log("error logging in, error:" + err.message);
     }
@@ -167,8 +168,7 @@ export const articleDelete = async (articleId) => {
 
 export const getAllVideos = async () => {
     try {
-        const token = localStorage.getItem("authToken");
-        const response = await axios.get(URL + '/video/', { headers: { authtoken: token } });
+        const response = await axios.get(URL + '/video/');
         return response;
     } catch (err) {
         console.log("error fetching videos, error:" + err.message);
@@ -213,7 +213,8 @@ export const getAllDoctors = async () => {
 
 export const editDoctor = async (doctorId, regStatus) => {
     try {
-        await axios.put(BACKEND_URI + '/doctor/updateRegStatus/' + doctorId, regStatus);
+        const token = localStorage.getItem("authToken");
+        await axios.put(BACKEND_URI + '/doctor/updateRegStatus/' + doctorId, regStatus, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error editing doctor status, error:" + err.message);
     }
@@ -221,8 +222,8 @@ export const editDoctor = async (doctorId, regStatus) => {
 
 export const editDoctorAccess = async (doctorId, access) => {
     try {
-        console.log(access);
-        await axios.put(BACKEND_URI + '/doctor/updateAccessStatus/' + doctorId, access);
+        const token = localStorage.getItem("authToken");
+        await axios.put(BACKEND_URI + '/doctor/updateAccessStatus/' + doctorId, access, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error editing doctor access level, error:" + err.message);
     }
@@ -230,7 +231,8 @@ export const editDoctorAccess = async (doctorId, access) => {
 
 export const editUserAccess = async (userId, access) => {
     try {
-        await axios.put(BACKEND_URI + '/user/edit-user-access/' + userId, access);
+        const token = localStorage.getItem("authToken");
+        await axios.put(BACKEND_URI + '/user/edit-user-access/' + userId, access, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error editing user access level, error:" + err.message);
     }
@@ -308,3 +310,32 @@ export const getUsersByMonth = async (monthId) => {
     }
 }
 
+export const editVideo = async (videoId, newVideoDetails) => {
+    try {
+        const token = localStorage.getItem("authToken");
+        const response = await axios.put(URL + '/video/edit-video/' + videoId, newVideoDetails, { headers: { authtoken: token } });
+        return (response.data);
+    } catch (err) {
+        console.log("error editing video details, error:" + err.message);
+    }
+}
+
+export const editAudio = async (audioId, newAudioDetails) => {
+    try {
+        const token = localStorage.getItem("authToken");
+        const response = await axios.put(URL + '/audio/edit-audio/' + audioId, newAudioDetails, { headers: { authtoken: token } });
+        return (response.data);
+    } catch (err) {
+        console.log("error editing audio details, error:" + err.message);
+    }
+}
+
+export const getUserFeedbacks = async () => {
+    try {
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(BACKEND_URI + '/Feedback/getAll-feedback/', { headers: { authtoken: token } });
+        return (response.data);
+    } catch (err) {
+        console.log("error fetching user feedbacks, error:" + err.message);
+    }
+}

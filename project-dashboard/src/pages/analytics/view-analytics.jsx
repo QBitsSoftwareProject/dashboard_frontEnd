@@ -33,6 +33,7 @@ defaults.plugins.title.font.size = 20;
 defaults.plugins.title.color = "rgb(82, 186, 255, 0.9)";
 
 export default function ViewAnalytics() {
+  
   // statistics
   const [patientCount, setPatientCount] = useState(0);
   const [doctorCount, setDoctorCount] = useState(0);
