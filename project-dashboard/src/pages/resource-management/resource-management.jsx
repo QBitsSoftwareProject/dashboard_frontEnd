@@ -153,6 +153,19 @@ const ResourceManagement = () => {
     }
   };
 
+  //firebase video thumbnail upload
+  const firebaseUploadThumbnail = async (thumbnailBlob) => {
+    try {
+      let resourceFile = ref(storage, `resource/video-thumbnails/${v4()}`);
+      await uploadBytes(resourceFile, thumbnailBlob);
+      const newFileURL = await getDownloadURL(resourceFile);
+      return newFileURL; // Return the URL
+    } catch (error) {
+      console.error("Error uploading thumbnail:", error);
+      return null;
+    }
+  };
+
   // Firebase upload for article images
   const articleParagraphImage_firebaseUpload = async (articleImage) => {
     try {
@@ -204,6 +217,35 @@ const ResourceManagement = () => {
     });
   };
 
+  // Function to capture a frame from the video
+  function captureThumbnail(file) {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement("video");
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      video.preload = "metadata";
+      video.src = URL.createObjectURL(file);
+
+      video.onloadedmetadata = () => {
+        video.currentTime = 2; // Capture the thumbnail at 2 seconds
+      };
+
+      video.onseeked = () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+          resolve(blob);
+        }, "image/jpeg");
+      };
+
+      video.onerror = (event) => {
+        reject(event);
+      };
+    });
+  }
+
   // Upload the resource to the server
   const uploadResource = async () => {
     setLoading(true); // Start loading
@@ -251,15 +293,18 @@ const ResourceManagement = () => {
           const duration = await getVideoDuration(file); // get video duration
           resourceURL = await firebaseUpload("video");
           if (resourceURL) {
-            const videoResource = {
-              title,
-              duration: duration,
-              tags,
-              ifWatch,
-              watchCount,
-              downloadURL: resourceURL,
-            };
             try {
+              const thumbnailBlob = await captureThumbnail(file);
+              const thumbnailURL = await firebaseUploadThumbnail(thumbnailBlob);
+              const videoResource = {
+                title,
+                duration: duration,
+                tags,
+                ifWatch,
+                watchCount,
+                downloadURL: resourceURL,
+                thumbnailURL: thumbnailURL,
+              };
               await createVideoResource(videoResource);
               setUploadFinished(true);
               setActionState(!actionState);

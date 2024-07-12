@@ -166,8 +166,8 @@ function TaskGoals() {
       title: "Are you sure you want to delete this task?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#0066ff",
-      cancelButtonColor: "rgb(0, 102, 255,0.5)",
+      confirmButtonColor: "rgb(0, 102, 255,0.5)",
+      cancelButtonColor: "#0066ff",
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
@@ -191,8 +191,8 @@ function TaskGoals() {
       title: "Are you sure you want to delete this goal?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#0066ff",
-      cancelButtonColor: "rgb(0, 102, 255,0.5)",
+      confirmButtonColor: "rgb(0, 102, 255,0.5)",
+      cancelButtonColor: "#0066ff",
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {

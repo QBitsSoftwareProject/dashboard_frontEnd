@@ -6,7 +6,6 @@ const URL = BACKEND_URI + "/resources";
 // admin login
 export const adminLogin = async (adminDetails) => {
     try {
-        console.log(BACKEND_URI + '/admin/login', adminDetails);
         const response = await axios.post(BACKEND_URI + '/admin/login', adminDetails);
         // Save the authentication token in local storage
         localStorage.setItem('authToken', response.data.authtoken);
@@ -21,7 +20,8 @@ export const adminLogin = async (adminDetails) => {
 //get author details
 export const getAuthors = async () => {
     try {
-        const response = await axios.get(URL + '/author/');
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(URL + '/author/', { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error author list fetch , error:" + err.message);
@@ -70,7 +70,8 @@ export const createAudioResource = async (newAudio) => {
 
 export const getAllGoals = async () => {
     try {
-        const response = await axios.get(BACKEND_URI + '/goal/get-all');
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(BACKEND_URI + '/goal/get-all', { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching goals , error:" + err.message);
@@ -80,8 +81,8 @@ export const getAllGoals = async () => {
 // create new goal
 export const createGoal = async (newGoal) => {
     try {
-        console.log(newGoal);
-        await axios.post(BACKEND_URI + '/goal/create', newGoal);
+        const token = localStorage.getItem("authToken");
+        await axios.post(BACKEND_URI + '/goal/create', newGoal, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error creating new goal , error:" + err.message);
     }
@@ -90,7 +91,8 @@ export const createGoal = async (newGoal) => {
 
 export const deleteGoal = async (id) => {
     try {
-        await axios.delete(BACKEND_URI + '/goal/delete/' + id);
+        const token = localStorage.getItem("authToken");
+        await axios.delete(BACKEND_URI + '/goal/delete/' + id, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error deleting new goal , error:" + err.message);
     }
@@ -98,7 +100,8 @@ export const deleteGoal = async (id) => {
 
 export const editGoal = async (id, editedGoal) => {
     try {
-        await axios.put(BACKEND_URI + '/goal/update/' + id, editedGoal);
+        const token = localStorage.getItem("authToken");
+        await axios.put(BACKEND_URI + '/goal/update/' + id, editedGoal, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error editing goal, error:" + err.message);
     }
@@ -107,8 +110,8 @@ export const editGoal = async (id, editedGoal) => {
 // create new task
 export const createTask = async (newTask) => {
     try {
-        console.log("Processing task:" + newTask);
-        await axios.post(BACKEND_URI + '/task/create', newTask);
+        const token = localStorage.getItem("authToken");
+        await axios.post(BACKEND_URI + '/task/create', newTask, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error creating new task , error:" + err.message);
     }
@@ -116,7 +119,8 @@ export const createTask = async (newTask) => {
 
 export const getAllTasks = async () => {
     try {
-        const response = await axios.get(BACKEND_URI + '/task/get-all');
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(BACKEND_URI + '/task/get-all', { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching tasks , error:" + err.message);
@@ -125,7 +129,8 @@ export const getAllTasks = async () => {
 
 export const editTask = async (id, editedTask) => {
     try {
-        await axios.put(BACKEND_URI + '/task/update/' + id, editedTask);
+        const token = localStorage.getItem("authToken");
+        await axios.put(BACKEND_URI + '/task/update/' + id, editedTask, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error editing task, error:" + err.message);
     }
@@ -133,7 +138,8 @@ export const editTask = async (id, editedTask) => {
 
 export const deleteTask = async (id) => {
     try {
-        await axios.delete(BACKEND_URI + '/task/delete/' + id);
+        const token = localStorage.getItem("authToken");
+        await axios.delete(BACKEND_URI + '/task/delete/' + id, { headers: { authtoken: token } });
     } catch (err) {
         console.log("error deleting task, error:" + err.message);
     }
@@ -141,7 +147,8 @@ export const deleteTask = async (id) => {
 
 export const getAllArticles = async () => {
     try {
-        const response = await axios.get(URL + '/article/');
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(URL + '/article/', { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching articles, error:" + err.message);
@@ -150,7 +157,8 @@ export const getAllArticles = async () => {
 
 export const getAuthorInfo = async (authorId) => {
     try {
-        const response = await axios.get(URL + '/author/get-authorInfo/' + authorId);
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(URL + '/author/get-authorInfo/' + authorId, { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching author details, error:" + err.message);
@@ -168,7 +176,8 @@ export const articleDelete = async (articleId) => {
 
 export const getAllVideos = async () => {
     try {
-        const response = await axios.get(URL + '/video/');
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(URL + '/video/', { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching videos, error:" + err.message);
@@ -186,7 +195,8 @@ export const deleteVideo = async (videoId) => {
 
 export const getAllAudios = async () => {
     try {
-        const response = await axios.get(URL + '/audio/getAudios/');
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(URL + '/audio/getAudios/', { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching audios, error:" + err.message);
@@ -204,7 +214,8 @@ export const deleteAudio = async (audioId) => {
 
 export const getAllDoctors = async () => {
     try {
-        const response = await axios.get(BACKEND_URI + '/doctor/');
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(BACKEND_URI + '/doctor/', { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching doctors, error:" + err.message);
@@ -240,7 +251,8 @@ export const editUserAccess = async (userId, access) => {
 
 export const getDoctorAppointmentCount = async (doctorId) => {
     try {
-        const response = await axios.get(BACKEND_URI + '/appointments/doctor-appointments/' + doctorId);
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(BACKEND_URI + '/appointments/doctor-appointments/' + doctorId, { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching doctor appointments, error:" + err.message);
@@ -249,7 +261,8 @@ export const getDoctorAppointmentCount = async (doctorId) => {
 
 export const geCompletedtDoctorAppointmentCount = async (doctorId) => {
     try {
-        const response = await axios.get(BACKEND_URI + '/appointments/doctor-completed-appointments/' + doctorId);
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(BACKEND_URI + '/appointments/doctor-completed-appointments/' + doctorId, { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching doctor appointments, error:" + err.message);
@@ -258,7 +271,8 @@ export const geCompletedtDoctorAppointmentCount = async (doctorId) => {
 
 export const getReports = async () => {
     try {
-        const response = await axios.get(BACKEND_URI + '/report/view-report/');
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(BACKEND_URI + '/report/view-report/', { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching user reports, error:" + err.message);
@@ -267,7 +281,8 @@ export const getReports = async () => {
 
 export const getPost = async (postId) => {
     try {
-        const response = await axios.get(BACKEND_URI + '/posts/view-a-post/' + postId);
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(BACKEND_URI + '/posts/view-a-post/' + postId, { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching report information, error:" + err.message);
@@ -276,7 +291,8 @@ export const getPost = async (postId) => {
 
 export const getUser = async (userId) => {
     try {
-        const response = await axios.get(BACKEND_URI + '/user/one-user-by-id/' + userId);
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(BACKEND_URI + '/user/one-user-by-id/' + userId, { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching user information, error:" + err.message);
@@ -285,7 +301,8 @@ export const getUser = async (userId) => {
 
 export const getAllUsers = async () => {
     try {
-        const response = await axios.get(BACKEND_URI + '/user/');
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(BACKEND_URI + '/user/', { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching users, error:" + err.message);
@@ -294,7 +311,8 @@ export const getAllUsers = async () => {
 
 export const getAllMarks = async () => {
     try {
-        const response = await axios.get('http://localhost:3000/mark/get-all-marks');
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get('http://localhost:3000/mark/get-all-marks', { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching report information, error:" + err.message);
@@ -303,7 +321,8 @@ export const getAllMarks = async () => {
 
 export const getUsersByMonth = async (monthId) => {
     try {
-        const response = await axios.get(BACKEND_URI + '/user/get-users-by-month/?month=' + monthId);
+        const token = localStorage.getItem("authToken");
+        const response = await axios.get(BACKEND_URI + '/user/get-users-by-month/?month=' + monthId, { headers: { authtoken: token } });
         return response;
     } catch (err) {
         console.log("error fetching users by month, error:" + err.message);
