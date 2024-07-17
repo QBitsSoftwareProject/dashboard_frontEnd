@@ -2,23 +2,26 @@
 import axiosInstance from "../api/axios";
 
 export const getStressLevelQuestions = async () => {
-    try {
+  try {
 
-    const response = await axiosInstance.get(`/question/get-all-questions`);
-      console.log(response.data)
-      return response.data;
+    const token = localStorage.getItem("authToken");
 
-    } catch (err) {
-      console.log(err);
-    } 
-  };
+    const response = await axiosInstance.get(`/question/get-all-questions`, { headers: { authtoken: { token } } });
+    return response.data;
 
-  export const deleteQuestionById = async (id) => {
-    try {
-        const response = await axiosInstance.delete(`/question/delete-question-by-id/${id}`);
-      return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-    } catch (err) {
-      console.log(err);
-    }
-  };
+export const deleteQuestionById = async (id) => {
+  try {
+
+    const token = localStorage.getItem("authToken");
+    const response = await axiosInstance.delete(`/question/delete-question-by-id/${id}`, { headers: { authtoken: { token } } });
+    return response.data;
+
+  } catch (err) {
+    console.log(err);
+  }
+};

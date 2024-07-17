@@ -228,7 +228,9 @@ const ResourceManagement = () => {
       video.src = URL.createObjectURL(file);
 
       video.onloadedmetadata = () => {
-        video.currentTime = 2; // Capture the thumbnail at 2 seconds
+        if (video.duration != NaN) {
+          video.currentTime = video.duration / 2; // Capture the thumbnail at 2 seconds
+        }
       };
 
       video.onseeked = () => {

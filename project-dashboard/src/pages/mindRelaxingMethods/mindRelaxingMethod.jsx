@@ -583,11 +583,16 @@ const ResourceManagement = ({ onPageChange }) => {
             width: "100%",
           }}
         >
-          <Dash_btn1
-            btn_text="UPLOAD METHOD"
-            inlineStyle={styles.btnPosition}
-            callFunction={handleSubmit}
-          />
+          {methodName.trim() != "" &&
+          methodCategory != "" &&
+          methodType != "" &&
+          methodDescription.trim() != "" ? (
+            <Dash_btn1
+              btn_text="UPLOAD METHOD"
+              inlineStyle={styles.btnPosition}
+              callFunction={handleSubmit}
+            />
+          ) : null}
         </div>
       </Grid>
     </div>

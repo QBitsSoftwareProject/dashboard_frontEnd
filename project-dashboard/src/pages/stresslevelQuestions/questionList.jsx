@@ -18,7 +18,10 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { getStressLevelQuestions , deleteQuestionById} from "../../service/stressQuestionService";
+import {
+  getStressLevelQuestions,
+  deleteQuestionById,
+} from "../../service/stressQuestionService";
 // table components
 
 function createData(name, setDate, lastUpdate, actions) {
@@ -41,8 +44,6 @@ function TaskChallenges({ onPageChange }) {
   const closeCheckTask = () => {
     document.getElementById("checkTask").style.width = "0%";
   };
-
-  
 
   const actions = (
     <div
@@ -72,20 +73,20 @@ function TaskChallenges({ onPageChange }) {
 
   const checkBox = <Checkbox defaultChecked color="success" />;
 
-  const [questions, setQuestions] = useState([])
+  const [questions, setQuestions] = useState([]);
 
   const fetchQuestion = async () => {
     const fetchedQuestions = await getStressLevelQuestions();
-    console.log(fetchedQuestions)
+    console.log(fetchQuestion);
     setQuestions(fetchedQuestions);
   };
 
   useEffect(() => {
-    fetchQuestion(); 
+    fetchQuestion();
   }, [questions]);
 
-  console.log(questions)
- 
+  console.log(questions);
+
   const [isChallengesChecked, setIsChallengesChecked] = useState(false); // Initially checked
 
   const handleChallengesCheckboxChange = () => {
@@ -102,15 +103,14 @@ function TaskChallenges({ onPageChange }) {
 
   const handleEdit = (id) => {
     onPageChange(`stress-level-questions-update/${id}`);
-    
-    console.log(id) 
-  }
+
+    console.log(id);
+  };
 
   const handleDelete = (id) => {
-    console.log(id)
+    console.log(id);
     deleteQuestionById(id);
-  }
-
+  };
 
   return (
     <Grid container className={styles.mainContent}>
@@ -122,7 +122,6 @@ function TaskChallenges({ onPageChange }) {
           flexDirection: "row",
         }}
       >
-        
         <Grid
           item
           xs={9}
@@ -136,7 +135,6 @@ function TaskChallenges({ onPageChange }) {
           }}
         >
           <Dash_btn1 btn_text="ADD NEW QUESTION" callFunction={openNewTask} />
-          
         </Grid>
       </Grid>
       {/* topic */}
@@ -151,7 +149,7 @@ function TaskChallenges({ onPageChange }) {
         }}
       >
         <Grid item xs={4} style={{ textAlign: "center" }}>
-          <h5 style={{ color: "#A0A0A0" }}>ALLOCATED MIND RELAXING METHODS</h5>
+          <h5 style={{ color: "#A0A0A0" }}>ALLOCATED STRESS LEVEL QUESTIONS</h5>
         </Grid>
         <Grid item xs={10}>
           <hr />
@@ -168,31 +166,37 @@ function TaskChallenges({ onPageChange }) {
                   <TableCell align="center" style={{ fontWeight: "bold" }}>
                     Questions
                   </TableCell>
-                  
-                  
+
                   <TableCell align="center" style={{ fontWeight: "bold" }}>
                     Actions
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {questions.map((row) => (
-                  <TableRow
-                    key={row._id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row" align="left">
-                      
-                      {row.question}
-                    </TableCell>
-                    
-                    
-                    <TableCell align="center">
-                    <img src={editIcon} className={styles.actionIcons } onClick={() => handleEdit(row._id)}  />
-                    <img src={binIcon} className={styles.actionIcons } onClick={() => handleDelete(row._id)}/>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {questions &&
+                  questions.map((row) => (
+                    <TableRow
+                      key={row._id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row" align="left">
+                        {row.question}
+                      </TableCell>
+
+                      <TableCell align="center">
+                        <img
+                          src={editIcon}
+                          className={styles.actionIcons}
+                          onClick={() => handleEdit(row._id)}
+                        />
+                        <img
+                          src={binIcon}
+                          className={styles.actionIcons}
+                          onClick={() => handleDelete(row._id)}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
@@ -280,7 +284,7 @@ function TaskChallenges({ onPageChange }) {
                     gap: 10,
                   }}
                 >
-                  <h5 style={{width:"130px"}}>Task name :</h5>
+                  <h5 style={{ width: "130px" }}>Task name :</h5>
                   <span>TASK 001</span>
                 </div>
                 <br />
@@ -292,7 +296,7 @@ function TaskChallenges({ onPageChange }) {
                     gap: 10,
                   }}
                 >
-                  <h5 style={{width:"550px"}}>Task description :</h5>
+                  <h5 style={{ width: "550px" }}>Task description :</h5>
                   <span>
                     "Find a quiet, comfortable spot. Close your eyes and take
                     deep breaths. Focus on your breath, letting go of any

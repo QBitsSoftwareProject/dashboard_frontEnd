@@ -11,6 +11,10 @@ import lookIcon from "../../assets/images/TaskTable/lookIcon.png";
 
 // dashboard buttons
 
+import Swal from "sweetalert2";
+
+import LoadingScreen from "../../components/ui/loadingScreen/LoadingScreen";
+
 // table components
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -42,8 +46,6 @@ function TaskChallenges({ onPageChange }) {
     document.getElementById("checkTask").style.width = "0%";
   };
 
-  
-
   const actions = (
     <div
       style={{
@@ -72,17 +74,22 @@ function TaskChallenges({ onPageChange }) {
 
   const checkBox = <Checkbox defaultChecked color="success" />;
 
-  const [methods, setMethods] = useState([])
-  const fetchMethods = async () => {
-    const fetchedMethods = await getMindRelaxingMethod();
-    setMethods(fetchedMethods);
-  };
+  const [methods, setMethods] = useState([]);
 
   useEffect(() => {
+    const fetchMethods = async () => {
+      setLoadingState(true);
+      try {
+        const fetchedMethods = await getMindRelaxingMethod();
+        setMethods(fetchedMethods);
+        setLoadingState(false);
+      } catch (err) {
+        console.log("error fetching mind relaxing methods:" + err.message);
+      }
+    };
     fetchMethods();
-  }, [methods]);
+  }, []);
 
- 
   const [isChallengesChecked, setIsChallengesChecked] = useState(false); // Initially checked
 
   const handleChallengesCheckboxChange = () => {
@@ -99,15 +106,33 @@ function TaskChallenges({ onPageChange }) {
 
   const handleEdit = (id) => {
     onPageChange(`mind-relaxing-methods-update/${id}`);
-    
-    console.log(id) 
-  }
+  };
 
   const handleDelete = (id) => {
-    console.log(id)
-    deleteMindRelaxingMethodById(id);
-  }
+    Swal.fire({
+      title: "Are you sure you want to delete this method?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "rgb(0, 102, 255,0.5)",
+      cancelButtonColor: "#0066ff",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteMindRelaxingMethodById(id);
+          Swal.fire({
+            title: "Deleted!",
+            text: "Method has been deleted.",
+            icon: "success",
+          });
+        } catch (err) {
+          console.log("failed to delete method,error: " + err.message);
+        }
+      }
+    });
+  };
 
+  const [loadingState, setLoadingState] = useState(true);
 
   return (
     <Grid container className={styles.mainContent}>
@@ -119,10 +144,9 @@ function TaskChallenges({ onPageChange }) {
           flexDirection: "row",
         }}
       >
-        
         <Grid
           item
-          xs={9}
+          xs={12}
           style={{
             display: "flex",
             flexDirection: "row",
@@ -133,7 +157,6 @@ function TaskChallenges({ onPageChange }) {
           }}
         >
           <Dash_btn1 btn_text="ADD NEW METHOD" callFunction={openNewTask} />
-          
         </Grid>
       </Grid>
       {/* topic */}
@@ -158,49 +181,69 @@ function TaskChallenges({ onPageChange }) {
       {/* task table */}
       <div style={{ width: "100%", height: "70vh", overflowY: "scroll" }}>
         <Grid item xs={12}>
-          <TableContainer>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="center" style={{ fontWeight: "bold" }}>
-                    Name
-                  </TableCell>
-                  <TableCell align="center" style={{ fontWeight: "bold" }}>
-                    Type
-                  </TableCell>
-                  <TableCell align="center" style={{ fontWeight: "bold" }}>
-                    Category
-                  </TableCell>
-                  <TableCell align="center" style={{ fontWeight: "bold" }}>
-                    Actions
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {methods.map((row) => (
-                  <TableRow
-                    key={row._id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row" align="left">
-                      
-                      {row.resouceName}
+          {loadingState ? (
+            <div
+              style={{
+                height: "90vh",
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <LoadingScreen />
+            </div>
+          ) : (
+            <TableContainer>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>
+                      Name
                     </TableCell>
-                    <TableCell align="center">
-                    {row.methodType}
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>
+                      Type
                     </TableCell>
-                    <TableCell align="center">
-                    {row.category}
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>
+                      Category
                     </TableCell>
-                    <TableCell align="center">
-                    <img src={editIcon} className={styles.actionIcons } onClick={() => handleEdit(row._id)}  />
-                    <img src={binIcon} className={styles.actionIcons } onClick={() => handleDelete(row._id)}/>
+                    <TableCell align="center" style={{ fontWeight: "bold" }}>
+                      Actions
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {methods &&
+                    methods.map((row) => (
+                      <TableRow
+                        key={row._id}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row" align="left">
+                          {row.resouceName}
+                        </TableCell>
+                        <TableCell align="center">{row.methodType}</TableCell>
+                        <TableCell align="center">{row.category}</TableCell>
+                        <TableCell align="center">
+                          <img
+                            src={editIcon}
+                            className={styles.actionIcons}
+                            onClick={() => handleEdit(row._id)}
+                          />
+                          <img
+                            src={binIcon}
+                            className={styles.actionIcons}
+                            onClick={() => handleDelete(row._id)}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </Grid>
       </div>
       {/* task table */}
@@ -285,7 +328,7 @@ function TaskChallenges({ onPageChange }) {
                     gap: 10,
                   }}
                 >
-                  <h5 style={{width:"130px"}}>Task name :</h5>
+                  <h5 style={{ width: "130px" }}>Task name :</h5>
                   <span>TASK 001</span>
                 </div>
                 <br />
@@ -297,7 +340,7 @@ function TaskChallenges({ onPageChange }) {
                     gap: 10,
                   }}
                 >
-                  <h5 style={{width:"550px"}}>Task description :</h5>
+                  <h5 style={{ width: "550px" }}>Task description :</h5>
                   <span>
                     "Find a quiet, comfortable spot. Close your eyes and take
                     deep breaths. Focus on your breath, letting go of any
