@@ -77,15 +77,12 @@ function TaskChallenges({ onPageChange }) {
 
   const fetchQuestion = async () => {
     const fetchedQuestions = await getStressLevelQuestions();
-    console.log(fetchQuestion);
     setQuestions(fetchedQuestions);
   };
 
   useEffect(() => {
     fetchQuestion();
   }, [questions]);
-
-  console.log(questions);
 
   const [isChallengesChecked, setIsChallengesChecked] = useState(false); // Initially checked
 

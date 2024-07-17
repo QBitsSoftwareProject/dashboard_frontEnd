@@ -67,13 +67,16 @@ function CreateQuestionForm({ onPageChange }) {
     }
 
     try {
+      const token = localStorage.getItem("authToken");
+      console.log("token question management:", token);
       const questionResponse = await axios.post(
-        "http://localhost:3000/question/create-question",
+        "http://localhost:3000/api/v1/question/create-question",
         {
           question,
           imgurl,
           options,
-        }
+        },
+        { headers: { authtoken: token } }
       );
 
       if (questionResponse.data) {
@@ -319,9 +322,7 @@ function CreateQuestionForm({ onPageChange }) {
               );
             })
           ) : (
-            <div
-              className="empty-array-placeholder"
-            >
+            <div className="empty-array-placeholder">
               No Options in the list
             </div>
           )}

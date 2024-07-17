@@ -219,12 +219,11 @@ function TaskGoals() {
       description: goalDescription,
       objectives: objectives,
       completness: false,
-      duration: timeDuration + " " + timeCategory,
+      duration: editedTime,
       category: goalCategory,
     };
 
     try {
-      console.log("editing selected goal...", goalObjectToEdit);
       await editGoal(goalToEdit._id, goalObjectToEdit);
       setFinishNewGoal(true);
       setGoalLoading(false);
@@ -1432,21 +1431,16 @@ function TaskGoals() {
                 <Grid item xs={12}>
                   <div className={styles.tagsContainer}>
                     <div className={styles.tagDisplay}>
-                      {(goalToEdit.objectives
-                        ? goalToEdit.objectives
-                        : objectives
-                      ).map((oneObjective, index) => (
+                      {objectives.map((oneObjective, index) => (
                         <div className={styles.tag} key={index}>
                           {oneObjective}
                           <img
                             src={cancelIcon}
                             style={{ width: "15px", cursor: "pointer" }}
                             onClick={() => {
-                              const updatedObjectives = (
-                                goalToEdit.objectives
-                                  ? goalToEdit.objectives
-                                  : objectives
-                              ).filter((item) => item !== oneObjective);
+                              const updatedObjectives = objectives.filter(
+                                (item) => item !== oneObjective
+                              );
                               setObjectives(updatedObjectives);
                             }}
                           />
@@ -1461,7 +1455,7 @@ function TaskGoals() {
                           onKeyDown={(event) => {
                             if (event.key === "Enter") {
                               if (
-                                objectives.includes(
+                                !objectives.includes(
                                   objective.trim().toLowerCase()
                                 ) &&
                                 objective.trim().length !== 0

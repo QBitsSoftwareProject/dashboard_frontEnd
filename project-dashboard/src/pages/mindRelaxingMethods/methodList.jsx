@@ -29,7 +29,7 @@ function createData(name, setDate, lastUpdate, actions) {
   return { name, setDate, lastUpdate, actions };
 }
 
-function TaskChallenges({ onPageChange }) {
+function TaskChallenges({ onPageChange, actionState }) {
   const openNewTask = () => {
     onPageChange("mind-relaxing-methods");
   };
@@ -88,7 +88,7 @@ function TaskChallenges({ onPageChange }) {
       }
     };
     fetchMethods();
-  }, []);
+  },[]);
 
   const [isChallengesChecked, setIsChallengesChecked] = useState(false); // Initially checked
 

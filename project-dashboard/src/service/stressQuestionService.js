@@ -6,7 +6,7 @@ export const getStressLevelQuestions = async () => {
 
     const token = localStorage.getItem("authToken");
 
-    const response = await axiosInstance.get(`/question/get-all-questions`, { headers: { authtoken: { token } } });
+    const response = await axiosInstance.get(`/question/get-all-questions`, { headers: { authtoken: token } });
     return response.data;
 
   } catch (err) {
@@ -18,7 +18,7 @@ export const deleteQuestionById = async (id) => {
   try {
 
     const token = localStorage.getItem("authToken");
-    const response = await axiosInstance.delete(`/question/delete-question-by-id/${id}`, { headers: { authtoken: { token } } });
+    const response = await axiosInstance.delete(`/question/delete-question-by-id/${id}`, { headers: { authtoken: token } });
     return response.data;
 
   } catch (err) {

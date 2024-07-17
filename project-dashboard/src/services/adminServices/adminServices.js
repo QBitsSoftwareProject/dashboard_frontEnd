@@ -259,7 +259,7 @@ export const getDoctorAppointmentCount = async (doctorId) => {
     }
 }
 
-export const geCompletedtDoctorAppointmentCount = async (doctorId) => {
+export const getCompletedtDoctorAppointmentCount = async (doctorId) => {
     try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get(BACKEND_URI + '/appointments/doctor-completed-appointments/' + doctorId, { headers: { authtoken: token } });

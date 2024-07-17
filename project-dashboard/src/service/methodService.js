@@ -16,7 +16,7 @@ export const storeMethod = async (methodType, category, resouceName, discription
     };
 
     // Send POST request using axiosInstance
-    const response = await axiosInstance.post('/api/v1/method/add-method', payload, { headers: { authtoken: token } });
+    const response = await axiosInstance.post('method/add-method', payload, { headers: { authtoken: token } });
 
 
     if (response.status >= 200 && response.status < 300) {
@@ -35,7 +35,7 @@ export const getMindRelaxingMethod = async () => {
 
     const token = localStorage.getItem("authToken");
 
-    const response = await axiosInstance.get(`/api/v1/method/get-method`, { headers: { authtoken: token } });
+    const response = await axiosInstance.get(`method/get-method`, { headers: { authtoken: token } });
 
     return response.data;
 
@@ -50,7 +50,7 @@ export const getMindRelaxingMethodById = async (id) => {
 
     const token = localStorage.getItem("authToken");
 
-    const response = await axiosInstance.get(`/api/v1/method/get-methodbyid/${id}`, { headers: { authtoken: token } });
+    const response = await axiosInstance.get(`method/get-methodbyid/${id}`, { headers: { authtoken: token } });
     return response.data;
 
   } catch (err) {
@@ -64,7 +64,7 @@ export const deleteMindRelaxingMethodById = async (id) => {
 
     const token = localStorage.getItem("authToken");
 
-    const response = await axiosInstance.delete(`/api/v1/method/delete-methodbyid/${id}`, { headers: { authtoken: token } });
+    const response = await axiosInstance.delete(`method/delete-methodbyid/${id}`, { headers: { authtoken: token } });
     return response.data;
 
   } catch (err) {
@@ -78,7 +78,7 @@ export const updateMethodById = async (id, methodType, category, resourceName, d
     const token = localStorage.getItem("authToken");
 
     // Send PUT request using axiosInstance
-    const response = await axiosInstance.put(`/api/v1/method/update-method/${id}`, {
+    const response = await axiosInstance.put(`method/update-method/${id}`, {
       methodType: methodType,
       category: category,
       resouceName: resourceName,

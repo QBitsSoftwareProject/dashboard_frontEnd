@@ -19,8 +19,8 @@ import {
   editDoctor,
   editDoctorAccess,
   editUserAccess,
-  geCompletedtDoctorAppointmentCount,
   getAllDoctors,
+  getCompletedtDoctorAppointmentCount,
   getDoctorAppointmentCount,
   getPost,
   getReports,
@@ -32,7 +32,9 @@ import LoadingScreen from "../../components/ui/loadingScreen/LoadingScreen";
 
 export default function ControlAccess() {
   const [doctorList, setDoctorList] = useState([]);
+
   const [docAppointmentCount, setDocAppointmentCount] = useState();
+
   const [docCompletedAppointmentCount, SetDocCompletedAppointmentCount] =
     useState();
 
@@ -40,9 +42,9 @@ export default function ControlAccess() {
 
   const [openReportModal, setOpenReportModal] = React.useState(false);
 
-  const [doctorBlockState, setDoctorBlockState] = React.useState(false);
+  const [doctorBlockState, setDoctorBlockState] = React.useState();
 
-  const [userBlockState, setUserBlockState] = React.useState(false);
+  const [userBlockState, setUserBlockState] = React.useState(null);
 
   const [reportList, setReportList] = useState([]);
 
@@ -80,6 +82,7 @@ export default function ControlAccess() {
       }
     };
     fetchReportInfo();
+   
   }, [actionState]);
 
   useEffect(() => {
@@ -89,13 +92,14 @@ export default function ControlAccess() {
           doctorToCheck._id
         );
         let docCompletedAppointmentCount =
-          await geCompletedtDoctorAppointmentCount(doctorToCheck._id);
-        if (docAppointmentCount.data != 0) {
-          setDocAppointmentCount(docAppointmentCount.data);
-        }
-        if (docCompletedAppointmentCount.data != 0) {
-          SetDocCompletedAppointmentCount(docCompletedAppointmentCount.data);
-        }
+          await getCompletedtDoctorAppointmentCount(doctorToCheck._id);
+        console.log("doctor appointment count:", docAppointmentCount);
+        console.log(
+          "doctor completed appointment count:",
+          docCompletedAppointmentCount
+        );
+        setDocAppointmentCount(docAppointmentCount.data);
+        SetDocCompletedAppointmentCount(docCompletedAppointmentCount.data);
       } catch (err) {
         console.log(
           "error fetching doctor appointment count, error:" + err.message
@@ -159,6 +163,21 @@ export default function ControlAccess() {
     );
   }
 
+  function CustomTabPanel2(props) {
+    const { children, value2, index, ...other } = props;
+    return (
+      <div
+        role="tabpanel"
+        hidden={value2 !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value2 === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      </div>
+    );
+  }
+
   function a11yProps(index) {
     return {
       id: `simple-tab-${index}`,
@@ -167,8 +186,20 @@ export default function ControlAccess() {
   }
   const [value, setValue] = React.useState(0);
 
+  function a11yProps2(index) {
+    return {
+      id: `simple-tab-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
+    };
+  }
+  const [value2, setValue2] = React.useState(0);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleChange2 = (event, newValue) => {
+    setValue2(newValue);
   };
 
   const [doctorToCheck, setDoctorToCheck] = useState({});
@@ -188,7 +219,7 @@ export default function ControlAccess() {
     if (post) {
       setReportingPost(post.data);
     }
-    setUserBlockState(reportedUser.access);
+    setUserBlockState(user2.data.access);
   };
 
   const completeRegistration = async () => {
@@ -223,15 +254,15 @@ export default function ControlAccess() {
     let newAccessStatus = !userBlockState;
     let newAccess = { access: newAccessStatus };
     setUserBlockState(newAccessStatus);
-    console.log(newAccessStatus);
     try {
       await editUserAccess(reportedUser._id, newAccess);
       setActionState(!actionState);
-      handleOpenReportModalClose();
+      // handleOpenReportModalClose();
     } catch (err) {
       console.log("error editing user access status,error: " + err.message);
     }
   };
+  console.log(actionState)
 
   return (
     <>
@@ -268,12 +299,12 @@ export default function ControlAccess() {
                 >
                   <div>
                     <Tabs
-                      value={value}
-                      onChange={handleChange}
+                      value={value2}
+                      onChange={handleChange2}
                       aria-label="basic tabs example"
                     >
-                      <Tab label="DOCTOR DETAILS" {...a11yProps(0)} />
-                      <Tab label="REGISTRATION" {...a11yProps(1)} />
+                      <Tab label="DOCTOR DETAILS" {...a11yProps2(0)} />
+                      <Tab label="REGISTRATION" {...a11yProps2(1)} />
                     </Tabs>
                   </div>
                   <div
@@ -309,7 +340,7 @@ export default function ControlAccess() {
               </Box>
 
               {/* doctor details section */}
-              <CustomTabPanel value={value} index={0}>
+              <CustomTabPanel2 value2={value2} index={0}>
                 <Grid
                   container
                   style={{
@@ -330,7 +361,7 @@ export default function ControlAccess() {
                       <span style={{ color: "#0997f6", fontWeight: "bold" }}>
                         Doctor name :{" "}
                       </span>
-                      <span>{doctorToCheck.fullName}</span>
+                      <span>{doctorToCheck.userName}</span>
                     </div>
                     <div>
                       <span style={{ color: "#0997f6", fontWeight: "bold" }}>
@@ -417,7 +448,7 @@ export default function ControlAccess() {
                       src={doctorToCheck.proPic}
                     />
                     <span style={{ marginTop: "20px", textAlign: "center" }}>
-                      {doctorToCheck.fullName}
+                      {doctorToCheck.userName}
                     </span>
                     <span style={{ marginTop: "20px" }}>
                       <>
@@ -450,10 +481,10 @@ export default function ControlAccess() {
                     </span>
                   </Grid>
                 </Grid>
-              </CustomTabPanel>
+              </CustomTabPanel2>
               {/* doctor details section */}
 
-              <CustomTabPanel value={value} index={1}>
+              <CustomTabPanel2 value2={value2} index={1}>
                 <Grid container>
                   <Grid item container xs={12} style={{ height: "400px" }}>
                     <Grid
@@ -524,7 +555,7 @@ export default function ControlAccess() {
                     )}
                   </Grid>
                 </Grid>
-              </CustomTabPanel>
+              </CustomTabPanel2>
             </Box>
           </Modal>
         </div>
@@ -688,20 +719,23 @@ export default function ControlAccess() {
                     ) : (
                       <span style={{ color: "red" }}>BLOCKED</span>
                     )}
-                    <label className={styles.switch}>
-                      <input
-                        checked={userBlockState}
-                        type="checkbox"
-                        onChange={() => {
-                          changeUserAccess();
-                        }}
-                      />
-                      <span className={styles.slider}></span>
-                      <span className={styles.knob}></span>
-                    </label>
+                    {userBlockState != null && (
+                      <label className={styles.switch}>
+                        <input
+                          checked={userBlockState}
+                          type="checkbox"
+                          onChange={() => {
+                            changeUserAccess();
+                            setActionState(!actionState);
+                          }}
+                        />
+                        <span className={styles.slider}></span>
+                        <span className={styles.knob}></span>
+                      </label>
+                    )}
                   </div>
                 </div>
-                <div style={{ marginTop: "60px" }}>
+                <div style={{ marginTop: "30px" }}>
                   <span style={{ color: "#0997f6", fontWeight: "bold" }}>
                     Reported user :{" "}
                   </span>
@@ -725,7 +759,7 @@ export default function ControlAccess() {
                   </span>
                   <span>{reportedUser.address}</span>
                 </div>
-                <div style={{ marginTop: "20px" }}>
+                <div style={{ marginTop: "20px", marginBottom: "30px" }}>
                   <span style={{ color: "#0997f6", fontWeight: "bold" }}>
                     Country :{" "}
                   </span>
@@ -787,7 +821,7 @@ export default function ControlAccess() {
                   <label for="users"></label>
                 </div>
               </section>
-              <h6>USERS</h6>
+              <h6>REPORTS</h6>
             </div>
           </Grid>
           {/* state checkbox */}
@@ -922,6 +956,7 @@ export default function ControlAccess() {
                                 style={{ color: "#0997f6", cursor: "pointer" }}
                                 onClick={() => {
                                   setDoctorToCheck(doctor);
+                                  console.log(doctor._id);
                                   setDoctorBlockState(doctor.access);
                                   setActionState(!actionState);
                                   setOpenDoctorModal(true);
@@ -993,7 +1028,6 @@ export default function ControlAccess() {
                               style={{ color: "#0997f6", cursor: "pointer" }}
                               onClick={() => {
                                 getUserAndPostInfo(report);
-                                setUserBlockState(reportedUser.access);
                                 setActionState(!actionState);
                                 setOpenReportModal(true);
                               }}

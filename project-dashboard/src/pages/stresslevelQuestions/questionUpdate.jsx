@@ -19,10 +19,13 @@ function UpdateQuestionForm() {
   console.log(id);
 
   useEffect(() => {
+    const token = localStorage.getItem("authToken");
+
     const fetchdatafromquestion = async () => {
       try {
         const questiondata = await axios.get(
-          `http://localhost:3000/question/get-question-by-id/${id}`
+          `http://localhost:3000/api/v1/question/get-question-by-id/${id}`,
+          { headers: { authtoken: token } }
         );
         console.log(questiondata.data);
         setDataArray(questiondata.data);
@@ -92,13 +95,16 @@ function UpdateQuestionForm() {
     }
 
     try {
+      const token = localStorage.getItem("authToken");
+      console.log("token question update:", token);
       const questionResponse = await axios.post(
-        `http://localhost:3000/question/update-question-by-id/${id}`,
+        `http://localhost:3000/api/v1/question/update-question-by-id/${id}`,
         {
           question,
           imgurl: imgurl,
           options,
-        }
+        },
+        { headers: { authtoken: token } }
       );
 
       if (questionResponse.data) {

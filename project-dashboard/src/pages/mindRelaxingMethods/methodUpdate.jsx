@@ -452,21 +452,7 @@ const ResourceManagement = ({ onPageChange }) => {
           />
         </Grid>
 
-        <Grid
-          item
-          xs={2}
-          style={{
-            display: "flex",
-            justifyContent: "start",
-            alignItems: "center",
-          }}
-        >
-          <span style={{ fontWeight: "bold", marginLeft: "20px" }}>
-            Method cover image :
-          </span>
-        </Grid>
-
-        <Grid item xs={10} style={{ paddingRight: "20px" }}>
+        <Grid item xs={6} style={{ paddingRight: "20px" }}>
           <div
             className="second-row"
             onDrop={handleDrop}
@@ -528,22 +514,7 @@ const ResourceManagement = ({ onPageChange }) => {
             </div>
           </div>
         </Grid>
-        <Grid
-          item
-          xs={2}
-          style={{
-            display: "flex",
-            justifyContent: "start",
-            alignItems: "center",
-          }}
-        >
-          <span
-            style={{ fontWeight: "bold", marginLeft: "20px", marginRight: 20 }}
-          >
-            Method resource :
-          </span>
-        </Grid>
-        <Grid item xs={10} style={{ paddingRight: "20px" }}>
+        <Grid item xs={6} style={{ paddingRight: "20px" }}>
           <div
             className="second-row"
             onDrop={handleDropMethod}
@@ -555,6 +526,7 @@ const ResourceManagement = ({ onPageChange }) => {
               paddingBottom: "30px",
               textAlign: "center",
               width: "95%",
+              height:"305px",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",

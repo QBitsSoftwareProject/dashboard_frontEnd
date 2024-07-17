@@ -117,7 +117,7 @@ const ResourceManagement = ({ onPageChange }) => {
     setMark("");
     setMethodCategory("");
     setMethodDescription("");
-
+    setImageUrl("");
     setMethodUpload("");
     setFilenameMethod("");
     setCategory("");
